@@ -112,6 +112,7 @@ const CustomHeader = ({
 
 const Table = (props) => {
 	const {path} = props
+	const [type,setType] = useState('')
 	// ** Store Vars
 	const dispatch = useDispatch();
 	const store = useSelector((state) => state.users);
@@ -291,6 +292,87 @@ const Table = (props) => {
     },
   ];
 
+  	const columnsProduct = [
+      {
+        name: "Name",
+        sortable: true,
+        minWidth: "297px",
+        sortField: "name",
+        selector: (row) => row.name,
+        cell: (row) => (
+          <div className="d-flex justify-content-left align-items-center">
+            <div className="d-flex flex-column">
+              <Link
+                to={`/apps/seller/view/9`}
+                className="user_name text-truncate text-body"
+              >
+                <span className="fw-bold">{row.name}</span>
+              </Link>
+            </div>
+          </div>
+        ),
+      },
+      {
+        name: "Product Category",
+        sortable: true,
+        minWidth: "150px",
+        sortField: "product_category",
+        selector: (row) => row.product_category,
+        cell: (row) => (
+          <span className="text-capitalize">{row.product_category}</span>
+        ),
+      },
+      {
+        name: "Date",
+        sortable: true,
+        minWidth: "180px",
+        sortField: "dt",
+        selector: (row) => row.dt,
+        cell: (row) => <span>{moment(row.dt).format("DD-MM-YY, h:mm a")}</span>,
+      },
+      {
+        name: "Status",
+        sortable: true,
+        minWidth: "150px",
+        sortField: "enabled",
+        selector: (row) => (row.enabled == false ? "inactive" : ""),
+        cell: (row) => (
+          <Badge
+            className="text-capitalize"
+            color={row.enabled == false ? statusObj["inactive"] : ""}
+            pill
+          >
+            {row.enabled == false ? "Inactive" : "Pending"}
+          </Badge>
+        ),
+      },
+      {
+        name: "Actions",
+        minWidth: "50px",
+        cell: (row) => (
+          <Button color="primary" size="sm" onClick={(e) => Approval(row.id)}>
+            Approve
+          </Button>
+          // <Link to={`/apps/seller/view/9`}>
+
+          // </Link>
+        ),
+      },
+      {
+        name: "Details",
+        minWidth: "50px",
+        cell: (row) => (
+          <Button color="danger" size="sm" onClick={(e) => Approval(row.id)}>
+            View
+          </Button>
+          // <Link to={`/apps/seller/view/9`}>
+
+          // </Link>
+        ),
+      },
+    ];
+
+
 
 	// ** Get data on mount
 	useEffect(() => {
@@ -311,7 +393,7 @@ const Table = (props) => {
 
 	const getUsersData = () =>{
 
-		if (path == "/apps/users/verify") {
+		if (type == "users") {
 			
 			CoreHttpHandler.request(
 				"users",
@@ -323,7 +405,7 @@ const Table = (props) => {
 				},
 				(failure) => {}
 			);
-		} else if (path == "/apps/products/verify") {
+		} else if (path == "products") {
 				CoreHttpHandler.request(
 					"products",
 					"unapproved",
@@ -339,8 +421,15 @@ const Table = (props) => {
 	}
 
 	useEffect(() => {
+	if(path){
+		console.log(path,'pathhtth')
+		if(path == "/apps/users/verify"){
+			console.log('hrerer')
+			setType("users")
+		}else if (path == "/apps/products/verify") setType("products");
+	}
     getUsersData(path);
-  }, [path]);
+  }, [path,type]);
 
 	// ** Function in get data on page change
 	const handlePagination = (page) => {
@@ -471,8 +560,14 @@ const Table = (props) => {
 	};
 	// ** Table data to render
 	const dataToRender = () => {
-		console.log(data,'datatatta')
-		return data.users
+		console.log(type,'tytyty')
+		if (type == "users") {
+
+			return data.users;
+
+		}else if (type == "products") {
+      		return data.data;
+    	}
 		// const filters = {
 		// 	q: searchTerm,
 		// };
@@ -516,7 +611,7 @@ const Table = (props) => {
 					pagination
 					responsive
 					paginationServer
-					columns={columns}
+					columns={type == "users" ? columns : type == "products" ? columnsProduct : []}
 					onSort={handleSort}
 					data={dataToRender()}
 					sortIcon={<ChevronDown />}
