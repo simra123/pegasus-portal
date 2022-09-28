@@ -147,9 +147,19 @@ const AppRoutes = [
 		component: lazy(() => import("../../views/apps/user/list")),
 	},
 	{
-		path: "/apps/user/verify",
+		path: "/apps/users/verify",
 		exact: true,
-		component: () => <Redirect to='/apps/user/view/1' />,
+		component: lazy(() => import("../../views/pages/verification")),
+	},
+	{
+		path: "/apps/products/verify",
+		exact: true,
+		component: lazy(() => import("../../views/pages/verification")),
+	},
+	{
+		path: "/apps/riders/verify",
+		exact: true,
+		component: lazy(() => import("../../views/pages/sellers")),
 	},
 	{
 		path: "/apps/sellers",

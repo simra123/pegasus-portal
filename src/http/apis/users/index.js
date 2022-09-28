@@ -29,6 +29,13 @@ class APIS {
             method: "delete",
             path: "/backend/users/delete/:id",
           },
+           unapproved: {
+            headers: {
+              "xt-user-token": null,
+            },
+            method: "get",
+            path: "/users/unapproved",
+          },
         };
     }
 }

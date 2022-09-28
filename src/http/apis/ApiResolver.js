@@ -1,12 +1,16 @@
 
 import UserApis from "./users";
 import ClientApis from "./client"
+import Sellers from "./sellers";
+import Products from './products'
 
 class ApiResolver {
 	constructor() {
 		this.apis = {
 			users: UserApis.apis(),
-			client: ClientApis.apis()
+			client: ClientApis.apis(),
+			sellers: Sellers.apis(),
+			products: Products.apis()
 		};
 	}
 
