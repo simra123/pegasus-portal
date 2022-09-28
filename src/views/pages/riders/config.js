@@ -1,10 +1,10 @@
 import React from "react";
 import { lazy } from "react";
 
-const verifyConfig = {
+const SellerConfig = {
 	routes: [
 		{
-			path: "/apps/users/verify",
+			path: "/apps/riders",
 			exact: true,
 			appLayout: true,
 			className: "email-application",
@@ -13,4 +13,4 @@ const verifyConfig = {
 	],
 };
 
-export default verifyConfig;
+export default SellerConfig;

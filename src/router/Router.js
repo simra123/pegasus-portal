@@ -6,6 +6,7 @@ import { isUserLoggedIn } from "@utils";
 import { useLayout } from "@hooks/useLayout";
 import { AbilityContext } from "@src/utility/context/Can";
 import { useRouterTransition } from "@hooks/useRouterTransition";
+import routesGenerated from "../configs/routesConfig";
 
 // ** Custom Components
 import LayoutWrapper from "@layouts/components/layout-wrapper";
@@ -49,8 +50,8 @@ const Router = () => {
 		const LayoutRoutes = [];
 		const LayoutPaths = [];
 
-		if (Routes) {
-			Routes.filter((route) => {
+		if (routesGenerated) {
+			routesGenerated.filter((route) => {
 				// ** Checks if Route layout or Default layout matches current layout
 				if (
 					route.layout === layout ||
@@ -113,8 +114,6 @@ const Router = () => {
 			return <route.component {...props} />;
 		}
 	};
-
-	console.log(ability, "ability");
 
 	// ** Return Route to Render
 	const ResolveRoutes = () => {
