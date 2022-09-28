@@ -116,7 +116,7 @@ const Login = () => {
 		// start to explore. Enjoy!`
 		// );
 		console.log(data.data.data);
-		const { token, user } = data.data.data;
+		const { token, user, acl } = data.data.data;
 		localStorage.setItem("user_token", token);
 		user.ability = [{ action: "manage", subject: "all" }];
 		ability.update([{ action: "manage", subject: "all" }]);
@@ -124,9 +124,10 @@ const Login = () => {
 		if (user) {
 			localStorage.setItem("user_data", JSON.stringify(user));
 		} else localStorage.setItem("user_data", JSON.stringify({}));
-		// if (acl) {
-		// 	localStorage.setItem("user_acl", JSON.stringify(acl));
-		// } else localStorage.setItem("user_acl", JSON.stringify({}));
+		if (acl) {
+			localStorage.setItem("user_acl", JSON.stringify(acl?.FRONT));
+		}
+		//else localStorage.setItem("user_acl", JSON.stringify({}));
 		// if (app) {
 		// 	localStorage.setItem("app_acl", JSON.stringify(app));
 		// } else localStorage.setItem("app_acl", JSON.stringify({}));

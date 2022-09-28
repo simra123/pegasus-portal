@@ -59,15 +59,15 @@ export default [
 			},
 			{
 				id: "shop",
-				title: "Verify Stores",
+				title: "Verify Users",
 				icon: <Circle size={12} />,
-				navLink: "/apps/shop",
+				navLink: "/apps/users/verify",
 			},
 			{
 				id: "prod",
 				title: "Verify Products",
 				icon: <Circle size={12} />,
-				navLink: "/apps/products",
+				navLink: "/apps/products/verify",
 			},
 		],
 	},

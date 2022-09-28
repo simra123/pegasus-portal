@@ -127,6 +127,13 @@ const Tasks = (props) => {
 					}
 				}}>
 				{tasks.length ? (
+					// <ReactSortable
+					//   tag='ul'
+					//   list={tasks}
+					//   handle='.drag-icon'
+					//   className='todo-task-list media-list'
+					//   setList={newState => dispatch(reOrderTasks(newState))}
+					// >
 					<div className='todo-task-list media-list'>
 						{tasks.map((item) => {
 							return (

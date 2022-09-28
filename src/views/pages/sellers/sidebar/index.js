@@ -20,11 +20,9 @@ import {
 	deleteTask,
 	reOrderTasks,
 } from "./store";
-import Products from "./products";
+
 // ** Styles
-import "../../../@core/scss/base/pages/app-todo.scss";
-import "../../../@core/scss/base/pages/dashboard-ecommerce.scss";
-import "@styles/react/apps/app-ecommerce.scss";
+import "@styles/react/apps/app-todo.scss";
 
 const TODO = () => {
 	// ** States
@@ -63,19 +61,18 @@ const TODO = () => {
 		);
 	}, [store.tasks.length, paramsURL.filter, paramsURL.tag, query, sort]);
 
-	console.log(activeTab, "activeTab");
 	return (
 		<Fragment>
 			<Sidebar
 				store={store}
 				params={params}
 				getTasks={getTasks}
+				setActiveTab={setActiveTab}
 				dispatch={dispatch}
 				mainSidebar={mainSidebar}
 				urlFilter={paramsURL.filter}
 				setMainSidebar={setMainSidebar}
 				handleTaskSidebar={handleTaskSidebar}
-				setActiveTab={setActiveTab}
 			/>
 			<div className='content-right'>
 				<div className='content-wrapper'>
@@ -86,10 +83,25 @@ const TODO = () => {
 							})}
 							onClick={handleMainSidebar}></div>
 
-						{activeTab === "products" ? (
-							<Products />
-						) : store ? (
-							<Products />
+						{store ? (
+							<Tasks
+								store={store}
+								tasks={store.tasks}
+								sort={sort}
+								query={query}
+								params={params}
+								activeTab={activeTab}
+								setSort={setSort}
+								setQuery={setQuery}
+								dispatch={dispatch}
+								getTasks={getTasks}
+								paramsURL={paramsURL}
+								updateTask={updateTask}
+								selectTask={selectTask}
+								reOrderTasks={reOrderTasks}
+								handleMainSidebar={handleMainSidebar}
+								handleTaskSidebar={handleTaskSidebar}
+							/>
 						) : null}
 
 						<TaskSidebar

@@ -48,7 +48,7 @@ const AppRoutes = [
 		exact: true,
 		appLayout: true,
 		className: "todo-application",
-		component: lazy(() => import("../../views/apps/todo")),
+		component: lazy(() => import("../../views/apps/invoice/list")),
 	},
 	{
 		path: "/apps/todo/:filter",
@@ -147,21 +147,28 @@ const AppRoutes = [
 		component: lazy(() => import("../../views/apps/user/list")),
 	},
 	{
-		path: "/apps/shop",
+		path: "/apps/user/verify",
 		exact: true,
 		component: () => <Redirect to='/apps/user/view/1' />,
 	},
 	{
-		path: "/apps/user/view/:id",
-		component: lazy(() => import("../../views/apps/user/view")),
+		path: "/apps/sellers",
+		component: lazy(() => import("../../views/pages/sellers")),
+	},
+	{
+		path: "/apps/seller/view/:id",
+		className: "todo-application ecommerce-application",
+		component: lazy(() => import("../../views/apps/todo")),
 		meta: {
-			navLink: "/apps/user/view",
+			navLink: "/apps/seller/view",
 		},
 	},
 	{
-		path: "/apps/sellers",
-		component: lazy(() => import("../../views/apps/roles-permissions/roles")),
+		path: "/apps/todo/products",
+		className: "todo-application ecommerce-application",
+		component: lazy(() => import("../../views/apps/todo")),
 	},
+
 	{
 		path: "/apps/customers",
 		component: lazy(() =>

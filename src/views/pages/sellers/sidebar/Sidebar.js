@@ -5,7 +5,7 @@ import { Link } from "react-router-dom";
 import classnames from "classnames";
 import PerfectScrollbar from "react-perfect-scrollbar";
 import { Mail, Star, Check, Trash, Plus } from "react-feather";
-import "../../../@core/scss/base/pages/app-todo.scss";
+
 // ** Reactstrap Imports
 import { Button, ListGroup, ListGroupItem } from "reactstrap";
 
@@ -18,7 +18,6 @@ const TodoSidebar = (props) => {
 		dispatch,
 		getTasks,
 		params,
-		setActiveTab,
 	} = props;
 
 	// ** Functions To Handle List Item Filter
@@ -32,7 +31,6 @@ const TodoSidebar = (props) => {
 
 	// ** Functions To Active List Item
 	const handleActiveItem = (value) => {
-		setActiveTab(value);
 		if (
 			(params.filter && params.filter === value) ||
 			(params.tag && params.tag === value)
@@ -57,14 +55,14 @@ const TodoSidebar = (props) => {
 			<div className='sidebar'>
 				<div className='sidebar-content todo-sidebar'>
 					<div className='todo-app-menu'>
-						{/* <div className='add-task'>
+						<div className='add-task'>
 							<Button
 								color='primary'
 								onClick={handleAddClick}
 								block>
 								Add Task
 							</Button>
-						</div> */}
+						</div>
 						<PerfectScrollbar
 							className='sidebar-menu-list'
 							options={{ wheelPropagation: false }}>
@@ -72,28 +70,28 @@ const TodoSidebar = (props) => {
 								tag='div'
 								className='list-group-filters'>
 								<ListGroupItem
-									tag={Link}
-									to={"/apps/todo/products"}
-									active={handleActiveItem("products")}
-									onClick={() => handleFilter("important")}
-									action>
-									<Star
-										className='me-75'
-										size={18}
-									/>
-									<span className='align-middle'>Shop</span>
-								</ListGroupItem>
-								<ListGroupItem
 									action
 									tag={Link}
-									to={"/apps/seller/view/9"}
+									to={"/apps/todo/"}
 									active={params.filter === "" && params.tag === ""}
 									onClick={() => handleFilter("")}>
 									<Mail
 										className='me-75'
 										size={18}
 									/>
-									<span className='align-middle'>Products</span>
+									<span className='align-middle'>My Tasks</span>
+								</ListGroupItem>
+								<ListGroupItem
+									tag={Link}
+									to={"/apps/todo/important"}
+									active={handleActiveItem("important")}
+									onClick={() => handleFilter("important")}
+									action>
+									<Star
+										className='me-75'
+										size={18}
+									/>
+									<span className='align-middle'>Important</span>
 								</ListGroupItem>
 								<ListGroupItem
 									tag={Link}
@@ -105,7 +103,7 @@ const TodoSidebar = (props) => {
 										className='me-75'
 										size={18}
 									/>
-									<span className='align-middle'>Account</span>
+									<span className='align-middle'>Completed</span>
 								</ListGroupItem>
 								<ListGroupItem
 									tag={Link}
@@ -117,11 +115,17 @@ const TodoSidebar = (props) => {
 										className='me-75'
 										size={18}
 									/>
-									<span className='align-middle'>Team</span>
+									<span className='align-middle'>Deleted</span>
 								</ListGroupItem>
 							</ListGroup>
-
-							{/* <ListGroup className='list-group-labels'>
+							<div className='mt-3 px-2 d-flex justify-content-between'>
+								<h6 className='section-label mb-1'>Tags</h6>
+								<Plus
+									className='cursor-pointer'
+									size={14}
+								/>
+							</div>
+							<ListGroup className='list-group-labels'>
 								<ListGroupItem
 									active={handleActiveItem("team")}
 									className='d-flex align-items-center'
@@ -172,7 +176,7 @@ const TodoSidebar = (props) => {
 									<span className='bullet bullet-sm bullet-info me-1'></span>
 									<span className='align-middle'>Update</span>
 								</ListGroupItem>
-							</ListGroup> */}
+							</ListGroup>
 						</PerfectScrollbar>
 					</div>
 				</div>
