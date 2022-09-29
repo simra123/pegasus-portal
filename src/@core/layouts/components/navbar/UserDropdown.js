@@ -41,14 +41,25 @@ const UserDropdown = () => {
 
 	// ** State
 	const [userData, setUserData] = useState(null);
-
+	const defaultAvatar = () => {
+		return (
+			<div
+				className='bg-primary rounded-circle h-4 w-4 text-light font-semibold'
+				style={{ padding: "12px 15px", fontWeight: "600" }}>
+				<span>{userData && userData.username.substr(0, 1).toUpperCase()}</span>
+			</div>
+		);
+	};
 	//** ComponentDidMount
 	useEffect(() => {
 		if (isUserLoggedIn() !== null) {
 			setUserData(JSON.parse(localStorage.getItem("user_data")));
 		}
 	}, []);
-
+	let handleLogout = () => {
+		localStorage.clear();
+		window.location.replace("/login");
+	};
 	//** Vars
 	const userAvatar = (userData && userData.avatar) || defaultAvatar;
 
@@ -67,82 +78,23 @@ const UserDropdown = () => {
 						{(userData && userData.role) || "Admin"}
 					</span>
 				</div>
-				<Avatar
-					img={userAvatar}
-					imgHeight='40'
-					imgWidth='40'
-					status='online'
-				/>
+
+				{!userData?.image ? (
+					defaultAvatar()
+				) : (
+					<Avatar
+						img={userData?.image}
+						imgHeight='40'
+						imgWidth='40'
+						status='online'
+					/>
+				)}
 			</DropdownToggle>
 			<DropdownMenu end>
 				<DropdownItem
 					tag={Link}
-					to='/pages/profile'>
-					<User
-						size={14}
-						className='me-75'
-					/>
-					<span className='align-middle'>Profile</span>
-				</DropdownItem>
-				<DropdownItem
-					tag={Link}
-					to='/apps/email'>
-					<Mail
-						size={14}
-						className='me-75'
-					/>
-					<span className='align-middle'>Inbox</span>
-				</DropdownItem>
-				<DropdownItem
-					tag={Link}
-					to='/apps/todo'>
-					<CheckSquare
-						size={14}
-						className='me-75'
-					/>
-					<span className='align-middle'>Tasks</span>
-				</DropdownItem>
-				<DropdownItem
-					tag={Link}
-					to='/apps/chat'>
-					<MessageSquare
-						size={14}
-						className='me-75'
-					/>
-					<span className='align-middle'>Chats</span>
-				</DropdownItem>
-				<DropdownItem divider />
-				<DropdownItem
-					tag={Link}
-					to='/pages/account-settings'>
-					<Settings
-						size={14}
-						className='me-75'
-					/>
-					<span className='align-middle'>Settings</span>
-				</DropdownItem>
-				<DropdownItem
-					tag={Link}
-					to='/pages/pricing'>
-					<CreditCard
-						size={14}
-						className='me-75'
-					/>
-					<span className='align-middle'>Pricing</span>
-				</DropdownItem>
-				<DropdownItem
-					tag={Link}
-					to='/pages/faq'>
-					<HelpCircle
-						size={14}
-						className='me-75'
-					/>
-					<span className='align-middle'>FAQ</span>
-				</DropdownItem>
-				<DropdownItem
-					tag={Link}
 					to='/login'
-					onClick={() => dispatch(handleLogout())}>
+					onClick={handleLogout}>
 					<Power
 						size={14}
 						className='me-75'

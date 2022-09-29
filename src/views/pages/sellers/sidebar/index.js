@@ -1,125 +1,85 @@
 // ** React Imports
 import { Fragment, useState, useEffect } from "react";
-import { useParams } from "react-router-dom";
 
-// ** Third Party Components
-import classnames from "classnames";
-
-// ** Todo App Components
-import Tasks from "./Tasks";
+// ** Shop Components
 import Sidebar from "./Sidebar";
-import TaskSidebar from "./TaskSidebar";
+import Products from "./products";
+import Profile from "./profile";
+import StoreDetails from "./store-details";
+import Header from "./products/ProductsHeader";
+
+// ** Custom Components
+import Breadcrumbs from "@components/breadcrumbs";
 
 // ** Store & Actions
 import { useDispatch, useSelector } from "react-redux";
 import {
-	getTasks,
-	updateTask,
-	selectTask,
-	addTask,
-	deleteTask,
-	reOrderTasks,
-} from "./store";
+	addToCart,
+	getProducts,
+	getCartItems,
+	addToWishlist,
+	deleteCartItem,
+	deleteWishlistItem,
+} from "./products/store";
 
 // ** Styles
-import "@styles/react/apps/app-todo.scss";
+import "@styles/react/apps/app-ecommerce.scss";
 
-const TODO = () => {
+const Shop = () => {
 	// ** States
-	const [sort, setSort] = useState("");
-	const [query, setQuery] = useState("");
-	const [mainSidebar, setMainSidebar] = useState(false);
-	const [openTaskSidebar, setOpenTaskSidebar] = useState(false);
+	const [activeView, setActiveView] = useState("grid");
+	const [sidebarOpen, setSidebarOpen] = useState(false);
 	const [activeTab, setActiveTab] = useState("products");
 
-	// ** Store Vars
+	// ** Vars
 	const dispatch = useDispatch();
-	const store = useSelector((state) => state.todo);
+	const store = useSelector((state) => state.ecommerce);
 
-	// ** URL Params
-	const paramsURL = useParams();
-	const params = {
-		filter: paramsURL.filter || "",
-		q: query || "",
-		sortBy: sort || "",
-		tag: paramsURL.tag || "",
-	};
-
-	// ** Function to handle Left sidebar & Task sidebar
-	const handleMainSidebar = () => setMainSidebar(!mainSidebar);
-	const handleTaskSidebar = () => setOpenTaskSidebar(!openTaskSidebar);
-
-	// ** Get Tasks on mount & based on dependency change
+	// ** Get products
 	useEffect(() => {
 		dispatch(
-			getTasks({
-				filter: paramsURL.filter || "",
-				q: query || "",
-				sortBy: sort || "",
-				tag: paramsURL.tag || "",
+			getProducts({
+				q: "",
+				sortBy: "featured",
+				perPage: 9,
+				page: 1,
 			})
 		);
-	}, [store.tasks.length, paramsURL.filter, paramsURL.tag, query, sort]);
-
+	}, [dispatch]);
+	console.log(activeTab, "active tab");
 	return (
 		<Fragment>
-			<Sidebar
-				store={store}
-				params={params}
-				getTasks={getTasks}
-				setActiveTab={setActiveTab}
-				dispatch={dispatch}
-				mainSidebar={mainSidebar}
-				urlFilter={paramsURL.filter}
-				setMainSidebar={setMainSidebar}
-				handleTaskSidebar={handleTaskSidebar}
-			/>
-			<div className='content-right'>
-				<div className='content-wrapper'>
-					<div className='content-body'>
-						<div
-							className={classnames("body-content-overlay", {
-								show: mainSidebar === true,
-							})}
-							onClick={handleMainSidebar}></div>
-
-						{store ? (
-							<Tasks
-								store={store}
-								tasks={store.tasks}
-								sort={sort}
-								query={query}
-								params={params}
-								activeTab={activeTab}
-								setSort={setSort}
-								setQuery={setQuery}
-								dispatch={dispatch}
-								getTasks={getTasks}
-								paramsURL={paramsURL}
-								updateTask={updateTask}
-								selectTask={selectTask}
-								reOrderTasks={reOrderTasks}
-								handleMainSidebar={handleMainSidebar}
-								handleTaskSidebar={handleTaskSidebar}
-							/>
-						) : null}
-
-						<TaskSidebar
+			<div className='content-detached content-right'>
+				<div className='content-body'>
+					<Header setSidebarOpen={setSidebarOpen} />
+					{activeTab === "products" ? (
+						<Products
 							store={store}
-							params={params}
-							addTask={addTask}
 							dispatch={dispatch}
-							open={openTaskSidebar}
-							updateTask={updateTask}
-							selectTask={selectTask}
-							deleteTask={deleteTask}
-							handleTaskSidebar={handleTaskSidebar}
+							addToCart={addToCart}
+							activeView={activeView}
+							getProducts={getProducts}
+							sidebarOpen={sidebarOpen}
+							getCartItems={getCartItems}
+							setActiveView={setActiveView}
+							addToWishlist={addToWishlist}
+							setSidebarOpen={setSidebarOpen}
+							deleteCartItem={deleteCartItem}
+							deleteWishlistItem={deleteWishlistItem}
 						/>
-					</div>
+					) : activeTab === "profile" ? (
+						<Profile />
+					) : activeTab === "store" ? (
+						<StoreDetails />
+					) : null}
 				</div>
 			</div>
+			<Sidebar
+				setActiveTab={setActiveTab}
+				sidebarOpen={sidebarOpen}
+				activeTab={activeTab}
+			/>
 		</Fragment>
 	);
 };
-
-export default TODO;
+export default Shop;

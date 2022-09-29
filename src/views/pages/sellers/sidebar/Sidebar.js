@@ -1,188 +1,97 @@
-// ** React Imports
-import { Link } from "react-router-dom";
+// ** Custom Hooks
+import { useRTL } from "@hooks/useRTL";
 
 // ** Third Party Components
+import wNumb from "wnumb";
 import classnames from "classnames";
-import PerfectScrollbar from "react-perfect-scrollbar";
-import { Mail, Star, Check, Trash, Plus } from "react-feather";
+import { Star, Mail } from "react-feather";
+import Nouislider from "nouislider-react";
 
 // ** Reactstrap Imports
-import { Button, ListGroup, ListGroupItem } from "reactstrap";
+import {
+	Card,
+	CardBody,
+	CardTitle,
+	CardHeader,
+	ListGroup,
+	ListGroupItem,
+} from "reactstrap";
+import { Link } from "react-router-dom";
+import { MdProductionQuantityLimits } from "react-icons/md";
+import { CgProfile } from "react-icons/cg";
+import { BiStoreAlt } from "react-icons/bi";
+// ** Styles
+import "@styles/react/libs/noui-slider/noui-slider.scss";
 
-const TodoSidebar = (props) => {
+const Sidebar = (props) => {
 	// ** Props
-	const {
-		handleTaskSidebar,
-		setMainSidebar,
-		mainSidebar,
-		dispatch,
-		getTasks,
-		params,
-	} = props;
-
-	// ** Functions To Handle List Item Filter
-	const handleFilter = (filter) => {
-		dispatch(getTasks({ ...params, filter }));
-	};
-
-	const handleTag = (tag) => {
-		dispatch(getTasks({ ...params, tag }));
-	};
-
-	// ** Functions To Active List Item
-	const handleActiveItem = (value) => {
-		if (
-			(params.filter && params.filter === value) ||
-			(params.tag && params.tag === value)
-		) {
-			return true;
-		} else {
-			return false;
-		}
-	};
-
-	// ** Functions To Handle Add Task Click
-	const handleAddClick = () => {
-		handleTaskSidebar();
-		setMainSidebar();
-	};
+	const { sidebarOpen, setActiveTab, activeTab } = props;
 
 	return (
 		<div
-			className={classnames("sidebar-left", {
-				show: mainSidebar === true,
-			})}>
+			className='sidebar-detached sidebar-left'
+			style={{ float: "inherit" }}>
 			<div className='sidebar'>
-				<div className='sidebar-content todo-sidebar'>
-					<div className='todo-app-menu'>
-						<div className='add-task'>
-							<Button
-								color='primary'
-								onClick={handleAddClick}
-								block>
-								Add Task
-							</Button>
-						</div>
-						<PerfectScrollbar
-							className='sidebar-menu-list'
-							options={{ wheelPropagation: false }}>
+				<div
+					className={classnames("sidebar-shop", {
+						show: sidebarOpen,
+					})}>
+					{/* <Row>
+            <Col sm='12'>
+              <h6 className='filter-heading d-none d-lg-block'>Filters</h6>
+            </Col>
+          </Row> */}
+					<Card className='seller-sidebar'>
+						<CardHeader className='border-bottom'>
+							<CardTitle tag='h4'>Seller Menu</CardTitle>
+						</CardHeader>
+						<div style={{ height: "100vh", marginTop: "20px" }}>
 							<ListGroup
 								tag='div'
 								className='list-group-filters'>
 								<ListGroupItem
 									action
 									tag={Link}
-									to={"/apps/todo/"}
-									active={params.filter === "" && params.tag === ""}
-									onClick={() => handleFilter("")}>
-									<Mail
+									to={"/apps/sellers/details"}
+									active={activeTab == "products"}
+									onClick={() => setActiveTab("products")}>
+									<MdProductionQuantityLimits
 										className='me-75'
 										size={18}
 									/>
-									<span className='align-middle'>My Tasks</span>
+									<span className='align-middle'>Products</span>
 								</ListGroupItem>
 								<ListGroupItem
-									tag={"p"}
-									//to={"/apps/todo/important"}
-									active={handleActiveItem("important")}
-									onClick={() => handleFilter("important")}
-									action>
-									<Star
-										className='me-75'
-										size={18}
-									/>
-									<span className='align-middle'>Important</span>
-								</ListGroupItem>
-								<ListGroupItem
+									action
 									tag={Link}
-									to={"/apps/todo/completed"}
-									active={handleActiveItem("completed")}
-									onClick={() => handleFilter("completed")}
-									action>
-									<Check
+									to={"/apps/sellers/details"}
+									active={activeTab == "profile"}
+									onClick={() => setActiveTab("profile")}>
+									<CgProfile
 										className='me-75'
 										size={18}
 									/>
-									<span className='align-middle'>Completed</span>
+									<span className='align-middle'>Profile</span>
 								</ListGroupItem>
 								<ListGroupItem
+									action
 									tag={Link}
-									to={"/apps/todo/deleted"}
-									active={handleActiveItem("deleted")}
-									onClick={() => handleFilter("deleted")}
-									action>
-									<Trash
+									to={"/apps/sellers/details"}
+									active={activeTab == "store"}
+									onClick={() => setActiveTab("store")}>
+									<BiStoreAlt
 										className='me-75'
 										size={18}
 									/>
-									<span className='align-middle'>Deleted</span>
+									<span className='align-middle'>Store</span>
 								</ListGroupItem>
 							</ListGroup>
-							<div className='mt-3 px-2 d-flex justify-content-between'>
-								<h6 className='section-label mb-1'>Tags</h6>
-								<Plus
-									className='cursor-pointer'
-									size={14}
-								/>
-							</div>
-							<ListGroup className='list-group-labels'>
-								<ListGroupItem
-									active={handleActiveItem("team")}
-									className='d-flex align-items-center'
-									tag={Link}
-									to='/apps/todo/tag/team'
-									onClick={() => handleTag("team")}
-									action>
-									<span className='bullet bullet-sm bullet-primary me-1'></span>
-									<span className='align-middle'>Team</span>
-								</ListGroupItem>
-								<ListGroupItem
-									active={handleActiveItem("low")}
-									className='d-flex align-items-center'
-									tag={Link}
-									to='/apps/todo/tag/low'
-									onClick={() => handleTag("low")}
-									action>
-									<span className='bullet bullet-sm bullet-success me-1'></span>
-									<span className='align-middle'>Low</span>
-								</ListGroupItem>
-								<ListGroupItem
-									active={handleActiveItem("medium")}
-									className='d-flex align-items-center'
-									tag={Link}
-									to='/apps/todo/tag/medium'
-									onClick={() => handleTag("medium")}
-									action>
-									<span className='bullet bullet-sm bullet-warning me-1'></span>
-									<span className='align-middle'>Medium</span>
-								</ListGroupItem>
-								<ListGroupItem
-									active={handleActiveItem("high")}
-									className='d-flex align-items-center'
-									tag={Link}
-									to='/apps/todo/tag/high'
-									onClick={() => handleTag("high")}
-									action>
-									<span className='bullet bullet-sm bullet-danger me-1'></span>
-									<span className='align-middle'>High</span>
-								</ListGroupItem>
-								<ListGroupItem
-									active={handleActiveItem("update")}
-									className='d-flex align-items-center'
-									tag={Link}
-									to='/apps/todo/tag/update'
-									onClick={() => handleTag("update")}
-									action>
-									<span className='bullet bullet-sm bullet-info me-1'></span>
-									<span className='align-middle'>Update</span>
-								</ListGroupItem>
-							</ListGroup>
-						</PerfectScrollbar>
-					</div>
+						</div>
+					</Card>
 				</div>
 			</div>
 		</div>
 	);
 };
 
-export default TodoSidebar;
+export default Sidebar;

@@ -26,7 +26,7 @@ import withReactContent from "sweetalert2-react-content";
 
 // ** Custom Components
 import Avatar from "@components/avatar";
-
+import storeImage from "@src/assets/images/profile/user-uploads/store.jpg";
 // ** Utils
 import { selectThemeColors } from "@utils";
 
@@ -42,7 +42,7 @@ const roleColors = {
 };
 
 const statusColors = {
-	active: "light-success",
+	approved: "light-success",
 	pending: "light-warning",
 	inactive: "light-secondary",
 };
@@ -84,21 +84,21 @@ const UserInfoCard = ({ selectedUser }) => {
 		formState: { errors },
 	} = useForm({
 		defaultValues: {
-			username: selectedUser.username,
-			lastName: selectedUser.fullName.split(" ")[1],
-			firstName: selectedUser.fullName.split(" ")[0],
+			username: selectedUser?.username,
+			lastName: selectedUser?.fullName.split(" ")[1],
+			firstName: selectedUser?.fullName.split(" ")[0],
 		},
 	});
 
 	// ** render user img
 	const renderUserImg = () => {
-		if (selectedUser !== null && selectedUser.avatar.length) {
+		if (selectedUser == null && !selectedUser?.avatar.length) {
 			return (
 				<img
-					height='110'
-					width='110'
+					height='240'
+					width='240'
 					alt='user-avatar'
-					src={selectedUser.avatar}
+					src={storeImage}
 					className='img-fluid rounded mt-3 mb-2'
 				/>
 			);
@@ -118,7 +118,7 @@ const UserInfoCard = ({ selectedUser }) => {
 					initials
 					color={color}
 					className='rounded mt-3 mb-2'
-					content={selectedUser.fullName}
+					content={"Produces"}
 					contentStyles={{
 						borderRadius: 0,
 						fontSize: "calc(48px)",
@@ -150,46 +150,46 @@ const UserInfoCard = ({ selectedUser }) => {
 
 	const handleReset = () => {
 		reset({
-			username: selectedUser.username,
-			lastName: selectedUser.fullName.split(" ")[1],
-			firstName: selectedUser.fullName.split(" ")[0],
+			username: selectedUser?.username,
+			lastName: selectedUser?.fullName.split(" ")[1],
+			firstName: selectedUser?.fullName.split(" ")[0],
 		});
 	};
 
-	const handleSuspendedClick = () => {
-		return MySwal.fire({
-			title: "Are you sure?",
-			text: "You won't be able to revert user!",
-			icon: "warning",
-			showCancelButton: true,
-			confirmButtonText: "Yes, Suspend user!",
-			customClass: {
-				confirmButton: "btn btn-primary",
-				cancelButton: "btn btn-outline-danger ms-1",
-			},
-			buttonsStyling: false,
-		}).then(function (result) {
-			if (result.value) {
-				MySwal.fire({
-					icon: "success",
-					title: "Suspended!",
-					text: "User has been suspended.",
-					customClass: {
-						confirmButton: "btn btn-success",
-					},
-				});
-			} else if (result.dismiss === MySwal.DismissReason.cancel) {
-				MySwal.fire({
-					title: "Cancelled",
-					text: "Cancelled Suspension :)",
-					icon: "error",
-					customClass: {
-						confirmButton: "btn btn-success",
-					},
-				});
-			}
-		});
-	};
+	// const handleSuspendedClick = () => {
+	// 	return MySwal.fire({
+	// 		title: "Are you sure?",
+	// 		text: "You won't be able to revert user!",
+	// 		icon: "warning",
+	// 		showCancelButton: true,
+	// 		confirmButtonText: "Yes, Suspend user!",
+	// 		customClass: {
+	// 			confirmButton: "btn btn-primary",
+	// 			cancelButton: "btn btn-outline-danger ms-1",
+	// 		},
+	// 		buttonsStyling: false,
+	// 	}).then(function (result) {
+	// 		if (result.value) {
+	// 			MySwal.fire({
+	// 				icon: "success",
+	// 				title: "Suspended!",
+	// 				text: "User has been suspended.",
+	// 				customClass: {
+	// 					confirmButton: "btn btn-success",
+	// 				},
+	// 			});
+	// 		} else if (result.dismiss === MySwal.DismissReason.cancel) {
+	// 			MySwal.fire({
+	// 				title: "Cancelled",
+	// 				text: "Cancelled Suspension :)",
+	// 				icon: "error",
+	// 				customClass: {
+	// 					confirmButton: "btn btn-success",
+	// 				},
+	// 			});
+	// 		}
+	// 	});
+	// };
 
 	return (
 		<Fragment>
@@ -200,18 +200,12 @@ const UserInfoCard = ({ selectedUser }) => {
 							{renderUserImg()}
 							<div className='d-flex flex-column align-items-center text-center'>
 								<div className='user-info'>
-									<h4>
-										{selectedUser !== null
-											? selectedUser.fullName
-											: "Eleanor Aguilar"}
-									</h4>
-									{selectedUser !== null ? (
-										<Badge
-											color={roleColors[selectedUser.role]}
-											className='text-capitalize'>
-											{selectedUser.role}
-										</Badge>
-									) : null}
+									<h4>PRODUCE</h4>
+									<Badge
+										color={roleColors["subscriber"]}
+										className='text-capitalize'>
+										Seller
+									</Badge>
 								</div>
 							</div>
 						</div>
@@ -224,8 +218,8 @@ const UserInfoCard = ({ selectedUser }) => {
 								<Check className='font-medium-2' />
 							</Badge>
 							<div className='ms-75'>
-								<h4 className='mb-0'>1.23k</h4>
-								<small>Tasks Done</small>
+								<h4 className='mb-0'>58</h4>
+								<small>Products</small>
 							</div>
 						</div>
 						<div className='d-flex align-items-start'>
@@ -235,60 +229,57 @@ const UserInfoCard = ({ selectedUser }) => {
 								<Briefcase className='font-medium-2' />
 							</Badge>
 							<div className='ms-75'>
-								<h4 className='mb-0'>568</h4>
-								<small>Projects Done</small>
+								<h4 className='mb-0'>4k</h4>
+								<small>Views</small>
 							</div>
 						</div>
 					</div>
 					<h4 className='fw-bolder border-bottom pb-50 mb-1'>Details</h4>
 					<div className='info-container'>
-						{selectedUser !== null ? (
-							<ul className='list-unstyled'>
-								<li className='mb-75'>
-									<span className='fw-bolder me-25'>Username:</span>
-									<span>{selectedUser.username}</span>
-								</li>
-								<li className='mb-75'>
-									<span className='fw-bolder me-25'>Billing Email:</span>
-									<span>{selectedUser.email}</span>
-								</li>
-								<li className='mb-75'>
-									<span className='fw-bolder me-25'>Status:</span>
-									<Badge
-										className='text-capitalize'
-										color={statusColors[selectedUser.status]}>
-										{selectedUser.status}
-									</Badge>
-								</li>
-								<li className='mb-75'>
-									<span className='fw-bolder me-25'>Role:</span>
-									<span className='text-capitalize'>{selectedUser.role}</span>
-								</li>
-								<li className='mb-75'>
-									<span className='fw-bolder me-25'>Tax ID:</span>
-									<span>
-										Tax-
-										{selectedUser.contact.substr(
-											selectedUser.contact.length - 4
-										)}
-									</span>
-								</li>
-								<li className='mb-75'>
-									<span className='fw-bolder me-25'>Contact:</span>
-									<span>{selectedUser.contact}</span>
-								</li>
-								<li className='mb-75'>
-									<span className='fw-bolder me-25'>Language:</span>
-									<span>English</span>
-								</li>
-								<li className='mb-75'>
-									<span className='fw-bolder me-25'>Country:</span>
-									<span>England</span>
-								</li>
-							</ul>
-						) : null}
+						<ul className='list-unstyled'>
+							<li className='mb-75'>
+								<span className='fw-bolder me-1'>Username:</span>
+								<span>john765</span>
+							</li>
+							<li className='mb-75'>
+								<span className='fw-bolder me-1'>Billing Email:</span>
+								<span>john09876543@email.com</span>
+							</li>
+							<li className='mb-75'>
+								<span className='fw-bolder me-1'>Status:</span>
+								<Badge
+									className='text-capitalize'
+									color={statusColors["approved"]}>
+									Approved
+								</Badge>
+							</li>
+							<li className='mb-75'>
+								<span className='fw-bolder me-1'>Role:</span>
+								<Badge
+									color={roleColors["subscriber"]}
+									className='text-capitalize'>
+									Seller
+								</Badge>
+							</li>
+							<li className='mb-75'>
+								<span className='fw-bolder me-1'>Tax ID:</span>
+								<span>Tax- 90$</span>
+							</li>
+							<li className='mb-75'>
+								<span className='fw-bolder me-1'>Contact:</span>
+								<span>12234567890</span>
+							</li>
+							<li className='mb-75'>
+								<span className='fw-bolder me-1'>Language:</span>
+								<span>English</span>
+							</li>
+							<li className='mb-75'>
+								<span className='fw-bolder me-1'>Country:</span>
+								<span>England</span>
+							</li>
+						</ul>
 					</div>
-					<div className='d-flex justify-content-center pt-2'>
+					{/* <div className='d-flex justify-content-center pt-2'>
 						<Button
 							color='primary'
 							onClick={() => setShow(true)}>
@@ -301,10 +292,10 @@ const UserInfoCard = ({ selectedUser }) => {
 							onClick={handleSuspendedClick}>
 							Suspended
 						</Button>
-					</div>
+					</div> */}
 				</CardBody>
 			</Card>
-			<Modal
+			{/* <Modal
 				isOpen={show}
 				toggle={() => setShow(!show)}
 				className='modal-dialog-centered modal-lg'>
@@ -540,7 +531,7 @@ const UserInfoCard = ({ selectedUser }) => {
 						</Row>
 					</Form>
 				</ModalBody>
-			</Modal>
+			</Modal> */}
 		</Fragment>
 	);
 };

@@ -1,66 +1,135 @@
 // ** React Imports
-import { Fragment, useState, useEffect } from "react";
+import { Fragment } from "react";
 
-// ** Shop Components
-import Sidebar from "./Sidebar";
-import Products from "./Products";
+// ** Product components
+import ProductCards from "./ProductCards";
+import ProductsSearchbar from "./ProductsSearchbar";
 
-// ** Custom Components
-import Breadcrumbs from "@components/breadcrumbs";
+// ** Third Party Components
+import classnames from "classnames";
 
-// ** Store & Actions
-import { useDispatch, useSelector } from "react-redux";
-import {
-	addToCart,
-	getProducts,
-	getCartItems,
-	addToWishlist,
-	deleteCartItem,
-	deleteWishlistItem,
-} from "./store";
+// ** Reactstrap Imports
+import { Pagination, PaginationItem, PaginationLink } from "reactstrap";
 
-// ** Styles
-import "@styles/react/apps/app-ecommerce.scss";
+const ProductsPage = (props) => {
+	// ** Props
+	const {
+		store,
+		dispatch,
+		addToCart,
+		activeView,
+		sidebarOpen,
+		getProducts,
+		getCartItems,
+		addToWishlist,
+		setActiveView,
+		deleteCartItem,
+		setSidebarOpen,
+		deleteWishlistItem,
+	} = props;
 
-const Shop = () => {
-	// ** States
-	const [activeView, setActiveView] = useState("grid");
-	const [sidebarOpen, setSidebarOpen] = useState(false);
+	// ** Handles pagination
+	const handlePageChange = (val) => {
+		if (val === "next") {
+			dispatch(getProducts({ ...store.params, page: store.params.page + 1 }));
+		} else if (val === "prev") {
+			dispatch(getProducts({ ...store.params, page: store.params.page - 1 }));
+		} else {
+			dispatch(getProducts({ ...store.params, page: val }));
+		}
+	};
 
-	// ** Vars
-	const dispatch = useDispatch();
-	const store = useSelector((state) => state.ecommerce);
+	// ** Render pages
+	const renderPageItems = () => {
+		const arrLength =
+			store.totalProducts !== 0 && store.products.length !== 0
+				? Number(store.totalProducts) / store.products.length
+				: 3;
 
-	// ** Get products
-	useEffect(() => {
-		dispatch(
-			getProducts({
-				q: "",
-				sortBy: "featured",
-				perPage: 9,
-				page: 1,
-			})
-		);
-	}, [dispatch]);
+		return new Array(Math.trunc(arrLength)).fill().map((item, index) => {
+			return (
+				<PaginationItem
+					key={index}
+					active={store.params.page === index + 1}
+					onClick={() => handlePageChange(index + 1)}>
+					<PaginationLink
+						href='/'
+						onClick={(e) => e.preventDefault()}>
+						{index + 1}
+					</PaginationLink>
+				</PaginationItem>
+			);
+		});
+	};
+
+	// ** handle next page click
+	const handleNext = () => {
+		if (
+			store.params.page !==
+			Number(store.totalProducts) / store.products.length
+		) {
+			handlePageChange("next");
+		}
+	};
 
 	return (
-		<Fragment>
-			<Products
-				store={store}
+		<>
+			<div
+				className={classnames("body-content-overlay", {
+					show: sidebarOpen,
+				})}
+				onClick={() => setSidebarOpen(false)}></div>
+			<ProductsSearchbar
 				dispatch={dispatch}
-				addToCart={addToCart}
-				activeView={activeView}
 				getProducts={getProducts}
-				sidebarOpen={sidebarOpen}
-				getCartItems={getCartItems}
-				setActiveView={setActiveView}
-				addToWishlist={addToWishlist}
-				setSidebarOpen={setSidebarOpen}
-				deleteCartItem={deleteCartItem}
-				deleteWishlistItem={deleteWishlistItem}
+				store={store}
 			/>
-			<Sidebar sidebarOpen={sidebarOpen} />
-		</Fragment>
+			{store.products.length ? (
+				<Fragment>
+					<ProductCards
+						store={store}
+						dispatch={dispatch}
+						addToCart={addToCart}
+						activeView={activeView}
+						products={store.products}
+						getProducts={getProducts}
+						getCartItems={getCartItems}
+						addToWishlist={addToWishlist}
+						deleteCartItem={deleteCartItem}
+						deleteWishlistItem={deleteWishlistItem}
+					/>
+					<Pagination className='d-flex justify-content-center ecommerce-shop-pagination mt-2'>
+						<PaginationItem
+							disabled={store.params.page === 1}
+							className='prev-item'
+							onClick={() =>
+								store.params.page !== 1 ? handlePageChange("prev") : null
+							}>
+							<PaginationLink
+								href='/'
+								onClick={(e) => e.preventDefault()}></PaginationLink>
+						</PaginationItem>
+						{renderPageItems()}
+						<PaginationItem
+							className='next-item'
+							onClick={() => handleNext()}
+							disabled={
+								store.params.page ===
+								Number(store.totalProducts) / store.products.length
+							}>
+							<PaginationLink
+								href='/'
+								onClick={(e) => e.preventDefault()}></PaginationLink>
+						</PaginationItem>
+					</Pagination>
+				</Fragment>
+			) : (
+				<div className='d-flex justify-content-center mt-2'>
+					<p>No Results</p>
+				</div>
+			)}
+		</>
 	);
 };
-export default Shop;
+
+export default ProductsPage;
