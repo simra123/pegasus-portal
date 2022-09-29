@@ -3,7 +3,7 @@ import { lazy } from "react";
 const DashboardRoutes = [
 	// Dashboards
 	{
-		path: "/dashboard/analytics",
+		path: "/apps/dashboard",
 		component: lazy(() => import("../../views/dashboard/analytics")),
 	},
 	{

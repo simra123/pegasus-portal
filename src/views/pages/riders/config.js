@@ -4,8 +4,10 @@ import { lazy } from "react";
 const SellerConfig = {
 	routes: [
 		{
-			path: "/apps/sellers",
+			path: "/apps/riders",
 			exact: true,
+			appLayout: true,
+			className: "email-application",
 			component: lazy(() => import("./index")),
 		},
 	],

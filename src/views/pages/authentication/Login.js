@@ -134,7 +134,7 @@ const Login = () => {
 		// if (back) {
 		// 	localStorage.setItem("back_acl", JSON.stringify(back));
 		// } else localStorage.setItem("back_acl", JSON.stringify({}));
-		// window.location.reload(false);
+		window.location.reload(false);
 		// console.log(DefaultRoute, "dfff");
 		setTimeout(() => {
 			history.push(DefaultRoute);
