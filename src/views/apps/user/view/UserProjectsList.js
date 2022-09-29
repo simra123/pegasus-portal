@@ -128,7 +128,7 @@ export const columns = [
 const UserProjectsList = () => {
   return (
     <Card>
-      <CardHeader tag='h4'>User's Projects List</CardHeader>
+      <CardHeader tag='h4'>Seller's Profile</CardHeader>
       <div className='react-dataTable user-view-account-projects'>
         <DataTable
           noHeader

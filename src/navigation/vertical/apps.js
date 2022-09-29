@@ -38,7 +38,7 @@ export default [
 		id: "rider",
 		title: "Riders",
 		icon: <MessageSquare size={20} />,
-		navLink: "/apps/riders",
+		navLink: "/apps/rider",
 	},
 	{
 		id: "order",

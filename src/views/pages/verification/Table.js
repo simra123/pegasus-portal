@@ -270,7 +270,7 @@ const Table = (props) => {
       name: "Actions",
       minWidth: "50px",
       cell: (row) => (
-        <Button color="primary" size="sm" onClick={(e) => Approval(row.id)}>
+        <Button color="danger" size="sm" onClick={(e) => Approval(row.id)}>
           Approve
         </Button>
         // <Link to={`/apps/seller/view/9`}>
@@ -282,12 +282,11 @@ const Table = (props) => {
       name: "Details",
       minWidth: "50px",
       cell: (row) => (
-        <Button color="danger" size="sm" onClick={(e) => Approval(row.id)}>
-          View
-        </Button>
-        // <Link to={`/apps/seller/view/9`}>
-
-        // </Link>
+         <Link to={`/apps/user/view/${row.id}`}>
+			<Button color="primary" size="sm">
+				View
+			</Button>
+        </Link>
       ),
     },
   ];
@@ -315,11 +314,11 @@ const Table = (props) => {
       {
         name: "Product Category",
         sortable: true,
-        minWidth: "150px",
+        minWidth: "220px",
         sortField: "product_category",
         selector: (row) => row.product_category,
         cell: (row) => (
-          <span className="text-capitalize">{row.product_category}</span>
+          <span style={{ marginLeft: "30px" }}>{row.product_category}</span>
         ),
       },
       {
@@ -350,7 +349,7 @@ const Table = (props) => {
         name: "Actions",
         minWidth: "50px",
         cell: (row) => (
-          <Button color="primary" size="sm" onClick={(e) => Approval(row.id)}>
+          <Button color="danger" size="sm" onClick={(e) => Approval(row.id)}>
             Approve
           </Button>
           // <Link to={`/apps/seller/view/9`}>
@@ -362,7 +361,7 @@ const Table = (props) => {
         name: "Details",
         minWidth: "50px",
         cell: (row) => (
-          <Button color="danger" size="sm" onClick={(e) => Approval(row.id)}>
+          <Button color="primary" size="sm" onClick={(e) => Approval(row.id)}>
             View
           </Button>
           // <Link to={`/apps/seller/view/9`}>
@@ -405,7 +404,7 @@ const Table = (props) => {
 				},
 				(failure) => {}
 			);
-		} else if (path == "products") {
+		} else if (type == "products") {
 				CoreHttpHandler.request(
 					"products",
 					"unapproved",
@@ -424,7 +423,6 @@ const Table = (props) => {
 	if(path){
 		console.log(path,'pathhtth')
 		if(path == "/apps/users/verify"){
-			console.log('hrerer')
 			setType("users")
 		}else if (path == "/apps/products/verify") setType("products");
 	}
@@ -485,7 +483,8 @@ const Table = (props) => {
 						height: "300px",
 						fontSize: "12px !important",
 					});
-					CoreHttpHandler.request(
+					if(type == " users"){
+						CoreHttpHandler.request(
 						"sellers",
 						"approval",
 						{ key: ":id", value: id },
@@ -495,6 +494,19 @@ const Table = (props) => {
 						}
 					}
 					);
+					}else if(type == "products"){
+						CoreHttpHandler.request(
+						"products",
+						"approval",
+						{ key: ":id", value: id },
+						(response) => {
+						if (response) {
+							getUsersData();
+						}
+					}
+					);
+					}
+					
 			 	}
 
 		},(error)=>{});
@@ -566,6 +578,7 @@ const Table = (props) => {
 			return data.users;
 
 		}else if (type == "products") {
+			console.log(data,'dttaaa')
       		return data.data;
     	}
 		// const filters = {

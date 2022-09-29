@@ -8,6 +8,13 @@ class APIS {
         method: "get",
         path: "/products/unapproved",
       },
+      approval: {
+        headers: {
+          "xt-user-token": null,
+        },
+        method: "put",
+        path: "/products/approval/:id",
+      },
     };
   }
 }

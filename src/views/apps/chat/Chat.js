@@ -155,7 +155,7 @@ const ChatLog = props => {
           <MessageSquare />
         </div>
         <h4 className='sidebar-toggle start-chat-text' onClick={handleStartConversation}>
-          Start Conversation
+          Start Conversationss
         </h4>
       </div>
       {Object.keys(selectedUser).length ? (

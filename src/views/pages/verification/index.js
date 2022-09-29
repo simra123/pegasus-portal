@@ -9,7 +9,6 @@ import Table from "./Table";
 
 const Roles = () => {
   const location = useLocation(); // React Hook
-  console.log(location.pathname,'lolllllll');
 
   const [path,setPath] = useState('')
 
@@ -27,7 +26,7 @@ const Roles = () => {
         can have access to what he needs.
     </p>
     <RoleCards /> */}
-        <h3 className="mt-50">Verification of sellers</h3>
+        <h3 className="mt-50">Verification of {path == "/apps/users/verify"? "Users" : path == "/apps/products/verify" ? "Products" : "Riders" }</h3>
         {/* <p className="mb-2">
         Find all of your company’s administrator accounts and their associate
         roles.

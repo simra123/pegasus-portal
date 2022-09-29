@@ -19,7 +19,7 @@ import UserProjectsList from './UserProjectsList'
 const UserTabs = ({ active, toggleTab }) => {
   return (
     <Fragment>
-      <Nav pills className='mb-2'>
+      {/* <Nav pills className='mb-2'>
         <NavItem>
           <NavLink active={active === '1'} onClick={() => toggleTab('1')}>
             <User className='font-medium-3 me-50' />
@@ -50,14 +50,14 @@ const UserTabs = ({ active, toggleTab }) => {
             <span className='fw-bold'>Connections</span>
           </NavLink>
         </NavItem>
-      </Nav>
+      </Nav> */}
       <TabContent activeTab={active}>
         <TabPane tabId='1'>
           <UserProjectsList />
           <UserTimeline />
           <InvoiceList />
         </TabPane>
-        <TabPane tabId='2'>
+        {/* <TabPane tabId='2'>
           <SecurityTab />
         </TabPane>
         <TabPane tabId='3'>
@@ -68,7 +68,7 @@ const UserTabs = ({ active, toggleTab }) => {
         </TabPane>
         <TabPane tabId='5'>
           <Connections />
-        </TabPane>
+        </TabPane> */}
       </TabContent>
     </Fragment>
   )

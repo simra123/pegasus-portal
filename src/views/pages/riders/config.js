@@ -4,7 +4,7 @@ import { lazy } from "react";
 const SellerConfig = {
 	routes: [
 		{
-			path: "/apps/riders",
+			path: "/apps/rider",
 			exact: true,
 			appLayout: true,
 			className: "email-application",

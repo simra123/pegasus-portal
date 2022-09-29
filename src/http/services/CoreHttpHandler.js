@@ -12,7 +12,7 @@ class CoreHttpHandler {
 		// this.apiEndpoint = 'http://192.168.2.62:3001/v1'
 		// this.apiEndpoint = 'https://local-whatsapp.its.com.pk/v1'
 		//	this.apiEndpoint = "https://waba-be-went.its.com.pk/v1";
-		this.apiEndpoint = "httpq://192.168.0.95:3001/v1";
+		this.apiEndpoint = "http://localhost:3001/v1";
 
 		this.config = {
 			headers: {

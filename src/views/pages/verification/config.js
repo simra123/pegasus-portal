@@ -8,6 +8,21 @@ const verifyConfig = {
 			exact: true,
 			component: lazy(() => import("./index")),
 		},
+		{
+			path: "/apps/products/verify",
+			exact: true,
+			component: lazy(() => import("./index")),
+		},
+		{
+			path: "/apps/riders/verify",
+			exact: true,
+			component: lazy(() => import("./index")),
+		},
+		{
+			path: "/apps/rider",
+			exact: true,
+			component: lazy(() => import("./index")),
+		},
 	],
 };
 

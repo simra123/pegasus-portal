@@ -149,10 +149,6 @@ export const columns = [
     minWidth: '110px',
     cell: row => (
       <div className='column-action d-flex align-items-center'>
-        <Send className='cursor-pointer' size={17} id={`send-tooltip-${row.id}`} />
-        <UncontrolledTooltip placement='top' target={`send-tooltip-${row.id}`}>
-          Send Mail
-        </UncontrolledTooltip>
         <Link to={`/apps/invoice/preview/${row.id}`} id={`pw-tooltip-${row.id}`}>
           <Eye size={17} className='mx-1' />
         </Link>
