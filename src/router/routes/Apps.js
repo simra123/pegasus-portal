@@ -173,14 +173,6 @@ const AppRoutes = [
     },
   },
   {
-    path: "/apps/user/view/:id",
-    className: "todo-application ecommerce-application",
-    component: lazy(() => import("../../views/apps/user/view")),
-    meta: {
-      navLink: "/apps/seller/view",
-    },
-  },
-  {
     path: "/apps/todo/products",
     className: "todo-application ecommerce-application",
     component: lazy(() => import("../../views/apps/todo")),

@@ -17,7 +17,6 @@ import { Card, Input, Row, Col, Button } from "reactstrap";
 import "@styles/react/libs/tables/react-dataTable-component.scss";
 // ** React Imports
 import { Link } from "react-router-dom";
-import { Approval }  from "./Table";
 // ** Custom Components
 import Avatar from "@components/avatar";
 import Swal from "sweetalert2";
@@ -110,9 +109,8 @@ const CustomHeader = ({
 	);
 };
 
-const Table = (props) => {
-	const {path} = props
-	const [type,setType] = useState('')
+const Table = () => {
+
 	// ** Store Vars
 	const dispatch = useDispatch();
 	const store = useSelector((state) => state.users);
@@ -140,7 +138,7 @@ const Table = (props) => {
 
     if (row.image) {
       return (
-        <Avatar className="me-1" img={row.image} width="32" height="32" />
+        <Avatar className="me-1" img={row.avatar} width="32" height="32" />
       );
     } else {
       return (
@@ -203,9 +201,17 @@ const Table = (props) => {
 
 	const columns = [
     {
+      name: "Id",
+      sortable: true,
+      maxWidth: "150px",
+      sortField: "Id",
+      selector: (row) => row.id,
+      cell: (row) => <span>{row.id}</span>,
+    },
+    {
       name: "Name",
       sortable: true,
-      minWidth: "297px",
+      minWidth: "60px",
       sortField: "username",
       selector: (row) => row.username,
       cell: (row) => (
@@ -225,14 +231,6 @@ const Table = (props) => {
       ),
     },
     {
-      name: "Role",
-      sortable: true,
-      minWidth: "172px",
-      sortField: "role",
-      selector: (row) => row.role,
-      cell: (row) => renderRole(row),
-    },
-    {
       name: "Number",
       sortable: true,
       minWidth: "150px",
@@ -250,128 +248,7 @@ const Table = (props) => {
       selector: (row) => row.dt,
       cell: (row) => <span>{moment(row.dt).format("DD-MM-YY, h:mm a")}</span>,
     },
-    {
-      name: "Status",
-      sortable: true,
-      minWidth: "150px",
-      sortField: "enabled",
-      selector: (row) => (row.enabled == false ? "pending" : ""),
-      cell: (row) => (
-        <Badge
-          className="text-capitalize"
-          color={row.enabled == false ? statusObj["pending"] : ""}
-          pill
-        >
-          {row.enabled == false ? "Pending" : "Pending"}
-        </Badge>
-      ),
-    },
-    {
-      name: "Actions",
-      minWidth: "50px",
-      cell: (row) => (
-        <Button color="danger" size="sm" onClick={(e) => Approval(row.id)}>
-          Approve
-        </Button>
-        // <Link to={`/apps/seller/view/9`}>
-
-        // </Link>
-      ),
-    },
-    {
-      name: "Details",
-      minWidth: "50px",
-      cell: (row) => (
-         <Link to={`/apps/user/view/${row.id}`}>
-			<Button color="primary" size="sm">
-				View
-			</Button>
-        </Link>
-      ),
-    },
   ];
-
-  	const columnsProduct = [
-      {
-        name: "Name",
-        sortable: true,
-        minWidth: "297px",
-        sortField: "name",
-        selector: (row) => row.name,
-        cell: (row) => (
-          <div className="d-flex justify-content-left align-items-center">
-            <div className="d-flex flex-column">
-              <Link
-                to={`/apps/seller/view/9`}
-                className="user_name text-truncate text-body"
-              >
-                <span className="fw-bold">{row.name}</span>
-              </Link>
-            </div>
-          </div>
-        ),
-      },
-      {
-        name: "Product Category",
-        sortable: true,
-        minWidth: "220px",
-        sortField: "product_category",
-        selector: (row) => row.product_category,
-        cell: (row) => (
-          <span style={{ marginLeft: "30px" }}>{row.product_category}</span>
-        ),
-      },
-      {
-        name: "Date",
-        sortable: true,
-        minWidth: "180px",
-        sortField: "dt",
-        selector: (row) => row.dt,
-        cell: (row) => <span>{moment(row.dt).format("DD-MM-YY, h:mm a")}</span>,
-      },
-      {
-        name: "Status",
-        sortable: true,
-        minWidth: "150px",
-        sortField: "enabled",
-        selector: (row) => (row.enabled == false ? "pending" : ""),
-        cell: (row) => (
-          <Badge
-            className="text-capitalize"
-            color={row.enabled == false ? statusObj["pending"] : ""}
-            pill
-          >
-            {row.enabled == false ? "pending" : "Pending"}
-          </Badge>
-        ),
-      },
-      {
-        name: "Actions",
-        minWidth: "50px",
-        cell: (row) => (
-          <Button color="danger" size="sm" onClick={(e) => Approval(row.id)}>
-            Approve
-          </Button>
-          // <Link to={`/apps/seller/view/9`}>
-
-          // </Link>
-        ),
-      },
-      {
-        name: "Details",
-        minWidth: "50px",
-        cell: (row) => (
-          <Button color="primary" size="sm" onClick={(e) => Approval(row.id)}>
-            View
-          </Button>
-          // <Link to={`/apps/seller/view/9`}>
-
-          // </Link>
-        ),
-      },
-    ];
-
-
 
 	// ** Get data on mount
 	useEffect(() => {
@@ -390,13 +267,15 @@ const Table = (props) => {
 		);
 	}, [dispatch, store.data.length]);
 
+	useEffect(()=>{
+		getUsersData();
+	},[getUsersData])
+
 	const getUsersData = () =>{
 
-		if (type == "users") {
-			
 			CoreHttpHandler.request(
-				"users",
-				"unapproved",
+				"customers",
+				"fetchAdmin",
 				{},
 				(response) => {
 				const res = response.data.data;
@@ -404,30 +283,7 @@ const Table = (props) => {
 				},
 				(failure) => {}
 			);
-		} else if (type == "products") {
-				CoreHttpHandler.request(
-					"products",
-					"unapproved",
-					{},
-					(response) => {
-						const res = response.data.data;
-						setData(res);
-					},
-              (failure) => {}
-            );
-		}
-
-	}
-
-	useEffect(() => {
-	if(path){
-		console.log(path,'pathhtth')
-		if(path == "/apps/users/verify"){
-			setType("users")
-		}else if (path == "/apps/products/verify") setType("products");
-	}
-    getUsersData(path);
-  }, [path,type]);
+		} 
 
 	// ** Function in get data on page change
 	const handlePagination = (page) => {
@@ -463,56 +319,6 @@ const Table = (props) => {
 		);
 		setRowsPerPage(value);
 	};
-
-	const Approval = (id) => {
-		Swal.fire({
-            title: 'Are you sure?',
-            icon: 'warning',
-			padding: "50px",
-            showCancelButton: true,
-            confirmButtonColor: '#3085d6',
-            cancelButtonColor: '#d33',
-            confirmButtonText: 'Yes'
-        }).then((result) => {
-			 if (result.isConfirmed) {
-					Swal.fire({
-						title: "Approved!",
-						text: "Seller has been Approved",
-						icon: "success",
-						width: "450px",
-						height: "300px",
-						fontSize: "12px !important",
-					});
-					if(type == " users"){
-						CoreHttpHandler.request(
-						"sellers",
-						"approval",
-						{ key: ":id", value: id },
-						(response) => {
-						if (response) {
-							getUsersData();
-						}
-					}
-					);
-					}else if(type == "products"){
-						CoreHttpHandler.request(
-						"products",
-						"approval",
-						{ key: ":id", value: id },
-						(response) => {
-						if (response) {
-							getUsersData();
-						}
-					}
-					);
-					}
-					
-			 	}
-
-		},(error)=>{});
-	};
-
-
 	// ** Function in get data on search query change
 	const handleFilter = (val) => {
 		setSearchTerm(val);
@@ -572,15 +378,7 @@ const Table = (props) => {
 	};
 	// ** Table data to render
 	const dataToRender = () => {
-		console.log(type,'tytyty')
-		if (type == "users") {
-
-			return data.users;
-
-		}else if (type == "products") {
-			console.log(data,'dttaaa')
-      		return data.data;
-    	}
+		return data;
 		// const filters = {
 		// 	q: searchTerm,
 		// };
@@ -624,7 +422,7 @@ const Table = (props) => {
 					pagination
 					responsive
 					paginationServer
-					columns={type == "users" ? columns : type == "products" ? columnsProduct : []}
+					columns={columns}
 					onSort={handleSort}
 					data={dataToRender()}
 					sortIcon={<ChevronDown />}

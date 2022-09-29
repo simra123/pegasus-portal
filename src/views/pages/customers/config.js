@@ -1,16 +1,14 @@
 import React from "react";
 import { lazy } from "react";
 
-const SellerConfig = {
+const CustomerConfig = {
 	routes: [
 		{
-			path: "/apps/rider",
+			path: "/apps/customers",
 			exact: true,
-			appLayout: true,
-			className: "email-application",
 			component: lazy(() => import("./index")),
 		},
 	],
 };
 
-export default SellerConfig;
+export default CustomerConfig;
