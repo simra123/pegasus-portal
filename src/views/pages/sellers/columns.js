@@ -104,7 +104,7 @@ export const columns = [
 				{renderClient(row)}
 				<div className='d-flex flex-column'>
 					<Link
-						to={`/apps/seller/view/9`}
+						to={`/apps/sellers/details`}
 						className='user_name text-truncate text-body'
 						onClick={() => store.dispatch(getUser(row.id))}>
 						<span className='fw-bold'>{row.fullName}</span>
@@ -159,7 +159,7 @@ export const columns = [
 		name: "Actions",
 		minWidth: "100px",
 		cell: (row) => (
-			<Link to={`/apps/seller/view/9`}>
+			<Link to={`/apps/sellers/details`}>
 				<Eye className='font-medium-3 text-body' />
 			</Link>
 		),

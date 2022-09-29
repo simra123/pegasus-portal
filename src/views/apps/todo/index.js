@@ -9,6 +9,7 @@ import classnames from "classnames";
 import Tasks from "./Tasks";
 import Sidebar from "./Sidebar";
 import TaskSidebar from "./TaskSidebar";
+import { Menu, Grid, List } from "react-feather";
 
 // ** Store & Actions
 import { useDispatch, useSelector } from "react-redux";
@@ -77,33 +78,44 @@ const TODO = () => {
 				handleTaskSidebar={handleTaskSidebar}
 				setActiveTab={setActiveTab}
 			/>
-			<div className='content-right'>
-				<div className='content-wrapper'>
-					<div className='content-body'>
-						<div
-							className={classnames("body-content-overlay", {
-								show: mainSidebar === true,
-							})}
-							onClick={handleMainSidebar}></div>
+			<div className='content-detached content-right'>
+				<div className='content-body'>
+					{/* <div
+						className={classnames("body-content-overlay", {
+							show: mainSidebar === true,
+						})}
+						onClick={handleMainSidebar}></div> */}
+					<button
+						className='navbar-toggler shop-sidebar-toggler'
+						onClick={handleMainSidebar}>
+						<span className='navbar-toggler-icon d-block d-lg-none'>
+							<Menu size={14} />
+						</span>
+					</button>
 
-						{activeTab === "products" ? (
-							<Products />
-						) : store ? (
-							<Products />
-						) : null}
-
-						<TaskSidebar
-							store={store}
-							params={params}
-							addTask={addTask}
-							dispatch={dispatch}
-							open={openTaskSidebar}
-							updateTask={updateTask}
-							selectTask={selectTask}
-							deleteTask={deleteTask}
-							handleTaskSidebar={handleTaskSidebar}
-						/>
-					</div>
+					{activeTab === "products" ? (
+						<Products />
+					) : store ? (
+						<Products />
+					) : null}
+					{/* {tab === 'Intelligence' ? (
+						<Dashboard data={companyDetails} />
+					) : tab === 'Profile' ? (
+						<Profile data={companyDetails} />
+					) : tab === 'Contact' ? (
+						<ContactTable data={companyDetails} />
+					)  : null} */}
+					<TaskSidebar
+						store={store}
+						params={params}
+						addTask={addTask}
+						dispatch={dispatch}
+						open={openTaskSidebar}
+						updateTask={updateTask}
+						selectTask={selectTask}
+						deleteTask={deleteTask}
+						handleTaskSidebar={handleTaskSidebar}
+					/>
 				</div>
 			</div>
 		</Fragment>

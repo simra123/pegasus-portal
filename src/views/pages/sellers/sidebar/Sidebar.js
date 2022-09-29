@@ -82,8 +82,8 @@ const TodoSidebar = (props) => {
 									<span className='align-middle'>My Tasks</span>
 								</ListGroupItem>
 								<ListGroupItem
-									tag={Link}
-									to={"/apps/todo/important"}
+									tag={"p"}
+									//to={"/apps/todo/important"}
 									active={handleActiveItem("important")}
 									onClick={() => handleFilter("important")}
 									action>

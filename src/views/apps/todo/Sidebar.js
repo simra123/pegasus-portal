@@ -50,12 +50,12 @@ const TodoSidebar = (props) => {
 	};
 
 	return (
-		<div
-			className={classnames("sidebar-left", {
-				show: mainSidebar === true,
-			})}>
+		<div className='sidebar-detached sidebar-left'>
 			<div className='sidebar'>
-				<div className='sidebar-content todo-sidebar'>
+				<div
+					className={classnames("sidebar-shop", {
+						show: mainSidebar === true,
+					})}>
 					<div className='todo-app-menu'>
 						{/* <div className='add-task'>
 							<Button
