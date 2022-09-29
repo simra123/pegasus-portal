@@ -58,15 +58,7 @@ export default [
 					},
 				],
 			},
-			{
-				id: "dashboards",
-				title: "Intelligence",
-				translate: "Intelligence",
-				type: "item",
-				icon: <Home size={20} />,
-				navLink: "/dashboard",
-				exact: true,
-			},
+
 			{
 				id: "Riders",
 				title: "Riders",

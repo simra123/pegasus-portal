@@ -1,16 +1,13 @@
 // ** React Imports
 import { Suspense, useContext, lazy, Fragment } from "react";
-
 // ** Utils
-import { isUserLoggedIn } from "@utils";
+import routesGenerated from "../configs/routesConfig";
+
 import { useLayout } from "@hooks/useLayout";
 import { AbilityContext } from "@src/utility/context/Can";
 import { useRouterTransition } from "@hooks/useRouterTransition";
-import routesGenerated from "../configs/routesConfig";
-
 // ** Custom Components
 import LayoutWrapper from "@layouts/components/layout-wrapper";
-
 // ** Router Components
 import {
 	BrowserRouter as AppRouter,
@@ -18,38 +15,31 @@ import {
 	Switch,
 	Redirect,
 } from "react-router-dom";
-
 // ** Routes & Default Routes
-import { DefaultRoute, Routes } from "./routes";
-
+import { DefaultRoute } from "./routes";
 // ** Layouts
 import BlankLayout from "@layouts/BlankLayout";
 import VerticalLayout from "@src/layouts/VerticalLayout";
 // import HorizontalLayout from '@src/layouts/HorizontalLayout'
-
 const Router = () => {
 	// ** Hooks
+	const getUserData = () => JSON.parse(localStorage.getItem("user_data"));
+
 	const { layout, setLayout, setLastLayout } = useLayout();
 	const { transition, setTransition } = useRouterTransition();
-
 	// ** ACL Ability Context
 	const ability = useContext(AbilityContext);
-
 	// ** Default Layout
 	const DefaultLayout =
 		layout === "horizontal" ? "HorizontalLayout" : "VerticalLayout";
-
 	// ** All of the available layouts
 	const Layouts = { BlankLayout, VerticalLayout };
-
 	// ** Current Active Item
 	const currentActiveItem = null;
-
 	// ** Return Filtered Array of Routes & Paths
 	const LayoutRoutesAndPaths = (layout) => {
 		const LayoutRoutes = [];
 		const LayoutPaths = [];
-
 		if (routesGenerated) {
 			routesGenerated.filter((route) => {
 				// ** Checks if Route layout or Default layout matches current layout
@@ -62,17 +52,13 @@ const Router = () => {
 				}
 			});
 		}
-
 		return { LayoutRoutes, LayoutPaths };
 	};
-
 	const NotAuthorized = lazy(() =>
 		import("@src/views/pages/misc/NotAuthorized")
 	);
-
 	// ** Init Error Component
 	const Error = lazy(() => import("@src/views/pages/misc/Error"));
-
 	/**
 	 ** Final Route Component Checks for Login & User Role and then redirects to the route
 	 */
@@ -87,8 +73,8 @@ const Router = () => {
 		}
 
 		if (
-			(!isUserLoggedIn() && route.meta === undefined) ||
-			(!isUserLoggedIn() &&
+			(!getUserData() && route.meta === undefined) ||
+			(!getUserData() &&
 				route.meta &&
 				!route.meta.authRoute &&
 				!route.meta.publicRoute)
@@ -101,39 +87,33 @@ const Router = () => {
 			 */
 
 			return <Redirect to='/login' />;
-		} else if (route.meta && route.meta.authRoute && isUserLoggedIn()) {
+		} else if (route.meta && route.meta.authRoute && getUserData()) {
 			// ** If route has meta and authRole and user is Logged in then redirect user to home page (DefaultRoute)
 			return <Redirect to='/' />;
 		}
-		// else if (isUserLoggedIn() && !ability.can(action || "read", resource)) {
+		// } else if (getUserData()) {
 		// 	// ** If user is Logged in and doesn't have ability to visit the page redirect the user to Not Authorized
-		// 	return <Redirect to='/misc/not-authorized' />;
+		// 	return <route.component {...props} />;
 		// }
 		else {
 			// ** If none of the above render component
 			return <route.component {...props} />;
 		}
 	};
-
 	// ** Return Route to Render
 	const ResolveRoutes = () => {
 		return Object.keys(Layouts).map((layout, index) => {
 			// ** Convert Layout parameter to Layout Component
 			// ? Note: make sure to keep layout and component name equal
-
 			const LayoutTag = Layouts[layout];
-
 			// ** Get Routes and Paths of the Layout
 			const { LayoutRoutes, LayoutPaths } = LayoutRoutesAndPaths(layout);
-
 			// ** We have freedom to display different layout for different route
 			// ** We have made LayoutTag dynamic based on layout, we can also replace it with the only layout component,
 			// ** that we want to implement like VerticalLayout or HorizontalLayout
 			// ** We segregated all the routes based on the layouts and Resolved all those routes inside layouts
-
 			// ** RouterProps to pass them to Layouts
 			const routerProps = {};
-
 			return (
 				<Route
 					path={LayoutPaths}
@@ -159,11 +139,9 @@ const Router = () => {
 												...props,
 												meta: route.meta,
 											});
-
 											return (
 												<Fragment>
 													{/* Layout Wrapper to add classes based on route's layout, appLayout and className */}
-
 													{route.layout === "BlankLayout" ? (
 														<Fragment>
 															<FinalRoute
@@ -215,7 +193,6 @@ const Router = () => {
 			);
 		});
 	};
-
 	return (
 		<AppRouter basename={process.env.REACT_APP_BASENAME}>
 			<Switch>
@@ -224,7 +201,7 @@ const Router = () => {
 					exact
 					path='/'
 					render={() => {
-						return isUserLoggedIn() ? (
+						return getUserData() ? (
 							<Redirect to={DefaultRoute} />
 						) : (
 							<Redirect to='/login' />
@@ -242,7 +219,6 @@ const Router = () => {
 					)}
 				/>
 				{ResolveRoutes()}
-
 				{/* NotFound Error page */}
 				<Route
 					path='*'
@@ -252,5 +228,4 @@ const Router = () => {
 		</AppRouter>
 	);
 };
-
 export default Router;

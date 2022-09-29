@@ -6,8 +6,6 @@ const verifyConfig = {
 		{
 			path: "/apps/users/verify",
 			exact: true,
-			appLayout: true,
-			className: "email-application",
 			component: lazy(() => import("./index")),
 		},
 	],

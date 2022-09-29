@@ -6,8 +6,6 @@ const SellerConfig = {
 		{
 			path: "/apps/sellers",
 			exact: true,
-			appLayout: true,
-			className: "email-application",
 			component: lazy(() => import("./index")),
 		},
 	],
