@@ -6,94 +6,98 @@ import { Table, Card } from 'reactstrap'
 
 // ** Icons Imports
 import { Monitor, Coffee, Watch, TrendingUp, TrendingDown } from 'react-feather'
+import { BiWine } from "react-icons/bi";
+import { FaWineBottle } from "react-icons/fa";
+import { GiCigarette, GiBottleVapors } from "react-icons/gi";
+
 
 const CompanyTable = () => {
   // ** vars
 
   const data = [
     {
-      img: require('@src/assets/images/icons/toolbox.svg').default,
-      name: 'Dixons',
-      email: 'meguc@ruj.io',
-      icon: <Monitor size={18} />,
-      category: 'Technology',
-      views: '23.4k',
-      time: '24 hours',
-      revenue: '891.2',
-      sales: '68'
+      img: require("@src/assets/images/icons/toolbox.svg").default,
+      name: "Dixons",
+      email: "meguc@ruj.io",
+      icon: <GiBottleVapors size={18} />,
+      category: "Vape",
+      views: "23.4k",
+      time: "24 hours",
+      revenue: "891.2",
+      sales: "68",
     },
     {
-      img: require('@src/assets/images/icons/parachute.svg').default,
-      name: 'Motels',
-      email: 'vecav@hodzi.co.uk',
-      icon: <Coffee size={18} />,
-      category: 'Grocery',
-      views: '78k',
-      time: '2 days',
-      revenue: '668.51',
-      sales: '97',
-      salesUp: true
+      img: require("@src/assets/images/icons/parachute.svg").default,
+      name: "Motels",
+      email: "vecav@hodzi.co.uk",
+      icon: <BiWine size={18} />,
+      category: "Wine",
+      views: "78k",
+      time: "2 days",
+      revenue: "668.51",
+      sales: "97",
+      salesUp: true,
     },
     {
-      img: require('@src/assets/images/icons/brush.svg').default,
-      name: 'Zipcar',
-      email: 'davcilse@is.gov',
-      icon: <Watch size={18} />,
-      category: 'Fashion',
-      views: '162',
-      time: '5 days',
-      revenue: '522.29',
-      sales: '62',
-      salesUp: true
+      img: require("@src/assets/images/icons/brush.svg").default,
+      name: "Zipcar",
+      email: "davcilse@is.gov",
+      icon: <GiCigarette size={18} />,
+      category: "E-cigars",
+      views: "162",
+      time: "5 days",
+      revenue: "522.29",
+      sales: "62",
+      salesUp: true,
     },
     {
-      img: require('@src/assets/images/icons/star.svg').default,
-      name: 'Owning',
-      email: 'us@cuhil.gov',
-      icon: <Monitor size={18} />,
-      category: 'Technology',
-      views: '214',
-      time: '24 hour',
-      revenue: '291.01',
-      sales: '88',
-      salesUp: true
+      img: require("@src/assets/images/icons/star.svg").default,
+      name: "Owning",
+      email: "us@cuhil.gov",
+      icon: <FaWineBottle size={18} />,
+      category: "Beer",
+      views: "214",
+      time: "24 hour",
+      revenue: "291.01",
+      sales: "88",
+      salesUp: true,
     },
     {
-      img: require('@src/assets/images/icons/book.svg').default,
-      name: 'Cafés',
-      email: 'pudais@jife.com',
-      icon: <Coffee size={18} />,
-      category: 'Grocery',
-      views: '208',
-      time: '1 week',
-      revenue: '783.93',
-      sales: '16'
+      img: require("@src/assets/images/icons/book.svg").default,
+      name: "Cafés",
+      email: "pudais@jife.com",
+      icon: <GiBottleVapors size={18} />,
+      category: "Vape",
+      views: "208",
+      time: "1 week",
+      revenue: "783.93",
+      sales: "16",
     },
     {
-      img: require('@src/assets/images/icons/rocket.svg').default,
-      name: 'Kmart',
-      email: 'bipri@cawiw.com',
-      icon: <Watch size={18} />,
-      category: 'Fashion',
-      views: '990',
-      time: '1 month',
-      revenue: '780.05',
-      sales: '78',
-      salesUp: true
+      img: require("@src/assets/images/icons/rocket.svg").default,
+      name: "Kmart",
+      email: "bipri@cawiw.com",
+      icon: <BiWine size={18} />,
+      category: "Wine",
+      views: "990",
+      time: "1 month",
+      revenue: "780.05",
+      sales: "78",
+      salesUp: true,
     },
     {
-      img: require('@src/assets/images/icons/speaker.svg').default,
-      name: 'Payers',
-      email: 'luk@izug.io',
-      icon: <Watch size={18} />,
-      category: 'Fashion',
-      views: '12.9k',
-      time: '12 hours',
-      revenue: '531.49',
-      sales: '42',
-      salesUp: true
-    }
-  ]
+      img: require("@src/assets/images/icons/speaker.svg").default,
+      name: "Payers",
+      email: "luk@izug.io",
+      icon: <GiCigarette size={18} />,
+      category: "E-cigars",
+      views: "12.9k",
+      time: "12 hours",
+      revenue: "531.49",
+      sales: "42",
+      salesUp: true,
+    },
+  ];
   const colorsArr = {
     Technology: 'light-primary',
     Grocery: 'light-success',
@@ -152,9 +156,9 @@ const CompanyTable = () => {
       <Table responsive>
         <thead>
           <tr>
-            <th>Company</th>
+            <th>Store</th>
             <th>Category</th>
-            <th>Views</th>
+            <th>Reiews</th>
             <th>Revenue</th>
             <th>Sales</th>
           </tr>

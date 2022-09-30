@@ -57,10 +57,10 @@ const ChartjsBarChart = ({ success, gridLineColor, labelColor }) => {
     ],
     datasets: [
       {
-        maxBarThickness: 15,
+        maxBarThickness: 35,
         backgroundColor: success,
         borderColor: 'transparent',
-        borderRadius: { topRight: 15, topLeft: 15 },
+        borderRadius: { topRight: 0, topLeft: 0 },
         data: [275, 90, 190, 205, 125, 85, 55, 87, 127, 150, 230, 280, 190]
       }
     ]
