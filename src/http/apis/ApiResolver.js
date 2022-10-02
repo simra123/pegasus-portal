@@ -4,6 +4,7 @@ import ClientApis from "./client"
 import Sellers from "./sellers";
 import Products from './products'
 import Customers from "./customers"
+import Store from "./stores";
 
 class ApiResolver {
 	constructor() {
@@ -12,7 +13,8 @@ class ApiResolver {
 			client: ClientApis.apis(),
 			sellers: Sellers.apis(),
 			products: Products.apis(),
-			customers: Customers.apis()
+			customers: Customers.apis(),
+			stores: Store.apis()
 		};
 	}
 

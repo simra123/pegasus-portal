@@ -8,6 +8,12 @@ export const getProducts = createAsyncThunk(
 	"appEcommerce/getProducts",
 	async (params) => {
 		const response = await axios.get("/apps/ecommerce/products", { params });
+		console.log(response,'imhererett')
+		await response.data.products.map(r => {
+			r["name"] = "Vape Products"
+			r["image"] =
+        "https://thumbs.dreamstime.com/b/electronic-cigarette-over-dark-background-67012162.jpg";
+		})
 		return { params, data: response.data };
 	}
 );

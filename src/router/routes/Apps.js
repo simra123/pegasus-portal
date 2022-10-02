@@ -121,6 +121,7 @@ const AppRoutes = [
   },
   {
     path: "/apps/products",
+    appLayout: true,
     exact: true,
     className: "ecommerce-application",
     component: () => (

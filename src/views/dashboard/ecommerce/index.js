@@ -35,8 +35,8 @@ import BarChart from "../../charts/chart-js/ChartjsBarChart"
 const EcommerceDashboard = () => {
   // ** Context
   const { colors } = useContext(ThemeColors)
-
-
+  const permissions = JSON.parse(localStorage.getItem("user_acl"));
+  
    const donut = {
      series1: "#ffe700",
      series2: "#00d4bd",
@@ -50,7 +50,8 @@ const EcommerceDashboard = () => {
 
   return (
     <div id="dashboard-ecommerce">
-      <div className="app-user-list">
+      {permissions["FRONT:/seller-dashboard"] ? null
+      : <div className="app-user-list">
         <Row>
           <Col lg="3" sm="6">
             <StatsHorizontal
@@ -85,7 +86,8 @@ const EcommerceDashboard = () => {
             />
           </Col>
         </Row>
-      </div>
+      </div> }
+      
       <Row className="match-height">
         <Col lg="4" md="12">
           <Row className="match-height">
@@ -123,11 +125,13 @@ const EcommerceDashboard = () => {
           <LineChart warning={colors.warning.main} />
         </Col>
       </Row>
+      {permissions["FRONT:/seller-dashboard"] ? 
+      null :       
       <Row className="match-height">
         <Col lg="12" xs="12">
           <CompanyTable />
         </Col>
-      </Row>
+      </Row>}
     </div>
   );
 }

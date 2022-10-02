@@ -59,7 +59,7 @@ const CustomHeader = ({ handleFilter, value, handleStatusValue, statusValue, han
               placeholder='Search Invoice'
             />
           </div>
-          <Input className='w-auto ' type='select' value={statusValue} onChange={handleStatusValue}>
+          {/* <Input className='w-auto ' type='select' value={statusValue} onChange={handleStatusValue}>
             <option value=''>Select Status</option>
             <option value='downloaded'>Downloaded</option>
             <option value='draft'>Draft</option>
@@ -67,7 +67,7 @@ const CustomHeader = ({ handleFilter, value, handleStatusValue, statusValue, han
             <option value='partial payment'>Partial Payment</option>
             <option value='past due'>Past Due</option>
             <option value='sent'>Sent</option>
-          </Input>
+          </Input> */}
         </Col>
       </Row>
     </div>

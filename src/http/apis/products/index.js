@@ -15,6 +15,20 @@ class APIS {
         method: "put",
         path: "/products/approval/:id",
       },
+      fetch: {
+        headers: {
+          "xt-user-token": null,
+        },
+        method: "post",
+        path: "/products",
+      },
+      fetchSeller: {
+        headers: {
+          "xt-user-token": null,
+        },
+        method: "get",
+        path: "/products",
+      },
     };
   }
 }

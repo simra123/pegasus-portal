@@ -102,10 +102,7 @@ const SimpleLineChart = ({ warning }) => {
     <Card>
       <CardHeader>
         <div>
-          <CardTitle tag="h4">Balance</CardTitle>
-          <small className="text-muted">
-            Commercial networks & enterprises
-          </small>
+          <CardTitle tag="h4">Overall Profit</CardTitle>
         </div>
         <div className="d-flex align-items-center flex-wrap mt-sm-0 mt-1">
           <h5 className="fw-bold mb-0 me-1">$ 100,000</h5>

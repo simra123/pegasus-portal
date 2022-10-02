@@ -7,6 +7,7 @@ import Products from "./products";
 import Profile from "./profile";
 import StoreDetails from "./store-details";
 import Header from "./products/ProductsHeader";
+import { getAllData, getData } from "@src/views/apps/user/store";
 
 // ** Custom Components
 import Breadcrumbs from "@components/breadcrumbs";

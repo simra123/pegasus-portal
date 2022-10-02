@@ -69,7 +69,7 @@ const ChartjsBarChart = ({ success, gridLineColor, labelColor }) => {
   return (
     <Card>
       <CardHeader className='d-flex justify-content-between align-items-sm-center align-items-start flex-sm-row flex-column'>
-        <CardTitle tag='h4'>Latest Statistics</CardTitle>
+        <CardTitle tag='h4'>Prdoucts Delieverd</CardTitle>
         <div className='d-flex align-items-center'>
           <Calendar size={14} />
           <Flatpickr

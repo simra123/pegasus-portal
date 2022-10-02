@@ -36,16 +36,22 @@ const SimplePieChart = props => {
     <Card>
       <CardHeader>
         <div>
-          <CardTitle tag='h4'>Expense Ratio</CardTitle>
-          <small className='text-muted'>Spending on various categories</small>
+          <CardTitle tag="h4">Sales Ratio</CardTitle>
+          <small className="text-muted">Spending on various categories</small>
         </div>
       </CardHeader>
 
       <CardBody>
-        <div className='recharts-wrapper'>
+        <div className="recharts-wrapper">
           <ResponsiveContainer>
             <PieChart height={350}>
-              <Pie data={data} innerRadius={80} dataKey='value' label={renderCustomizedLabel} labelLine={false}>
+              <Pie
+                data={data}
+                innerRadius={80}
+                dataKey="value"
+                label={renderCustomizedLabel}
+                labelLine={false}
+              >
                 {data.map((entry, index) => (
                   <Cell key={`cell-${index}`} fill={entry.color} label />
                 ))}
@@ -53,26 +59,35 @@ const SimplePieChart = props => {
             </PieChart>
           </ResponsiveContainer>
         </div>
-        <div className='d-flex align-items-center justify-content-center flex-wrap'>
-          <div className='me-2'>
-            <span className='bullet bullet-sm bullet-bordered me-50' style={{ backgroundColor: '#ffe700' }}></span>
-            <span className='align-middle me-75'>Operational</span>
+        <div className="d-flex align-items-center justify-content-center flex-wrap">
+          <div className="me-2">
+            <span
+              className="bullet bullet-sm bullet-bordered me-50"
+              style={{ backgroundColor: "#ffe700" }}
+            ></span>
+            <span className="align-middle me-75">Vape</span>
           </div>
-          <div className='me-2'>
-            <span className='bullet bullet-sm bullet-bordered me-50' style={{ backgroundColor: '#ffa1a1' }}></span>
-            <span className='align-middle me-75'>Networking</span>
+          <div className="me-2">
+            <span
+              className="bullet bullet-sm bullet-bordered me-50"
+              style={{ backgroundColor: "#ffa1a1" }}
+            ></span>
+            <span className="align-middle me-75">E-Cigars</span>
           </div>
-          <div className='me-2'>
-            <span className='bullet bullet-sm bullet-primary bullet-bordered me-50'></span>
-            <span className='align-middle me-75'>Hiring</span>
+          <div className="me-2">
+            <span className="bullet bullet-sm bullet-primary bullet-bordered me-50"></span>
+            <span className="align-middle me-75">Wine</span>
           </div>
           <div>
-            <span className='bullet bullet-sm bullet-bordered me-50' style={{ backgroundColor: '#00d4bd' }}></span>
-            <span className='align-middle me-75'>R&amp;D</span>
+            <span
+              className="bullet bullet-sm bullet-bordered me-50"
+              style={{ backgroundColor: "#00d4bd" }}
+            ></span>
+            <span className="align-middle me-75">Beer</span>
           </div>
         </div>
       </CardBody>
     </Card>
-  )
+  );
 }
 export default SimplePieChart

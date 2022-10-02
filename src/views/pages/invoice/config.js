@@ -6,8 +6,6 @@ const OrderConfig = {
     {
       path: "/apps/orders",
       exact: true,
-      appLayout: true,
-      className: "email-application",
       component: lazy(() => import("./list/index")),
     },
   ],

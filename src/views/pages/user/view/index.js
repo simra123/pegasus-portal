@@ -16,6 +16,7 @@ import UserInfoCard from './UserInfoCard'
 
 // ** Styles
 import '@styles/react/apps/app-users.scss'
+import CoreHttpHandler from '../../../../http/services/CoreHttpHandler'
 
 const UserView = () => {
   // ** Store Vars
@@ -26,6 +27,23 @@ const UserView = () => {
   const { id } = useParams()
 
   // ** Get suer on mount
+   const [storesData, setStoresData] = useState([]);
+
+   useEffect(() => {
+     getStores();
+   }, []);
+
+   const getStores = () => {
+     CoreHttpHandler.request(
+       "stores",
+       "fetch",
+       {},
+       (response) => {
+         setStoresData(response.data.data);
+       },
+       (failure) => {}
+     );
+   };
   useEffect(() => {
     dispatch(getUser(parseInt(id)))
   }, [dispatch])
@@ -37,26 +55,28 @@ const UserView = () => {
       setActive(tab)
     }
   }
-
+  console.log(storesData.data,'dtshahaha')
   return store.selectedUser !== null && store.selectedUser !== undefined ? (
-    <div className='app-user-view'>
+    <div className="app-user-list">
       <Row>
-        <Col xl='4' lg='5' xs={{ order: 1 }} md={{ order: 0, size: 5 }}>
-          <UserInfoCard selectedUser={store.selectedUser} />
-          <PlanCard />
+        <Col xl="4" lg="5" xs={{ order: 1 }} md={{ order: 0, size: 5 }}>
+          <UserInfoCard storesData={storesData} left={"left"} selectedUser={store.selectedUser} />
+          {/* <PlanCard /> */}
         </Col>
-        <Col xl='8' lg='7' xs={{ order: 0 }} md={{ order: 1, size: 7 }}>
-          <UserTabs active={active} toggleTab={toggleTab} />
+        <Col xl="8" lg="7" xs={{ order: 0 }} md={{ order: 1, size: 7 }}>
+          {/* <UserTabs active={active} toggleTab={toggleTab} /> */}
+          <UserInfoCard storesData={storesData.data} left={"right"} selectedUser={store.selectedUser} />
         </Col>
       </Row>
     </div>
   ) : (
-    <Alert color='danger'>
-      <h4 className='alert-heading'>User not found</h4>
-      <div className='alert-body'>
-        User with id: {id} doesn't exist. Check list of all Users: <Link to='/apps/user/list'>Users List</Link>
+    <Alert color="danger">
+      <h4 className="alert-heading">User not found</h4>
+      <div className="alert-body">
+        User with id: {id} doesn't exist. Check list of all Users:{" "}
+        <Link to="/apps/user/list">Users List</Link>
       </div>
     </Alert>
-  )
+  );
 }
 export default UserView

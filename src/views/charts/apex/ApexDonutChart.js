@@ -19,7 +19,7 @@ const ApexRadiarChart = () => {
       show: true,
       position: 'bottom'
     },
-    labels: ['Operational', 'Networking', 'Hiring', 'R&D'],
+    labels: ['Vape', 'Wine', 'E-Cigars', 'BEER'],
 
     colors: [donutColors.series1, donutColors.series5, donutColors.series3, donutColors.series2],
     dataLabels: {

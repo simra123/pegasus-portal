@@ -8,6 +8,13 @@ class APIS {
         method: "put",
         path: "/sellers/approval/:id",
       },
+      fetchAdmin: {
+        headers: {
+          "xt-user-token": null,
+        },
+        method: "post",
+        path: "/sellers/list",
+      },
     };
   }
 }

@@ -7,6 +7,7 @@ import { Star, ShoppingCart, Heart } from "react-feather";
 
 // ** Reactstrap Imports
 import { Card, CardBody, CardText, Button, Badge } from "reactstrap";
+import "@styles/react/apps/app-ecommerce.scss";
 
 const ProductCards = (props) => {
 	// ** Props

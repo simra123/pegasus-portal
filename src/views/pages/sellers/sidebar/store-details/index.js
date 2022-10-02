@@ -94,14 +94,16 @@ const UserInfoCard = ({ selectedUser }) => {
 	const renderUserImg = () => {
 		if (selectedUser == null && !selectedUser?.avatar.length) {
 			return (
-				<img
-					height='240'
-					width='240'
-					alt='user-avatar'
-					src={storeImage}
-					className='img-fluid rounded mt-3 mb-2'
-				/>
-			);
+        <img
+          height="240"
+          width="240"
+          alt="user-avatar"
+          src={
+            "https://s3-media0.fl.yelpcdn.com/bphoto/YNaPvxnUhOL0kTjGJ02KMQ/l.jpg"
+          }
+          className="img-fluid rounded mt-3 mb-2"
+        />
+      );
 		} else {
 			const stateNum = Math.floor(Math.random() * 6),
 				states = [
@@ -230,7 +232,7 @@ const UserInfoCard = ({ selectedUser }) => {
 							</Badge>
 							<div className='ms-75'>
 								<h4 className='mb-0'>4k</h4>
-								<small>Views</small>
+								<small>Reiews</small>
 							</div>
 						</div>
 					</div>

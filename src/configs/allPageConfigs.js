@@ -4,15 +4,21 @@ import VerifyConfig from "../views/pages/verification/config";
 import ProfileConfig from "../views/pages/user/config";
 import CustomerConfig from "../views/pages/customers/config";
 import SellerDetailsConfig from "../views/pages/sellers/sidebar/config";
+import ProductConfig from "../views/pages/seller-portal/products/config"
+import ProductEditConfig from "../views/pages/seller-portal/blog/config"
+import StoreConfig from "../views/pages/seller-portal/store/config";
 
 
 const allPagesConfig = [
-  SellersConfig,
-  SellerDetailsConfig,
-  OrdersConfig,
-  VerifyConfig,
-  ProfileConfig,
-  CustomerConfig,
+    SellersConfig,
+    StoreConfig,
+    ProductEditConfig,
+    ProductConfig,
+    SellerDetailsConfig,
+    OrdersConfig,
+    VerifyConfig,
+    ProfileConfig,
+    CustomerConfig,
 ];
 
 export default allPagesConfig;

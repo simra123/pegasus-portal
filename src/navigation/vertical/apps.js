@@ -47,6 +47,18 @@ export default [
 		navLink: "/apps/orders",
 	},
 	{
+		id: "store",
+		title: "Store",
+		icon: <CheckSquare size={20} />,
+		navLink: "/apps/store",
+	},
+		{
+		id: "products",
+		title: "Products",
+		icon: <CheckSquare size={20} />,
+		navLink: "/apps/products",
+	},
+	{
 		id: "req",
 		title: "Requests",
 		icon: <Shield size={20} />,

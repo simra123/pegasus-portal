@@ -17,7 +17,6 @@ import { Card, Input, Row, Col, Button } from "reactstrap";
 import "@styles/react/libs/tables/react-dataTable-component.scss";
 // ** React Imports
 import { Link } from "react-router-dom";
-import { Approval }  from "./Table";
 // ** Custom Components
 import Avatar from "@components/avatar";
 import Swal from "sweetalert2";
@@ -32,7 +31,8 @@ import { Slack, User, Settings, Database, Edit2, Eye } from "react-feather";
 // ** Reactstrap Imports
 import { Badge} from "reactstrap";
 import moment from "moment/moment";
-
+import withReactContent from "sweetalert2-react-content";
+const MySwal = withReactContent(Swal);
 // ** Bootstrap Checkbox Component
 const BootstrapCheckbox = forwardRef((props, ref) => (
 	<div className='form-check'>
@@ -300,13 +300,20 @@ const Table = (props) => {
         selector: (row) => row.name,
         cell: (row) => (
           <div className="d-flex justify-content-left align-items-center">
+            <img
+              width="60"
+              height="35"
+              className="img-fluid"
+              src={
+                row?.attachment?.val[
+                  row?.attachment["type"]?.findIndex((t) => t == "0")
+                ]
+              }
+            />
             <div className="d-flex flex-column">
-              <Link
-                to={`/apps/seller/view/9`}
-                className="user_name text-truncate text-body"
-              >
-                <span className="fw-bold">{row.name}</span>
-              </Link>
+             
+                <span style={{marginLeft: "20px"}} className="fw-bold">{row.name}</span>
+
             </div>
           </div>
         ),
@@ -361,7 +368,7 @@ const Table = (props) => {
         name: "Details",
         minWidth: "50px",
         cell: (row) => (
-          <Button color="primary" size="sm" onClick={(e) => Approval(row.id)}>
+          <Button color="primary" size="sm">
             View
           </Button>
           // <Link to={`/apps/seller/view/9`}>
@@ -465,25 +472,32 @@ const Table = (props) => {
 	};
 
 	const Approval = (id) => {
-		Swal.fire({
+		MySwal.fire({
             title: 'Are you sure?',
             icon: 'warning',
 			padding: "50px",
             showCancelButton: true,
-            confirmButtonColor: '#3085d6',
-            cancelButtonColor: '#d33',
+			customClass: {
+        	confirmButton: 'btn btn-primary',
+        	cancelButton: 'btn btn-outline-danger ms-1'
+      		},
+			background: "#020202",
+      		buttonsStyling: false,
             confirmButtonText: 'Yes'
         }).then((result) => {
-			 if (result.isConfirmed) {
-					Swal.fire({
+			console.log(result,'reddd')
+			 if (result.value) {
+					MySwal.fire({
 						title: "Approved!",
 						text: "Seller has been Approved",
 						icon: "success",
 						width: "450px",
 						height: "300px",
 						fontSize: "12px !important",
+						background: "#020202",
+
 					});
-					if(type == " users"){
+					if(type == "users"){
 						CoreHttpHandler.request(
 						"sellers",
 						"approval",

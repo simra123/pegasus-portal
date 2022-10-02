@@ -1,24 +1,36 @@
 // ** React Imports
 import { useState, useEffect, forwardRef } from "react";
 
-// ** Table Columns
-import { columns } from "./columns";
-
 // ** Store & Actions
 import { useDispatch, useSelector } from "react-redux";
 import { getAllData, getData } from "@src/views/apps/user/store";
-
+import CoreHttpHandler  from "../../../../http/services/CoreHttpHandler";
 // ** Third Party Components
 import ReactPaginate from "react-paginate";
 import { ChevronDown } from "react-feather";
 import DataTable from "react-data-table-component";
 
 // ** Reactstrap Imports
-import { Card, Input, Row, Col } from "reactstrap";
+import { Card, Input, Row, Col, Button } from "reactstrap";
 
 // ** Styles
 import "@styles/react/libs/tables/react-dataTable-component.scss";
-import CoreHttpHandler from "../../../http/services/CoreHttpHandler";
+// ** React Imports
+import { Link } from "react-router-dom";
+// ** Custom Components
+import Avatar from "@components/avatar";
+import Swal from "sweetalert2";
+
+// ** Store & Actions
+import { store } from "@store/store";
+import { getUser } from "@src/views/apps/user/store";
+
+// ** Icons Imports
+import { Slack, User, Settings, Database, Edit2, Eye } from "react-feather";
+
+// ** Reactstrap Imports
+import { Badge} from "reactstrap";
+import moment from "moment/moment";
 
 // ** Bootstrap Checkbox Component
 const BootstrapCheckbox = forwardRef((props, ref) => (
@@ -30,6 +42,7 @@ const BootstrapCheckbox = forwardRef((props, ref) => (
 		/>
 	</div>
 ));
+
 
 // ** Table Header
 const CustomHeader = ({
@@ -79,7 +92,7 @@ const CustomHeader = ({
 							onChange={(e) => handleFilter(e.target.value)}
 						/>
 					</div>
-					<Input
+					{/* <Input
 						value={plan}
 						type='select'
 						style={{ width: "10rem" }}
@@ -89,7 +102,7 @@ const CustomHeader = ({
 						<option value='company'>Company</option>
 						<option value='enterprise'>Enterprise</option>
 						<option value='team'>Team</option>
-					</Input>
+					</Input> */}
 				</Col>
 			</Row>
 		</div>
@@ -97,6 +110,7 @@ const CustomHeader = ({
 };
 
 const Table = () => {
+
 	// ** Store Vars
 	const dispatch = useDispatch();
 	const store = useSelector((state) => state.users);
@@ -108,44 +122,189 @@ const Table = () => {
 	const [currentPage, setCurrentPage] = useState(1);
 	const [rowsPerPage, setRowsPerPage] = useState(10);
 	const [sortColumn, setSortColumn] = useState("id");
-	const [data,setData] = useState([])
-	// ** Get data on mount
-	// useEffect(() => {
-	// 	dispatch(getAllData());
-	// 	dispatch(
-	// 		getData({
-	// 			sort,
-	// 			role: "",
-	// 			sortColumn,
-	// 			status: "",
-	// 			q: searchTerm,
-	// 			currentPlan: plan,
-	// 			page: currentPage,
-	// 			perPage: rowsPerPage,
-	// 		})
-	// 	);
-	// }, [dispatch, store.data.length]);
+	const [data, setData] = useState([])
 
-	
-	const getUsersData = () => {
-      CoreHttpHandler.request(
-        "sellers",
-        "fetchAdmin",
-        {
-          enabled: true,
-        },
-        (response) => {
-          const res = response.data.data;
-          setData(res);
-        },
-        (failure) => {}
+	const renderClient = (row) => {
+    const stateNum = Math.floor(Math.random() * 6),
+      states = [
+        "light-success",
+        "light-danger",
+        "light-warning",
+        "light-info",
+        "light-primary",
+        "light-secondary",
+      ],
+      color = states[stateNum];
+
+    if (row.image) {
+      return (
+        <Avatar className="me-1" img={row.avatar} width="32" height="32" />
       );
-  };
+    } else {
+      return (
+        <Avatar
+          color={color || "primary"}
+          className="me-1"
+          content={row.username || "John Doe"}
+          initials
+        />
+      );
+    }
+  	};
 
-  useEffect(() => {
-    getUsersData();
-  }, []);
+	// ** Renders Role Columns
+	const renderRole = (row) => {
+		const roleObj = {
+		subscriber: {
+			class: "text-primary",
+			icon: User,
+		},
+		maintainer: {
+			class: "text-success",
+			icon: Database,
+		},
+		editor: {
+			class: "text-info",
+			icon: Edit2,
+		},
+		seller: {
+			class: "text-warning",
+			icon: User,
+		},
+		admin: {
+			class: "text-danger",
+			icon: Slack,
+		},
+		};
 
+		const Icon = roleObj[row.role] ? roleObj[row.role].icon : Edit2;
+
+		return (
+		<span className="text-truncate text-capitalize align-middle">
+			<Icon
+			size={18}
+			className={`${
+				roleObj[row.role] ? roleObj[row.role].class : ""
+			} me-50`}
+			/>
+			{row.role}
+		</span>
+		);
+	};
+
+	const statusObj = {
+		pending: "light-warning",
+		active: "light-success",
+		inactive: "light-secondary",
+	};
+
+
+	const columns = [
+    {
+      name: "Name",
+      sortable: true,
+      minWidth: "297px",
+      sortField: "name",
+      selector: (row) => row.name,
+      cell: (row) => (
+        <div className="d-flex justify-content-left align-items-center">
+          <img
+            width="60"
+            height="35"
+            className="img-fluid"
+            src={
+              row?.attachment?.val[
+                row?.attachment["type"]?.findIndex((t) => t == "0")
+              ]
+            }
+          />
+          <div className="d-flex flex-column">
+            <span className="fw-bold" style={{marginLeft: "20px"}}>{row.name}</span>
+          </div>
+        </div>
+      ),
+    },
+    {
+      name: "Product Category",
+      sortable: true,
+      minWidth: "220px",
+      sortField: "product_category",
+      selector: (row) => row.product_category,
+      cell: (row) => (
+        <span style={{ marginLeft: "30px" }}>{row.product_category}</span>
+      ),
+    },
+    {
+      name: "Date",
+      sortable: true,
+      minWidth: "180px",
+      sortField: "dt",
+      selector: (row) => row.dt,
+      cell: (row) => <span>{moment(row.dt).format("DD-MM-YY, h:mm a")}</span>,
+    },
+    {
+      name: "Status",
+      sortable: true,
+      minWidth: "150px",
+      sortField: "enabled",
+      selector: (row) => (row.enabled == false ? "pending" : ""),
+      cell: (row) => (
+        <Badge
+          className="text-capitalize"
+          color={row.enabled == false ? statusObj["pending"] : ""}
+          pill
+        >
+          {row.enabled == false ? "pending" : "Pending"}
+        </Badge>
+      ),
+    },
+    {
+      name: "Details",
+      minWidth: "50px",
+      cell: (row) => (
+        <Link to={`/apps/product/edit/9`}>
+          <Button color="danger" size="sm" onClick={(e) => {}}>
+            Edit
+          </Button>
+        </Link>
+      ),
+    },
+  ];
+
+	// ** Get data on mount
+	useEffect(() => {
+		dispatch(getAllData());
+		dispatch(
+			getData({
+				sort,
+				role: "",
+				sortColumn,
+				status: "",
+				q: searchTerm,
+				currentPlan: plan,
+				page: currentPage,
+				perPage: rowsPerPage,
+			})
+		);
+	}, [dispatch, store.data.length]);
+
+	useEffect(()=>{
+		getUsersData();
+	},[getUsersData])
+
+	const getUsersData = () =>{
+
+			CoreHttpHandler.request(
+				"products",
+				"fetchSeller",
+				{},
+				(response) => {
+				const res = response.data.data;
+				setData(res);
+				},
+				(failure) => {}
+			);
+		} 
 
 	// ** Function in get data on page change
 	const handlePagination = (page) => {
@@ -181,7 +340,6 @@ const Table = () => {
 		);
 		setRowsPerPage(value);
 	};
-
 	// ** Function in get data on search query change
 	const handleFilter = (val) => {
 		setSearchTerm(val);
@@ -239,10 +397,9 @@ const Table = () => {
 			/>
 		);
 	};
-
 	// ** Table data to render
 	const dataToRender = () => {
-		return data.data
+		return data.data;
 		// const filters = {
 		// 	q: searchTerm,
 		// };
