@@ -91,7 +91,7 @@ export default [
         children: [
           {
             id: "Verify Users",
-            title: "Verify Users",
+            title: "Verify Sellers",
             type: "item",
             icon: <Circle size={12} />,
             translate: "Verify Users",
