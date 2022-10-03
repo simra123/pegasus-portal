@@ -84,7 +84,7 @@ const Login = () => {
 		formState: { errors },
 	} = useForm({ defaultValues });
 	const illustration = skin === "dark" ? "login-v2-dark.svg" : "login-v2.svg",
-		source = require(`@src/assets/images/pages/${illustration}`).default;
+		source = require(`@src/assets/images/pages/whiskey-glass.png`).default;
 	const userToken = localStorage.getItem("user_token");
 	const authSuccess = (response) => {
 		const token = response.data.data.token;
@@ -187,11 +187,12 @@ const Login = () => {
 					onClick={(e) => e.preventDefault()}>
 					<img
 						className='img-fluid'
-						width={100}
+						width={50}
 						src={logo}
 						alt='Login'
+						style={{display: "flex",alignItem: "center"}}
 					/>
-					{/* <h2 className='brand-text text-primary ms-1'>Pegasus</h2> */}
+					<h2 className='brand-text text-primary ms-1'>Pegasus</h2>
 				</Link>
 				<Col
 					className='d-none d-lg-flex align-items-center p-5'
