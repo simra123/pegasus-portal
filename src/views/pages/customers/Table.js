@@ -4,7 +4,7 @@ import { useState, useEffect, forwardRef } from "react";
 // ** Store & Actions
 import { useDispatch, useSelector } from "react-redux";
 import { getAllData, getData } from "@src/views/apps/user/store";
-import CoreHttpHandler  from "../../../http/services/CoreHttpHandler";
+import CoreHttpHandler from "../../../http/services/CoreHttpHandler";
 // ** Third Party Components
 import ReactPaginate from "react-paginate";
 import { ChevronDown } from "react-feather";
@@ -29,7 +29,7 @@ import { getUser } from "@src/views/apps/user/store";
 import { Slack, User, Settings, Database, Edit2, Eye } from "react-feather";
 
 // ** Reactstrap Imports
-import { Badge} from "reactstrap";
+import { Badge } from "reactstrap";
 import moment from "moment/moment";
 
 // ** Bootstrap Checkbox Component
@@ -42,7 +42,6 @@ const BootstrapCheckbox = forwardRef((props, ref) => (
 		/>
 	</div>
 ));
-
 
 // ** Table Header
 const CustomHeader = ({
@@ -110,7 +109,6 @@ const CustomHeader = ({
 };
 
 const Table = () => {
-
 	// ** Store Vars
 	const dispatch = useDispatch();
 	const store = useSelector((state) => state.users);
@@ -122,73 +120,78 @@ const Table = () => {
 	const [currentPage, setCurrentPage] = useState(1);
 	const [rowsPerPage, setRowsPerPage] = useState(10);
 	const [sortColumn, setSortColumn] = useState("id");
-	const [data, setData] = useState([])
+	const [data, setData] = useState([]);
 
 	const renderClient = (row) => {
-    const stateNum = Math.floor(Math.random() * 6),
-      states = [
-        "light-success",
-        "light-danger",
-        "light-warning",
-        "light-info",
-        "light-primary",
-        "light-secondary",
-      ],
-      color = states[stateNum];
+		const stateNum = Math.floor(Math.random() * 6),
+			states = [
+				"light-success",
+				"light-danger",
+				"light-warning",
+				"light-info",
+				"light-primary",
+				"light-secondary",
+			],
+			color = states[stateNum];
 
-    if (row.image) {
-      return (
-        <Avatar className="me-1" img={row.avatar} width="32" height="32" />
-      );
-    } else {
-      return (
-        <Avatar
-          color={color || "primary"}
-          className="me-1"
-          content={row.username || "John Doe"}
-          initials
-        />
-      );
-    }
-  	};
+		if (row.image) {
+			return (
+				<Avatar
+					className='me-1'
+					img={row.avatar}
+					width='32'
+					height='32'
+				/>
+			);
+		} else {
+			return (
+				<Avatar
+					color={color || "primary"}
+					className='me-1'
+					content={row.username || "John Doe"}
+					initials
+				/>
+			);
+		}
+	};
 
 	// ** Renders Role Columns
 	const renderRole = (row) => {
 		const roleObj = {
-		subscriber: {
-			class: "text-primary",
-			icon: User,
-		},
-		maintainer: {
-			class: "text-success",
-			icon: Database,
-		},
-		editor: {
-			class: "text-info",
-			icon: Edit2,
-		},
-		seller: {
-			class: "text-warning",
-			icon: User,
-		},
-		admin: {
-			class: "text-danger",
-			icon: Slack,
-		},
+			subscriber: {
+				class: "text-primary",
+				icon: User,
+			},
+			maintainer: {
+				class: "text-success",
+				icon: Database,
+			},
+			editor: {
+				class: "text-info",
+				icon: Edit2,
+			},
+			seller: {
+				class: "text-warning",
+				icon: User,
+			},
+			admin: {
+				class: "text-danger",
+				icon: Slack,
+			},
 		};
 
 		const Icon = roleObj[row.role] ? roleObj[row.role].icon : Edit2;
 
 		return (
-		<span className="text-truncate text-capitalize align-middle">
-			<Icon
-			size={18}
-			className={`${
-				roleObj[row.role] ? roleObj[row.role].class : ""
-			} me-50`}
-			/>
-			{row.role}
-		</span>
+			<span className='text-truncate text-capitalize align-middle'>
+				<Icon
+					size={18}
+					className={`${
+						roleObj[row.role] ? roleObj[row.role].class : ""
+					} me-50`}
+				/>
+				{row.role}
+			</span>
 		);
 	};
 
@@ -198,57 +201,56 @@ const Table = () => {
 		inactive: "light-secondary",
 	};
 
-
 	const columns = [
-    {
-      name: "Id",
-      sortable: true,
-      maxWidth: "150px",
-      sortField: "Id",
-      selector: (row) => row.id,
-      cell: (row) => <span>{row.id}</span>,
-    },
-    {
-      name: "Name",
-      sortable: true,
-      minWidth: "60px",
-      sortField: "username",
-      selector: (row) => row.username,
-      cell: (row) => (
-        <div className="d-flex justify-content-left align-items-center">
-          {renderClient(row)}
-          <div className="d-flex flex-column">
-            <Link
+		{
+			name: "Id",
+			sortable: true,
+			maxWidth: "150px",
+			sortField: "Id",
+			selector: (row) => row.id,
+			cell: (row) => <span>{row.id}</span>,
+		},
+		{
+			name: "Name",
+			sortable: true,
+			minWidth: "60px",
+			sortField: "username",
+			selector: (row) => row.username,
+			cell: (row) => (
+				<div className='d-flex justify-content-left align-items-center'>
+					{renderClient(row)}
+					<div className='d-flex flex-column'>
+						{/* <Link
               to={`/apps/seller/view/9`}
               className="user_name text-truncate text-body"
               onClick={() => store.dispatch(getUser(row.id))}
-            >
-              <span className="fw-bold">{row.username}</span>
-            </Link>
-            <small className="text-truncate text-muted mb-0">{row.email}</small>
-          </div>
-        </div>
-      ),
-    },
-    {
-      name: "Number",
-      sortable: true,
-      minWidth: "150px",
-      sortField: "billing",
-      selector: (row) => row.number,
-      sortField: "billing",
-      selector: (row) => row.number,
-      cell: (row) => <span className="text-capitalize">{row.number}</span>,
-    },
-    {
-      name: "Date",
-      sortable: true,
-      minWidth: "180px",
-      sortField: "dt",
-      selector: (row) => row.dt,
-      cell: (row) => <span>{moment(row.dt).format("DD-MM-YY, h:mm a")}</span>,
-    },
-  ];
+            > */}
+						<span className='fw-bold'>{row.username}</span>
+						{/* </Link> */}
+						<small className='text-truncate text-muted mb-0'>{row.email}</small>
+					</div>
+				</div>
+			),
+		},
+		{
+			name: "Number",
+			sortable: true,
+			minWidth: "150px",
+			sortField: "billing",
+			selector: (row) => row.number,
+			sortField: "billing",
+			selector: (row) => row.number,
+			cell: (row) => <span className='text-capitalize'>{row.number}</span>,
+		},
+		{
+			name: "Date",
+			sortable: true,
+			minWidth: "180px",
+			sortField: "dt",
+			selector: (row) => row.dt,
+			cell: (row) => <span>{moment(row.dt).format("DD-MM-YY, h:mm a")}</span>,
+		},
+	];
 
 	// ** Get data on mount
 	useEffect(() => {
@@ -267,23 +269,22 @@ const Table = () => {
 		);
 	}, [dispatch, store.data.length]);
 
-	useEffect(()=>{
+	useEffect(() => {
 		getUsersData();
-	},[getUsersData])
+	}, [getUsersData]);
 
-	const getUsersData = () =>{
-
-			CoreHttpHandler.request(
-				"customers",
-				"fetchAdmin",
-				{},
-				(response) => {
+	const getUsersData = () => {
+		CoreHttpHandler.request(
+			"customers",
+			"fetchAdmin",
+			{},
+			(response) => {
 				const res = response.data.data;
 				setData(res);
-				},
-				(failure) => {}
-			);
-		} 
+			},
+			(failure) => {}
+		);
+	};
 
 	// ** Function in get data on page change
 	const handlePagination = (page) => {

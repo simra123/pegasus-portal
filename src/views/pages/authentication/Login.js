@@ -29,19 +29,8 @@ import InputPasswordToggle from "@components/input-password-toggle";
 // ** Utils
 //import { getHomeRouteForLoggedInUser } from "@utils";
 // ** Reactstrap Imports
-import {
-	Row,
-	Col,
-	Form,
-	Input,
-	Label,
-	Alert,
-	Button,
-	CardText,
-	CardTitle,
-	UncontrolledTooltip,
-} from "reactstrap";
-// import { ToastError, ToastSuccess } from "../../reuseable";
+import { Row, Col, Form, Input, Label, CardTitle } from "reactstrap";
+import { ToastError, ToastSuccess, LoadingButton } from "../reuseable";
 // **
 import "@styles/react/pages/page-authentication.scss";
 import { useState } from "react";
@@ -77,6 +66,7 @@ const Login = () => {
 	const ability = useContext(AbilityContext);
 	const [username, setUsername] = useState("");
 	const [password, setPassword] = useState("");
+	const [loading, setLoading] = useState(false);
 	const {
 		control,
 		setError,
@@ -111,11 +101,12 @@ const Login = () => {
 	}, []);
 	//	console.log("hehehe");
 	const loginSuccess = (data) => {
-		// ToastSuccess(
-		// 	`Welcome ${data.data.data.user?.username}`,
-		// 	`You have successfully logged in as to Golive. Now you can
-		// start to explore. Enjoy!`
-		// );
+		setLoading(false);
+		ToastSuccess(
+			`Welcome ${data.data.data.user?.username}`,
+			`You have successfully logged in as to Golive. Now you can
+		start to explore. Enjoy!`
+		);
 		console.log(data.data.data);
 		const { token, user, acl } = data.data.data;
 		localStorage.setItem("user_token", token);
@@ -142,18 +133,20 @@ const Login = () => {
 		}, 2000);
 	};
 	const loginFailure = (error) => {
+		setLoading(false);
 		if (
 			error &&
 			error.response &&
 			error.response.data &&
 			error.response.data.message
 		) {
-			//	ToastError("Error", error.response.data.message);
+			ToastError("Error", error.response.data.message);
 		} else {
-			//	ToastError("Error", "Somthing went Wrong!");
+			ToastError("Error", "Somthing went Wrong!");
 		}
 	};
 	const onSubmit = (_data) => {
+		setLoading(true);
 		const data = {
 			username: username,
 			password: password,
@@ -168,7 +161,7 @@ const Login = () => {
 			//setSnackBarOpen(true)
 			// setSnackBarMessage('Please Fill The Required Fields')
 			// setOK('error')
-			// ToastError("Error", "Both Username and Password is required");
+			ToastError("Error", "Both Username and Password is required");
 		}
 		CoreHttpHandler.request(
 			"users",
@@ -271,12 +264,13 @@ const Login = () => {
 									Remember Me
 								</Label>
 							</div>
-							<Button
+							<LoadingButton
 								type='submit'
 								color='primary'
-								block>
-								Sign in
-							</Button>
+								text='Sign in'
+								block={true}
+								loading={loading}
+							/>
 						</Form>
 					</Col>
 				</Col>
