@@ -71,7 +71,7 @@ export default [
 			},
 			{
 				id: "shop",
-				title: "Verify Users",
+				title: "Verify Sellers",
 				icon: <Circle size={12} />,
 				navLink: "/apps/users/verify",
 			},
