@@ -18,11 +18,6 @@ const verifyConfig = {
 			exact: true,
 			component: lazy(() => import("./index")),
 		},
-		{
-			path: "/apps/rider",
-			exact: true,
-			component: lazy(() => import("./index")),
-		},
 	],
 };
 

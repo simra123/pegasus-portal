@@ -12,7 +12,7 @@ class CoreHttpHandler {
 		// this.apiEndpoint = 'http://192.168.2.62:3001/v1'
 		// this.apiEndpoint = 'https://local-whatsapp.its.com.pk/v1'
 		//	this.apiEndpoint = "https://waba-be-went.its.com.pk/v1";
-		this.apiEndpoint = "http://192.168.0.99:3001/v1";
+		this.apiEndpoint = "http://192.168.23.87:3001/v1";
 
 		this.config = {
 			headers: {
@@ -195,18 +195,6 @@ class CoreHttpHandler {
 					failure(error);
 				});
 		}
-		// if (apiCall.method === 'get') {
-		//
-		// } else {
-		// if (apiCall.method === 'put' || apiCall.method === 'post' || apiCall.method === 'delete' ) {
-		//     if (params.params) {
-		//         args.push(params.params)
-		//     } else args.push(params)
-		// } else {
-		//     args.push(params)
-		// }
-		// args.push(_config)
-		// }
 	}
 }
 

@@ -8,7 +8,6 @@ import Profile from "./profile";
 import StoreDetails from "./store-details";
 import Header from "./products/ProductsHeader";
 import { getAllData, getData } from "@src/views/apps/user/store";
-import { useHistory, useLocation } from "react-router-dom";
 
 // ** Custom Components
 import Breadcrumbs from "@components/breadcrumbs";
@@ -36,10 +35,7 @@ const Shop = () => {
 	// ** Vars
 	const dispatch = useDispatch();
 	const store = useSelector((state) => state.ecommerce);
-	const location = useLocation();
 
-	const [id, setId] = useState(location?.state?.id);
-	console.log(id, "id");
 	// ** Get products
 	useEffect(() => {
 		dispatch(
@@ -59,7 +55,6 @@ const Shop = () => {
 					<Header setSidebarOpen={setSidebarOpen} />
 					{activeTab === "products" ? (
 						<Products
-							storeId={id}
 							store={store}
 							dispatch={dispatch}
 							addToCart={addToCart}

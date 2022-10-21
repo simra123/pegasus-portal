@@ -1,11 +1,10 @@
-
 import UserApis from "./users";
-import ClientApis from "./client"
+import ClientApis from "./client";
 import Sellers from "./sellers";
-import Products from './products'
-import Customers from "./customers"
+import Products from "./products";
+import Customers from "./customers";
 import Store from "./stores";
-
+import Riders from "./riders";
 class ApiResolver {
 	constructor() {
 		this.apis = {
@@ -14,7 +13,8 @@ class ApiResolver {
 			sellers: Sellers.apis(),
 			products: Products.apis(),
 			customers: Customers.apis(),
-			stores: Store.apis()
+			stores: Store.apis(),
+			riders: Riders.apis(),
 		};
 	}
 

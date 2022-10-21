@@ -49,16 +49,16 @@ const SellersTable = () => {
 	const history = useHistory();
 	const getUsersData = () => {
 		CoreHttpHandler.request(
-			"customers",
-			"fetchAdmin",
+			"riders",
+			"fetch",
 			{
-				...currentParams,
+				status: true,
 			},
 			(response) => {
 				setLoading(false);
-				const res = response.data.data;
-				setTotalPages(res.totalPages);
-				setData(res.data);
+				const res = response.data.data.riders;
+				//	setTotalPages(res.totalPages);
+				setData(res);
 			},
 			(failure) => {
 				setLoading(false);
@@ -83,22 +83,27 @@ const SellersTable = () => {
 								<tr style={{ fontSize: "11px" }}>
 									<th>SN</th>
 									<th>Name</th>
+									<th>Email</th>
+									<th>City</th>
 									<th>Number</th>
 									<th>Date</th>
 									<th>Status</th>
+									<th>Details</th>
 								</tr>
 							</thead>
 							<tbody>
-								{data?.map((customer, index) => {
+								{data?.map((riders, index) => {
 									return (
-										<tr key={customer.id}>
+										<tr key={riders.id}>
 											<td>{index + 1}</td>
 
-											<td>{customer.username}</td>
-											<td>{customer.number}</td>
-											<td>{customer.dt}</td>
+											<td>{riders.username}</td>
+											<td>{riders.email}</td>
+											<td>{riders.city}</td>
+											<td>{riders.number}</td>
+											<td>{riders.dt}</td>
 											<td>
-												{customer.enabled ? (
+												{riders.enabled ? (
 													<Badge
 														pill
 														color='light-primary'
@@ -114,16 +119,17 @@ const SellersTable = () => {
 													</Badge>
 												)}
 											</td>
-											{/* <td>
+											<td>
 												{" "}
 												<Button
 													color='primary'
 													size='sm'
 													className='text-primary'
-													onClick={() => handleDetails(customer)}>
+													//onClick={() => handleDetails(seller)}
+												>
 													view
 												</Button>
-											</td> */}
+											</td>
 										</tr>
 									);
 								})}
@@ -136,12 +142,12 @@ const SellersTable = () => {
 					<Loader loading={loading} />
 				</CardBody>
 			</Card>
-			<Pagination
+			{/* <Pagination
 				total={totalPages}
 				handlePagination={(e) =>
 					setCurrentParams({ limit: 10, page: e.selected })
 				}
-			/>
+			/> */}
 		</>
 	);
 };
