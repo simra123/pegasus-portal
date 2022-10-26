@@ -1,9 +1,8 @@
 // ** React Imports
 import { useState, useEffect, forwardRef } from "react";
 import { useHistory, Link } from "react-router-dom";
-import moment from "moment";
 import { Loader, Pagination, DataNotFound, SearchFilters } from "../reuseable";
-
+import moment from "moment";
 import {
 	Card,
 	Input,
@@ -15,34 +14,42 @@ import {
 	CardBody,
 } from "reactstrap";
 import Avatar from "@components/avatar";
-
+import { Navigation } from "react-feather";
 // ** Styles
 import "@styles/react/libs/tables/react-dataTable-component.scss";
 import CoreHttpHandler from "../../../http/services/CoreHttpHandler";
 
 const SellersTable = () => {
+	const handleDetails = (e) => {
+		history.push({
+			pathname: "/apps/sellers/details",
+			state: { id: e.store_id },
+		});
+	};
+	const [tempTotal, setTempTotal] = useState(0);
 	const [data, setData] = useState([]);
-	const [data2, setData2] = useState([]);
 	const [loading, setLoading] = useState(true);
 	const [totalPages, setTotalPages] = useState(0);
-	const [tempTotal, setTempTotal] = useState(0);
-
 	const [currentParams, setCurrentParams] = useState({
 		limit: 10,
 		page: 0,
 	});
 	const [picker, setPicker] = useState(new Date());
-	const [filter, setFilter] = useState("all");
+	const [filter, setFilter] = useState("");
 	const [searchVal, setSearchVal] = useState("");
+	const [data2, setData2] = useState([]);
 
-	const getUsersData = (start, end, val) => {
+	const history = useHistory();
+	const getOrders = (start, end, val, page) => {
 		setLoading(true);
+
 		CoreHttpHandler.request(
-			"riders",
+			"orders",
 			"fetch",
 			{
-				status: true,
-				...currentParams,
+				//status: true,
+				limit: currentParams.limit,
+				page: page ? 0 : currentParams.page,
 				filter: val == undefined ? filter : val,
 				searchValue: searchVal,
 				startDate: start,
@@ -50,13 +57,14 @@ const SellersTable = () => {
 			},
 			(response) => {
 				setLoading(false);
-				const res = response.data.data.riders;
+				const res = response.data.data.orders;
 				setTotalPages(res.totalPages);
 				if (filter == "all" || filter == "") {
-					setData2(res.data);
+					setData2(res.orders);
 					setTempTotal(res.totalPages);
 				}
-				setData(res.data);
+				setData(res.orders);
+				//console.log(res);
 			},
 			(failure) => {
 				setLoading(false);
@@ -66,23 +74,59 @@ const SellersTable = () => {
 	};
 
 	useEffect(() => {
-		getUsersData();
+		getOrders();
 	}, [currentParams]);
 
 	const handleFilter = () => {
-		if (filter) {
-			setCurrentParams({
-				limit: 10,
-				page: 0,
-			});
-		}
 		if (picker[0] && picker[1]) {
-			getUsersData(
+			getOrders(
 				`${moment(picker[0]).format("YYYY-MM-DD")} 00:00:00`,
 				`${moment(picker[1]).format("YYYY-MM-DD")} 00:00:00`
 			);
 		} else {
-			getUsersData();
+			getOrders(null, null, null, true);
+		}
+	};
+
+	const orderStatus = (status) => {
+		switch (status) {
+			case "accepted":
+				return (
+					<Badge
+						pill
+						color='light-primary'
+						className='mr-1'>
+						Accepted
+					</Badge>
+				);
+			case "order_placed":
+				return (
+					<Badge
+						pill
+						color='dark'
+						className='mr-1'>
+						Order Placed
+					</Badge>
+				);
+			case "delieverd":
+				return (
+					<Badge
+						pill
+						color='light-success'
+						className='mr-1'>
+						Delivered
+					</Badge>
+				);
+
+			default:
+				return (
+					<Badge
+						pill
+						color='light-primary'
+						className='mr-1'>
+						Accepted
+					</Badge>
+				);
 		}
 	};
 	return (
@@ -94,14 +138,28 @@ const SellersTable = () => {
 						setFilter={setFilter}
 						setSearchVal={setSearchVal}
 						searchVal={searchVal}
-						getData={getUsersData}
+						getData={getOrders}
 						data2={data2}
 						handleFilter={handleFilter}
 						setPicker={setPicker}
 						picker={picker}
 						setData={setData}
-						tempTotal={tempTotal}
 						setTotalPages={setTotalPages}
+						tempTotal={tempTotal}
+						options={[
+							{
+								name: "Order no",
+								value: "order_no",
+							},
+							{
+								name: "Status",
+								value: "status",
+							},
+							{
+								name: "Date",
+								value: "date",
+							},
+						]}
 					/>
 					{!loading && data ? (
 						<Table
@@ -110,52 +168,42 @@ const SellersTable = () => {
 							className='border-none'>
 							<thead>
 								<tr style={{ fontSize: "11px" }}>
-									<th>SN</th>
-									<th>Name</th>
-									<th>Email</th>
+									<th>Order id</th>
+									<th>order number</th>
 									<th>City</th>
-									<th>Number</th>
+									<th>Amount</th>
 									<th>Date</th>
 									<th>Status</th>
+									<th>location</th>
 									<th>Details</th>
 								</tr>
 							</thead>
 							<tbody>
-								{data?.map((riders, index) => {
+								{data?.map((order, index) => {
 									return (
-										<tr key={riders.id}>
-											<td>{index + 1}</td>
+										<tr
+											style={{ fontSize: "13px" }}
+											key={order.order_id}>
+											<td>{order.order_id}</td>
 
-											<td>{riders.username}</td>
-											<td>{riders.email}</td>
-											<td>{riders.city}</td>
-											<td>{riders.number}</td>
-											<td>{riders.dt}</td>
+											<td>{order.order_no}</td>
+											<td>{order.city}</td>
+											<td>{order.amount}</td>
+											<td>{moment(order.dt).format("DD-MM-YY")}</td>
+											<td>{orderStatus(order.status)}</td>
 											<td>
-												{riders.enabled ? (
-													<Badge
-														pill
-														color='light-primary'
-														className='mr-1'>
-														Active
-													</Badge>
-												) : (
-													<Badge
-														pill
-														color='light-danger'
-														className='mr-1'>
-														InActive
-													</Badge>
-												)}
+												<a
+													href={`https://www.google.com/maps/place/${order.user_location}`}
+													target='_blank'>
+													<Navigation size='20' />
+												</a>
 											</td>
 											<td>
-												{" "}
 												<Button
 													color='primary'
 													size='sm'
 													className='text-primary'
-													//onClick={() => handleDetails(seller)}
-												>
+													onClick={() => handleDetails(seller)}>
 													view
 												</Button>
 											</td>

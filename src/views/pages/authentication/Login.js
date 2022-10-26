@@ -79,6 +79,7 @@ const Login = () => {
 	const authSuccess = (response) => {
 		const token = response.data.data.token;
 		localStorage.setItem("client_token", token);
+		console.log(response, "res");
 		// CoreHttpHandler.request(
 		//   "core",
 		//   "clientSettings",
@@ -87,8 +88,11 @@ const Login = () => {
 		//   settingsFailure
 		// );
 	};
-	const authFailure = (error) => {};
+	const authFailure = (error) => {
+		console.log(error, "error");
+	};
 	const clientAuthentication = () => {
+		console.log("working");
 		CoreHttpHandler.request("client", "auth", {}, authSuccess, authFailure);
 	};
 	const checkUser = () => {
@@ -183,7 +187,7 @@ const Login = () => {
 						width={50}
 						src={logo}
 						alt='Login'
-						style={{display: "flex",alignItem: "center"}}
+						style={{ display: "flex", alignItem: "center" }}
 					/>
 					<h2 className='brand-text text-primary ms-1'>Pegasus</h2>
 				</Link>

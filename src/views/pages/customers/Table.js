@@ -2,7 +2,7 @@
 import { useState, useEffect, forwardRef } from "react";
 import { useHistory, Link } from "react-router-dom";
 import moment from "moment";
-import { Loader, Pagination } from "../reuseable";
+import { Loader, Pagination, SearchFilters } from "../reuseable";
 
 import {
 	Card,
@@ -40,28 +40,46 @@ const SellersTable = () => {
 	};
 
 	const [data, setData] = useState([]);
+	const [data2, setData2] = useState([]);
 	const [loading, setLoading] = useState(true);
 	const [totalPages, setTotalPages] = useState(0);
 	const [currentParams, setCurrentParams] = useState({
 		limit: 10,
 		page: 0,
 	});
+	const [tempTotal, setTempTotal] = useState(0);
+
+	const [picker, setPicker] = useState(new Date());
+	const [filter, setFilter] = useState("all");
+	const [searchVal, setSearchVal] = useState("");
 	const history = useHistory();
-	const getUsersData = () => {
+	const getUsersData = (start, end, val) => {
+		setLoading(true);
+
 		CoreHttpHandler.request(
 			"customers",
 			"fetchAdmin",
 			{
+				enabled: true,
 				...currentParams,
+				filter: val == undefined ? filter : val,
+				searchValue: searchVal,
+				startDate: start,
+				endDate: end,
 			},
 			(response) => {
 				setLoading(false);
 				const res = response.data.data;
 				setTotalPages(res.totalPages);
+				if (filter == "all" || filter == "") {
+					setData2(res.data);
+					setTempTotal(res.totalPages);
+				}
 				setData(res.data);
 			},
 			(failure) => {
 				setLoading(false);
+				console.log(failure);
 			}
 		);
 	};
@@ -69,11 +87,40 @@ const SellersTable = () => {
 	useEffect(() => {
 		getUsersData();
 	}, [currentParams]);
-
+	const handleFilter = () => {
+		if (filter) {
+			setCurrentParams({
+				limit: 10,
+				page: 0,
+			});
+		}
+		if (picker[0] && picker[1]) {
+			getUsersData(
+				`${moment(picker[0]).format("YYYY-MM-DD")} 00:00:00`,
+				`${moment(picker[1]).format("YYYY-MM-DD")} 00:00:00`
+			);
+		} else {
+			getUsersData();
+		}
+	};
 	return (
 		<>
 			<Card>
 				<CardBody>
+					<SearchFilters
+						filter={filter}
+						setFilter={setFilter}
+						setSearchVal={setSearchVal}
+						searchVal={searchVal}
+						getData={getUsersData}
+						data2={data2}
+						handleFilter={handleFilter}
+						setPicker={setPicker}
+						picker={picker}
+						setData={setData}
+						tempTotal={tempTotal}
+						setTotalPages={setTotalPages}
+					/>
 					{!loading && data ? (
 						<Table
 							striped

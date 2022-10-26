@@ -1,5 +1,5 @@
 import SellersConfig from "../views/pages/sellers/config";
-import OrdersConfig from "../views/pages/invoice/config";
+import OrdersConfig from "../views/pages/orders/config";
 import VerifyConfig from "../views/pages/verification/config";
 import ProfileConfig from "../views/pages/user/config";
 import CustomerConfig from "../views/pages/customers/config";

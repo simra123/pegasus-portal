@@ -51,12 +51,12 @@ const ToastAlertError = (text) => {
 	toast.error(
 		<div className='toastify-header pb-0'>
 			<div className='title-wrapper'>
-				<Avatar
+				{/* <Avatar
 					size='sm'
 					color='danger'
 					icon={<XCircle />}
-				/>
-				<h6 className='ml-1 p-0 mt-1 '>{text}</h6>
+				/> */}
+				<h6 className='ml-1 p-0  '>{text}</h6>
 			</div>
 		</div>,
 		{

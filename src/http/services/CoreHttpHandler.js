@@ -11,8 +11,8 @@ class CoreHttpHandler {
 
 		// this.apiEndpoint = 'http://192.168.2.62:3001/v1'
 		// this.apiEndpoint = 'https://local-whatsapp.its.com.pk/v1'
-		//	this.apiEndpoint = "https://waba-be-went.its.com.pk/v1";
-		this.apiEndpoint = "http://192.168.23.87:3001/v1";
+		this.apiEndpoint = " http://marketplace-be.uatlink.com/v1";
+		//	this.apiEndpoint = "http://192.168.23.87:3001/v1";
 
 		this.config = {
 			headers: {
@@ -77,7 +77,6 @@ class CoreHttpHandler {
 		}
 
 		const args = [apiPath];
-		console.log(apiCall, "apiclallll");
 		if (apiCall.method === "get") {
 			args.push(_config);
 		} else {
