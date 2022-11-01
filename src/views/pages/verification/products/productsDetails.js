@@ -1,30 +1,29 @@
 import {
-	Card,
-	Col,
-	Row,
-	CardBody,
-	CardText,
 	Button,
-	Badge,
-	CardHeader,
+	Modal,
+	ModalHeader,
+	ModalBody,
+	ModalFooter,
+	Row,
+	Col,
+	CardText,
 } from "reactstrap";
 import { Star, ShoppingCart, X, DollarSign } from "react-feather";
 import classnames from "classnames";
-import "@styles/base/pages/app-ecommerce-details.scss";
 
-const ProductDetails = ({ data, setShowDetails }) => {
-	const image = data?.attachment.filter((att) => att.type == 0);
+const ProductDetails = ({ modal, setModal, data }) => {
+	const image = data?.attachment?.filter((att) => att.type == 0);
+	console.log(image);
 	return (
-		<Card className='app-ecommerce-details mt-2'>
-			<CardHeader style={{ marginLeft: "auto" }}>
-				<X
-					size='12'
-					color='white'
-					className='cursor-pointer'
-					onClick={() => setShowDetails(false)}
-				/>
-			</CardHeader>
-			<CardBody>
+		<Modal
+			isOpen={modal === true}
+			toggle={() => setModal(!modal)}
+			className='modal-dialog-centered'
+			modalClassName={data.modalColor}
+			size='lg'
+			key={data.id}>
+			<ModalHeader toggle={() => setModal(!modal)}>Product Details</ModalHeader>
+			<ModalBody>
 				<Row className='my-2 ecommerce-application'>
 					<Col
 						className='d-flex align-items-center justify-content-center mb-2 mb-md-0'
@@ -33,7 +32,7 @@ const ProductDetails = ({ data, setShowDetails }) => {
 						<div className='d-flex align-items-center justify-content-center'>
 							<img
 								className='img-fluid product-img'
-								src={image[0]?.url}
+								src={image ? image[0]?.url : null}
 								alt={data.name}
 							/>
 						</div>
@@ -80,8 +79,15 @@ const ProductDetails = ({ data, setShowDetails }) => {
 						</ul>
 					</Col>
 				</Row>
-			</CardBody>
-		</Card>
+			</ModalBody>
+			{/* <ModalFooter>
+				<Button
+					color={"primary"}
+					onClick={() => setModal(!modal)}>
+					OK
+				</Button>
+			</ModalFooter> */}
+		</Modal>
 	);
 };
 export default ProductDetails;

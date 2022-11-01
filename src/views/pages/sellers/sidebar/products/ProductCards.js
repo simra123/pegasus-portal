@@ -51,6 +51,7 @@ const ProductCards = (props) => {
 		return (
 			<>
 				{products.map((item) => {
+					const image = item.attachment.filter((att) => att.type == 0);
 					return (
 						<>
 							{!showDetails && (
@@ -66,11 +67,7 @@ const ProductCards = (props) => {
 											className=''
 											height={300}
 											width={300}
-											src={
-												item?.attachment?.val[
-													item?.attachment["type"]?.findIndex((t) => t == "0")
-												]
-											}
+											src={image[0]?.url}
 											alt={item.name}
 										/>
 									</div>

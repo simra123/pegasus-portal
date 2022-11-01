@@ -30,11 +30,11 @@ const ToastAlertSuccess = (text) => {
 	toast.success(
 		<div className='toastify-header pb-0'>
 			<div className='title-wrapper'>
-				<Avatar
+				{/* <Avatar
 					size='sm'
 					color='success'
 					icon={<Check />}
-				/>
+				/> */}
 				<h6 className='ml-1 p-0 mt-1 '>{text}</h6>
 			</div>
 		</div>,
