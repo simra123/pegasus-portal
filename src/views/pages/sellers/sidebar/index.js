@@ -6,6 +6,7 @@ import Sidebar from "./Sidebar";
 import Products from "./products";
 import Profile from "./profile";
 import StoreDetails from "./store-details";
+import Orders from "./orders"
 import Header from "./products/ProductsHeader";
 import { getAllData, getData } from "@src/views/apps/user/store";
 import { useHistory, useLocation } from "react-router-dom";
@@ -39,7 +40,8 @@ const Shop = () => {
 	const location = useLocation();
 
 	const [id, setId] = useState(location?.state?.id);
-	console.log(id, "id");
+	const [sellerData,setSellerData] = useState(location?.state?.data)
+	console.log(sellerData,'selelel');
 	// ** Get products
 	useEffect(() => {
 		dispatch(
@@ -51,7 +53,7 @@ const Shop = () => {
 			})
 		);
 	}, [dispatch]);
-	console.log(activeTab, "active tab");
+
 	return (
 		<Fragment>
 			<div className='content-detached content-right'>
@@ -74,9 +76,11 @@ const Shop = () => {
 							deleteWishlistItem={deleteWishlistItem}
 						/>
 					) : activeTab === "profile" ? (
-						<Profile />
+							<Profile data={sellerData}/>
 					) : activeTab === "store" ? (
-						<StoreDetails />
+						<StoreDetails data={sellerData}/>
+					) : activeTab === "order" ? (
+						<Orders data={sellerData}/>
 					) : null}
 				</div>
 			</div>

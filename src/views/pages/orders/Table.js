@@ -117,6 +117,13 @@ const SellersTable = () => {
 						Delivered
 					</Badge>
 				);
+			case "picked":
+          return (
+            <Badge pill color="light-secondary" className="mr-1">
+              Picked
+            </Badge>
+          );
+
 
 			default:
 				return (

@@ -19,7 +19,8 @@ import {
 import { Link } from "react-router-dom";
 import { MdProductionQuantityLimits } from "react-icons/md";
 import { CgProfile } from "react-icons/cg";
-import { BiStoreAlt } from "react-icons/bi";
+import { FiBox } from "react-icons/fi";
+import {BiStoreAlt} from "react-icons/bi"
 // ** Styles
 import "@styles/react/libs/noui-slider/noui-slider.scss";
 
@@ -84,6 +85,18 @@ const Sidebar = (props) => {
 										size={18}
 									/>
 									<span className='align-middle'>Store</span>
+								</ListGroupItem>
+								<ListGroupItem
+									action
+									tag={Link}
+									to={"/apps/sellers/details"}
+									active={activeTab == "order"}
+									onClick={() => setActiveTab("order")}>
+									<FiBox
+										className='me-75'
+										size={18}
+									/>
+									<span className='align-middle'>Orders</span>
 								</ListGroupItem>
 							</ListGroup>
 						</div>

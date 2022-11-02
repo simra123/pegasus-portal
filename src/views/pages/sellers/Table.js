@@ -43,7 +43,7 @@ const SellersTable = () => {
 	const handleDetails = (e) => {
 		history.push({
 			pathname: "/apps/sellers/details",
-			state: { id: e.store_id },
+			state: { id: e.store_id, data: e },
 		});
 	};
 

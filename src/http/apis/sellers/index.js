@@ -15,6 +15,20 @@ class APIS {
         method: "post",
         path: "/sellers/list",
       },
+      updateAdmin: {
+        headers: {
+          "xt-user-token": null,
+        },
+        method: "post",
+        path: "/seller/update/admin",
+      },
+      fetchSellerOrders: {
+        headers: {
+          "xt-user-token": null,
+        },
+        method: "post",
+        path: "/seller/orders",
+      },
     };
   }
 }
