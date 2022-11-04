@@ -1,5 +1,7 @@
 // ** React Imports
 import { useState, Fragment } from "react";
+import logo from "@src/assets/images/logo/logo.png";
+import Editor from "../../../../components/Editor";
 
 // ** Reactstrap Imports
 import {
@@ -29,9 +31,13 @@ import Avatar from "@components/avatar";
 import storeImage from "@src/assets/images/profile/user-uploads/store.jpg";
 // ** Utils
 import { selectThemeColors } from "@utils";
+import { MapPin } from "react-feather";
 
 // ** Styles
 import "@styles/react/libs/react-select/_react-select.scss";
+import moment from "moment";
+import CoreHttpHandler from "../../../../../http/services/CoreHttpHandler";
+import ContentUploadHandler from "../../../../../http/services/ContentUploadHandler";
 
 const roleColors = {
 	editor: "light-info",
@@ -71,9 +77,12 @@ const languageOptions = [
 
 const MySwal = withReactContent(Swal);
 
-const UserInfoCard = ({ selectedUser }) => {
+
+const UserInfoCard = ({ selectedUser,data }) => {
 	// ** State
 	const [show, setShow] = useState(false);
+	const [avatar, setAvatar] = useState("");
+	const [bodyContentEnglish, setBodyContentEnglish] = useState(data?.description);
 
 	// ** Hook
 	const {
@@ -84,11 +93,21 @@ const UserInfoCard = ({ selectedUser }) => {
 		formState: { errors },
 	} = useForm({
 		defaultValues: {
-			username: selectedUser?.username,
-			lastName: selectedUser?.fullName.split(" ")[1],
-			firstName: selectedUser?.fullName.split(" ")[0],
+			name: data?.name,
+			image: data?.store_image,
+			city: data?.store_city,
+			type: data?.type,
+			number: data?.store_number,
+			description: data?.description,
+			location: data?.location
 		},
 	});
+
+	const categoryOptions = [
+    { value: "vape", label: "Vape" },
+    { value: "e-cigs", label: "E-cigs" },
+  ];
+
 
 	// ** render user img
 	const renderUserImg = () => {
@@ -98,9 +117,7 @@ const UserInfoCard = ({ selectedUser }) => {
           height="240"
           width="240"
           alt="user-avatar"
-          src={
-            "https://s3-media0.fl.yelpcdn.com/bphoto/YNaPvxnUhOL0kTjGJ02KMQ/l.jpg"
-          }
+          src={avatar == "" ? data?.store_image : avatar}
           className="img-fluid rounded mt-3 mb-2"
         />
       );
@@ -136,83 +153,282 @@ const UserInfoCard = ({ selectedUser }) => {
 		}
 	};
 
-	const onSubmit = (data) => {
-		if (Object.values(data).every((field) => field.length > 0)) {
-			setShow(false);
-		} else {
-			for (const key in data) {
-				if (data[key].length === 0) {
-					setError(key, {
-						type: "manual",
-					});
-				}
-			}
-		}
-	};
+	const [type, setType] = useState("");
+    const [number, setNumber] = useState("");
+    const [fileData, setFileData] = useState("");
+    const [url, setUrl] = useState("");
+    const [name, setName] = useState("");
 
-	const handleReset = () => {
-		reset({
-			username: selectedUser?.username,
-			lastName: selectedUser?.fullName.split(" ")[1],
-			firstName: selectedUser?.fullName.split(" ")[0],
-		});
-	};
+    const onChange = (e) => {
+      let _name = e.target.files[0].name;
 
-	// const handleSuspendedClick = () => {
-	// 	return MySwal.fire({
-	// 		title: "Are you sure?",
-	// 		text: "You won't be able to revert user!",
-	// 		icon: "warning",
-	// 		showCancelButton: true,
-	// 		confirmButtonText: "Yes, Suspend user!",
-	// 		customClass: {
-	// 			confirmButton: "btn btn-primary",
-	// 			cancelButton: "btn btn-outline-danger ms-1",
-	// 		},
-	// 		buttonsStyling: false,
-	// 	}).then(function (result) {
-	// 		if (result.value) {
-	// 			MySwal.fire({
-	// 				icon: "success",
-	// 				title: "Suspended!",
-	// 				text: "User has been suspended.",
-	// 				customClass: {
-	// 					confirmButton: "btn btn-success",
-	// 				},
-	// 			});
-	// 		} else if (result.dismiss === MySwal.DismissReason.cancel) {
-	// 			MySwal.fire({
-	// 				title: "Cancelled",
-	// 				text: "Cancelled Suspension :)",
-	// 				icon: "error",
-	// 				customClass: {
-	// 					confirmButton: "btn btn-success",
-	// 				},
-	// 			});
-	// 		}
-	// 	});
-	// };
+      if (!_name.includes(".png")) {
+        Swal.fire({
+          icon: "error",
+          title: "Error",
+          text: "PNG images are allowed",
+          confirmButtonColor: "#ff3600",
+        });
+        return;
+      }
+      const reader = new FileReader(),
+        files = e.target.files;
+      reader.onload = function () {
+        setAvatar(reader.result);
+      };
+      reader.readAsDataURL(files[0]);
+      _name = _name.replace(/\s/g, "");
+      setName(_name);
+      setFileData(e.target.files[0]);
+    };
+
+    const onSubmit = (datas) => {
+      document.body.style.opacity = 0.4;
+      const _data = new FormData();
+		console.log(datas,'lfofoof')
+      if (fileData != "") {
+        console.log("ehrhehe");
+        _data.append("file", fileData, `${new Date().getTime()}_${name}`);
+        ContentUploadHandler.request(
+          "content",
+          "upload",
+          {
+            params: _data,
+          },
+          (response) => {
+            CoreHttpHandler.request(
+              "stores",
+              "update_admin",
+              {
+                number: number == "" ? datas?.number : number,
+                enable: true,
+                name: datas?.name,
+                image: `https://upload.its.com.pk/v1/fetch/file/${response.data.data.file}`,
+                store_id: data?.store_id,
+                city: datas?.city,
+                type: type,
+                description: bodyContentEnglish,
+                location: datas?.location,
+              },
+              (response) => {
+                document.body.style.opacity = 1;
+                Swal.fire({
+                  icon: "success",
+                  title: "Success",
+                  text: "Successfully Updated Seller Details",
+                  confirmButtonColor: "green",
+                });
+              },
+              (error) => {}
+            );
+          },
+          (error) => {}
+        );
+      } else {
+        CoreHttpHandler.request(
+          "stores",
+          "update_admin",
+          {
+            number: number == "" ? datas?.number : number,
+            enable: true,
+            name: datas?.name,
+            image: datas?.image,
+            store_id: data?.store_id,
+            city: datas?.city,
+            type: type,
+            description: bodyContentEnglish,
+            location: datas?.location,
+          },
+          (response) => {
+            document.body.style.opacity = 1;
+            Swal.fire({
+              icon: "success",
+              title: "Success",
+              text: "Successfully Updated Seller Details",
+              confirmButtonColor: "green",
+            });
+          },
+          (error) => {}
+        );
+      }
+    };
+
+    const handleImgReset = () => {
+      setAvatar("");
+      setFileData("");
+    };
+
 
 	return (
-		<Fragment>
-			<Card>
-				<CardBody>
-					<div className='user-avatar-section'>
-						<div className='d-flex align-items-center flex-column'>
-							{renderUserImg()}
-							<div className='d-flex flex-column align-items-center text-center'>
-								<div className='user-info'>
-									<h4>PRODUCE</h4>
-									<Badge
-										color={roleColors["subscriber"]}
-										className='text-capitalize'>
-										Seller
-									</Badge>
-								</div>
-							</div>
-						</div>
-					</div>
-					<div className='d-flex justify-content-around my-2 pt-75'>
+    <Fragment>
+      <Card>
+        <CardBody>
+          <div className="user-avatar-section">
+            <div className="d-flex align-items-center flex-column">
+              {renderUserImg()}
+              <div className="align-items-center text-center">
+                <Button
+                  tag={Label}
+                  className="mb-75 me-75"
+                  size="sm"
+                  color="primary"
+                >
+                  Upload
+                  <Input
+                    type="file"
+                    onChange={onChange}
+                    hidden
+                    accept="image/*"
+                  />
+                </Button>
+                <Button
+                  className="mb-75"
+                  color="secondary"
+                  size="sm"
+                  outline
+                  onClick={handleImgReset}
+                >
+                  Reset
+                </Button>
+                <p className="mb-0">Allowed PNG. Max size of 1 MB</p>
+              </div>
+              <div
+                className="d-flex flex-column align-items-center text-center"
+                style={{ marginTop: "50px" }}
+              >
+                <div className="user-info">
+                  <h4>{data?.name}</h4>
+                  <Badge
+                    color={roleColors["subscriber"]}
+                    className="text-capitalize"
+                  >
+                    Store
+                  </Badge>
+                </div>
+              </div>
+            </div>
+          </div>
+          <Form className="mt-2 pt-50" onSubmit={handleSubmit(onSubmit)}>
+            <Row>
+              <Col sm="6" className="mb-1" style={{ marginTop: "20px" }}>
+                <Label className="form-label" for="Store">
+                  Store Name
+                </Label>
+                <Controller
+                  name="name"
+                  control={control}
+                  render={({ field }) => (
+                    <Input
+                      defaultValue={data?.name}
+                      id="name"
+                      name="names"
+                      placeholder="Store Name"
+                      {...field}
+                    />
+                  )}
+                />
+              </Col>
+
+              {/* <Col sm="6" className="mb-1">
+                <Label className="form-label" for="address">
+                  Address
+                </Label>
+                <Input
+                  id="address"
+                  name="address"
+                  defaultValue={data?.store_address}
+                />
+              </Col> */}
+              <Col sm="6" className="mb-1" style={{ marginTop: "20px" }}>
+                <Label className="form-label" for="accountState">
+                  Store Type
+                </Label>
+                
+                    <Select
+                      id="type"
+                      name="type"
+                      isClearable={false}
+                      className="react-select"
+                      classNamePrefix="select"
+                      options={categoryOptions}
+                      theme={selectThemeColors}
+                      onChange={(e) => setType(e.value)}
+                      defaultValue={data?.type == "vape"? categoryOptions[0] : categoryOptions[1]}
+					  
+                    />
+              
+              </Col>
+              <Col sm="6" className="mb-1">
+                <Label className="form-label" for="zipCode">
+                  Store City
+                </Label>
+                <Controller
+                  name="city"
+                  control={control}
+                  render={({ field }) => (
+                    <Input
+                      id="StoreCity"
+                      name="StoreCity"
+                      defaultValue={data?.store_city}
+                      {...field}
+                    />
+                  )}
+                />
+              </Col>
+              <Col sm="6" className="mb-1">
+                <Label className="form-label" for="number">
+                  Store Number
+                </Label>
+                <Controller
+                  name="number"
+                  control={control}
+                  render={({ field }) => (
+                    <Input defaultValue={data?.store_number} {...field} />
+                  )}
+                />
+              </Col>
+              <Col sm="6" className="mb-1">
+                <Label className="form-label" for="created">
+                  Created Date
+                </Label>
+                <Input
+                  disabled={true}
+                  id="created"
+                  defaultValue={moment(data?.dt).format("DD-MM-YYYY HH:MM a")}
+                />
+              </Col>
+              <Col sm="6" className="mb-1">
+                <Label className="form-label" for="Location">
+                  Location
+                </Label>
+                <div style={{ marginTop: "10px" }}>
+                  <a
+                    href={`https://www.google.com/maps/place/${data?.location}`}
+                    target="_blank"
+                  >
+                    <MapPin size="20" />
+                  </a>
+                </div>
+              </Col>
+              <div style={{ marginLeft: "5px", marginRight: "5px" }}>
+                <Editor
+                  editorValue={bodyContentEnglish}
+                  handleChange={(valuee) => setBodyContentEnglish(valuee)}
+                />
+              </div>
+
+              <Col className="mt-2" sm="12">
+                <Button type="submit" className="me-1" color="primary">
+                  Save changes
+                </Button>
+                <Button color="secondary" outline>
+                  Discard
+                </Button>
+              </Col>
+            </Row>
+          </Form>
+
+          {/* <div className='d-flex justify-content-around my-2 pt-75'>
 						<div className='d-flex align-items-start me-2'>
 							<Badge
 								color='light-primary'
@@ -280,8 +496,8 @@ const UserInfoCard = ({ selectedUser }) => {
 								<span>England</span>
 							</li>
 						</ul>
-					</div>
-					{/* <div className='d-flex justify-content-center pt-2'>
+					</div> */}
+          {/* <div className='d-flex justify-content-center pt-2'>
 						<Button
 							color='primary'
 							onClick={() => setShow(true)}>
@@ -295,9 +511,9 @@ const UserInfoCard = ({ selectedUser }) => {
 							Suspended
 						</Button>
 					</div> */}
-				</CardBody>
-			</Card>
-			{/* <Modal
+        </CardBody>
+      </Card>
+      {/* <Modal
 				isOpen={show}
 				toggle={() => setShow(!show)}
 				className='modal-dialog-centered modal-lg'>
@@ -534,8 +750,8 @@ const UserInfoCard = ({ selectedUser }) => {
 					</Form>
 				</ModalBody>
 			</Modal> */}
-		</Fragment>
-	);
+    </Fragment>
+  );
 };
 
 export default UserInfoCard;

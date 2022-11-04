@@ -1,17 +1,26 @@
 // ** React Imports
-import { Fragment } from "react";
+import { Fragment, useEffect, useState } from "react";
 
 // ** Product components
 import ProductCards from "./ProductCards";
 import ProductsSearchbar from "./ProductsSearchbar";
+import CoreHttpHandler from "../../../../../http/services/CoreHttpHandler";
 
 // ** Third Party Components
 import classnames from "classnames";
 
 // ** Reactstrap Imports
+
 import { Pagination, PaginationItem, PaginationLink } from "reactstrap";
 
 const ProductsPage = (props) => {
+	const [products, setProducts] = useState([]);
+	const [loading, setLoading] = useState(true);
+	const [currentParams, setCurrentParams] = useState({
+		limit: 3,
+		page: 0,
+	});
+	const [totalPages, setTotalPages] = useState(0);
 	// ** Props
 	const {
 		store,
@@ -26,6 +35,7 @@ const ProductsPage = (props) => {
 		deleteCartItem,
 		setSidebarOpen,
 		deleteWishlistItem,
+		storeId,
 	} = props;
 
 	// ** Handles pagination
@@ -38,7 +48,28 @@ const ProductsPage = (props) => {
 			dispatch(getProducts({ ...store.params, page: val }));
 		}
 	};
-
+	const getStoreProducts = () => {
+		CoreHttpHandler.request(
+			"stores",
+			"fetch_products",
+			{
+				storeId: storeId,
+				...currentParams,
+			},
+			(response) => {
+				const res = response.data.data.data;
+				setTotalPages(res.totalPages);
+				setProducts(res.product);
+				setLoading(false);
+			},
+			(failure) => {
+				setLoading(false);
+			}
+		);
+	};
+	useEffect(() => {
+		getStoreProducts();
+	}, []);
 	// ** Render pages
 	const renderPageItems = () => {
 		const arrLength =
@@ -84,50 +115,34 @@ const ProductsPage = (props) => {
 				getProducts={getProducts}
 				store={store}
 			/>
-			{store.products.length ? (
-				<Fragment>
-					<ProductCards
-						store={store}
-						dispatch={dispatch}
-						addToCart={addToCart}
-						activeView={activeView}
-						products={store.products}
-						getProducts={getProducts}
-						getCartItems={getCartItems}
-						addToWishlist={addToWishlist}
-						deleteCartItem={deleteCartItem}
-						deleteWishlistItem={deleteWishlistItem}
-					/>
-					<Pagination className='d-flex justify-content-center ecommerce-shop-pagination mt-2'>
-						<PaginationItem
-							disabled={store.params.page === 1}
-							className='prev-item'
-							onClick={() =>
-								store.params.page !== 1 ? handlePageChange("prev") : null
-							}>
-							<PaginationLink
-								href='/'
-								onClick={(e) => e.preventDefault()}></PaginationLink>
-						</PaginationItem>
-						{renderPageItems()}
-						<PaginationItem
-							className='next-item'
-							onClick={() => handleNext()}
-							disabled={
-								store.params.page ===
-								Number(store.totalProducts) / store.products.length
-							}>
-							<PaginationLink
-								href='/'
-								onClick={(e) => e.preventDefault()}></PaginationLink>
-						</PaginationItem>
-					</Pagination>
-				</Fragment>
-			) : (
+
+			<Fragment>
+				<ProductCards
+					store={store}
+					loading={loading}
+					dispatch={dispatch}
+					addToCart={addToCart}
+					activeView={activeView}
+					products={products}
+					getProducts={getProducts}
+					getCartItems={getCartItems}
+					addToWishlist={addToWishlist}
+					deleteCartItem={deleteCartItem}
+					deleteWishlistItem={deleteWishlistItem}
+				/>
+				<Pagination
+					total={totalPages}
+					//currentPage={currentParams.page}
+					handlePagination={(e) =>
+						setCurrentParams({ limit: 1, page: e.selected })
+					}
+				/>
+			</Fragment>
+			{/* ) : (
 				<div className='d-flex justify-content-center mt-2'>
 					<p>No Results</p>
 				</div>
-			)}
+			)} */}
 		</>
 	);
 };

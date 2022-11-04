@@ -1,20 +1,28 @@
 // ** React Imports
 import { useState, useEffect, forwardRef } from "react";
-
-// ** Table Columns
-import { columns } from "./columns";
-
-// ** Store & Actions
-import { useDispatch, useSelector } from "react-redux";
-import { getAllData, getData } from "@src/views/apps/user/store";
-
-// ** Third Party Components
-import ReactPaginate from "react-paginate";
-import { ChevronDown } from "react-feather";
-import DataTable from "react-data-table-component";
-
-// ** Reactstrap Imports
-import { Card, Input, Row, Col } from "reactstrap";
+import { useHistory, Link } from "react-router-dom";
+import moment from "moment";
+import {
+	Loader,
+	Pagination,
+	DatePicker,
+	ToastAlertError,
+	SearchFilters,
+} from "../reuseable";
+import {
+	Card,
+	Input,
+	Row,
+	Col,
+	Button,
+	Badge,
+	Table,
+	CardBody,
+	Label,
+	InputGroup,
+	InputGroupText,
+} from "reactstrap";
+import Avatar from "@components/avatar";
 
 // ** Styles
 import "@styles/react/libs/tables/react-dataTable-component.scss";
@@ -31,282 +39,167 @@ const BootstrapCheckbox = forwardRef((props, ref) => (
 	</div>
 ));
 
-// ** Table Header
-const CustomHeader = ({
-	plan,
-	handlePlanChange,
-	handlePerPage,
-	rowsPerPage,
-	handleFilter,
-	searchTerm,
-}) => {
+const SellersTable = () => {
+	const handleDetails = (e) => {
+		history.push({
+			pathname: "/apps/sellers/details",
+			state: { id: e.store_id, data: e },
+		});
+	};
+
+	const [data, setData] = useState([]);
+	const [tempTotal, setTempTotal] = useState(0);
+	const [data2, setData2] = useState([]);
+	const [loading, setLoading] = useState(true);
+	const [totalPages, setTotalPages] = useState(0);
+	const [picker, setPicker] = useState(new Date());
+	const [filter, setFilter] = useState("all");
+	const [searchVal, setSearchVal] = useState("");
+	const [currentParams, setCurrentParams] = useState({
+		limit: 10,
+		page: 0,
+	});
+
+	const history = useHistory();
+	const getUsersData = (start, end, val) => {
+		setLoading(true);
+		CoreHttpHandler.request(
+			"sellers",
+			"fetchAdmin",
+			{
+				enabled: true,
+				...currentParams,
+				filter: val == undefined ? filter : val,
+				searchValue: searchVal,
+				startDate: start,
+				endDate: end,
+			},
+			(response) => {
+				setLoading(false);
+				const res = response.data.data.data;
+				setTotalPages(res.totalPages);
+				if (filter == "all" || filter == "") {
+					setData2(res.data);
+					setTempTotal(res.totalPages);
+				}
+				setData(res.data);
+			},
+			(failure) => {
+				setLoading(false);
+			}
+		);
+	};
+
+	useEffect(() => {
+		getUsersData();
+	}, [currentParams]);
+
+	//console.log(moment(picker[0]).format("YYYY-MM-DD"), "picker");
+	const handleFilter = () => {
+		if (filter) {
+			setCurrentParams({
+				limit: 10,
+				page: 0,
+			});
+		}
+		if (picker[0] && picker[1]) {
+			getUsersData(
+				`${moment(picker[0]).format("YYYY-MM-DD")} 00:00:00`,
+				`${moment(picker[1]).format("YYYY-MM-DD")} 00:00:00`
+			);
+		} else {
+			console.log(filter, "else");
+			getUsersData();
+		}
+	};
 	return (
-		<div className='invoice-list-table-header w-100 me-1 ms-50 mt-2 mb-75'>
-			<Row>
-				<Col
-					xl='6'
-					className='d-flex align-items-center p-0'>
-					<div className='d-flex align-items-center w-100'>
-						<label htmlFor='rows-per-page'>Show</label>
-						<Input
-							className='mx-50'
-							type='select'
-							id='rows-per-page'
-							value={rowsPerPage}
-							onChange={handlePerPage}
-							style={{ width: "5rem" }}>
-							<option value='10'>10</option>
-							<option value='25'>25</option>
-							<option value='50'>50</option>
-						</Input>
-						<label htmlFor='rows-per-page'>Entries</label>
-					</div>
-				</Col>
-				<Col
-					xl='6'
-					className='d-flex align-items-sm-center justify-content-lg-end justify-content-start flex-lg-nowrap flex-wrap flex-sm-row flex-column pe-lg-1 p-0 mt-lg-0 mt-1'>
-					<div className='d-flex align-items-center mb-sm-0 mb-1 me-1'>
-						<label
-							className='mb-0'
-							htmlFor='search-invoice'>
-							Search:
-						</label>
-						<Input
-							type='text'
-							value={searchTerm}
-							id='search-invoice'
-							className='ms-50 w-100'
-							onChange={(e) => handleFilter(e.target.value)}
-						/>
-					</div>
-					<Input
-						value={plan}
-						type='select'
-						style={{ width: "10rem" }}
-						onChange={(e) => handlePlanChange(e.target.value)}>
-						<option value=''>Select Role</option>
-						<option value='basic'>Basic</option>
-						<option value='company'>Company</option>
-						<option value='enterprise'>Enterprise</option>
-						<option value='team'>Team</option>
-					</Input>
-				</Col>
-			</Row>
-		</div>
-	);
-};
+		<>
+			<Card>
+				<CardBody>
+					<SearchFilters
+						filter={filter}
+						setFilter={setFilter}
+						setSearchVal={setSearchVal}
+						searchVal={searchVal}
+						getData={getUsersData}
+						data2={data2}
+						handleFilter={handleFilter}
+						setPicker={setPicker}
+						picker={picker}
+						setData={setData}
+						tempTotal={tempTotal}
+						setTotalPages={setTotalPages}
+					/>
+					{!loading && data ? (
+						<Table
+							striped
+							responsive
+							className='border-none'>
+							<thead>
+								<tr style={{ fontSize: "11px" }}>
+									<th>SN</th>
+									<th>Name</th>
+									<th>Number</th>
+									<th>Date</th>
+									<th>Status</th>
+									<th>Details</th>
+								</tr>
+							</thead>
+							<tbody>
+								{data?.map((seller, index) => {
+									return (
+										<tr key={seller.id}>
+											<td>{index + 1}</td>
 
-const Table = () => {
-	// ** Store Vars
-	const dispatch = useDispatch();
-	const store = useSelector((state) => state.users);
-
-	// ** States
-	const [plan, setPlan] = useState("");
-	const [sort, setSort] = useState("desc");
-	const [searchTerm, setSearchTerm] = useState("");
-	const [currentPage, setCurrentPage] = useState(1);
-	const [rowsPerPage, setRowsPerPage] = useState(10);
-	const [sortColumn, setSortColumn] = useState("id");
-	const [data,setData] = useState([])
-	// ** Get data on mount
-	// useEffect(() => {
-	// 	dispatch(getAllData());
-	// 	dispatch(
-	// 		getData({
-	// 			sort,
-	// 			role: "",
-	// 			sortColumn,
-	// 			status: "",
-	// 			q: searchTerm,
-	// 			currentPlan: plan,
-	// 			page: currentPage,
-	// 			perPage: rowsPerPage,
-	// 		})
-	// 	);
-	// }, [dispatch, store.data.length]);
-
-	
-	const getUsersData = () => {
-      CoreHttpHandler.request(
-        "sellers",
-        "fetchAdmin",
-        {
-          enabled: true,
-        },
-        (response) => {
-          const res = response.data.data;
-          setData(res);
-        },
-        (failure) => {}
-      );
-  };
-
-  useEffect(() => {
-    getUsersData();
-  }, []);
-
-
-	// ** Function in get data on page change
-	const handlePagination = (page) => {
-		dispatch(
-			getData({
-				sort,
-				role: "",
-				status: "",
-				sortColumn,
-				q: searchTerm,
-				currentPlan: plan,
-				perPage: rowsPerPage,
-				page: page.selected + 1,
-			})
-		);
-		setCurrentPage(page.selected + 1);
-	};
-
-	// ** Function in get data on rows per page
-	const handlePerPage = (e) => {
-		const value = parseInt(e.currentTarget.value);
-		dispatch(
-			getData({
-				sort,
-				role: "",
-				sortColumn,
-				status: "",
-				q: searchTerm,
-				perPage: value,
-				currentPlan: plan,
-				page: currentPage,
-			})
-		);
-		setRowsPerPage(value);
-	};
-
-	// ** Function in get data on search query change
-	const handleFilter = (val) => {
-		setSearchTerm(val);
-		dispatch(
-			getData({
-				q: val,
-				sort,
-				role: "",
-				sortColumn,
-				status: "",
-				currentPlan: plan,
-				page: currentPage,
-				perPage: rowsPerPage,
-			})
-		);
-	};
-
-	const handlePlanChange = (val) => {
-		setPlan(val);
-		dispatch(
-			getData({
-				sort,
-				role: val,
-				sortColumn,
-				status: "",
-				q: searchTerm,
-				currentPlan: plan,
-				page: currentPage,
-				perPage: rowsPerPage,
-			})
-		);
-	};
-
-	// ** Custom Pagination
-	const CustomPagination = () => {
-		const count = Number(Math.ceil(store.total / rowsPerPage));
-
-		return (
-			<ReactPaginate
-				previousLabel={""}
-				nextLabel={""}
-				pageCount={count || 1}
-				activeClassName='active'
-				forcePage={currentPage !== 0 ? currentPage - 1 : 0}
-				onPageChange={(page) => handlePagination(page)}
-				pageClassName={"page-item"}
-				nextLinkClassName={"page-link"}
-				nextClassName={"page-item next"}
-				previousClassName={"page-item prev"}
-				previousLinkClassName={"page-link"}
-				pageLinkClassName={"page-link"}
-				containerClassName={
-					"pagination react-paginate justify-content-end my-2 pe-1"
+											<td>{seller.username}</td>
+											<td>{seller.number}</td>
+											<td>{moment(seller.dt).format("YYYY-MM-DD")}</td>
+											<td>
+												{seller.enabled ? (
+													<Badge
+														pill
+														color='light-primary'
+														className='mr-1'>
+														Active
+													</Badge>
+												) : (
+													<Badge
+														pill
+														color='light-danger'
+														className='mr-1'>
+														InActive
+													</Badge>
+												)}
+											</td>
+											<td>
+												{" "}
+												<Button
+													color='primary'
+													size='sm'
+													onClick={() => handleDetails(seller)}>
+													view
+												</Button>
+											</td>
+										</tr>
+									);
+								})}
+							</tbody>
+						</Table>
+					) : null}
+					{!loading && !data?.length && (
+						<div className='text-ceter'>No Data Found</div>
+					)}
+					<Loader loading={loading} />
+				</CardBody>
+			</Card>
+			<Pagination
+				total={totalPages}
+				handlePagination={(e) =>
+					setCurrentParams({ limit: 10, page: e.selected })
 				}
 			/>
-		);
-	};
-
-	// ** Table data to render
-	const dataToRender = () => {
-		return data.data
-		// const filters = {
-		// 	q: searchTerm,
-		// };
-
-		// const isFiltered = Object.keys(filters).some(function (k) {
-		// 	return filters[k].length > 0;
-		// });
-
-		// if (store.data.length > 0) {
-		// 	return store.data;
-		// } else if (store.data.length === 0 && isFiltered) {
-		// 	return [];
-		// } else {
-		// 	return store.allData.slice(0, rowsPerPage);
-		// }
-	};
-
-	const handleSort = (column, sortDirection) => {
-		setSort(sortDirection);
-		setSortColumn(column.sortField);
-		dispatch(
-			getData({
-				sort,
-				role: "",
-				sortColumn,
-				status: "",
-				q: searchTerm,
-				currentPlan: plan,
-				page: currentPage,
-				perPage: rowsPerPage,
-			})
-		);
-	};
-
-	return (
-		<Card>
-			<div className='react-dataTable roles-table'>
-				<DataTable
-					noHeader
-					subHeader
-					pagination
-					responsive
-					paginationServer
-					columns={columns}
-					onSort={handleSort}
-					data={dataToRender()}
-					sortIcon={<ChevronDown />}
-					className='react-dataTable'
-					paginationComponent={CustomPagination}
-					selectableRowsComponent={BootstrapCheckbox}
-					subHeaderComponent={
-						<CustomHeader
-							plan={plan}
-							searchTerm={searchTerm}
-							rowsPerPage={rowsPerPage}
-							handleFilter={handleFilter}
-							handlePerPage={handlePerPage}
-							handlePlanChange={handlePlanChange}
-						/>
-					}
-				/>
-			</div>
-		</Card>
+		</>
 	);
 };
 
-export default Table;
+export default SellersTable;

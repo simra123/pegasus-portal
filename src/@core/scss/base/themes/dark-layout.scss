@@ -169,7 +169,7 @@
 								background-color: $theme-dark-card-bg;
 
 								.input {
-									border-color: $theme-dark-border-color;
+									border-color: $theme-dark-border-color !important;
 								}
 
 								.input,
@@ -1283,7 +1283,7 @@
 		&:focus-within {
 			.form-control,
 			.input-group-text {
-				border-color: $primary;
+				border-color: $primary !important;
 				box-shadow: none;
 			}
 		}

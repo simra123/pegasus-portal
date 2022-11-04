@@ -7,17 +7,11 @@ import Table from "./Table";
 const Roles = () => {
 	return (
 		<Fragment>
-			{/* <h3>Roles List</h3>
-      <p className='mb-2'>
-        A role provides access to predefined menus and features depending on the assigned role to an administrator that
-        can have access to what he needs.
-      </p>
-      <RoleCards /> */}
-			<h3 className='mt-50'>Total Selleres with their roles</h3>
-			<p className='mb-2'>
+			<h3 className='mt-50'>Total Sellers</h3>
+			{/* <p className='mb-2'>
 				Find all of your company’s administrator accounts and their associate
 				roles.
-			</p>
+			</p> */}
 			<div className='app-user-list'>
 				<Table />
 			</div>
