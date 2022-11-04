@@ -8,6 +8,13 @@ class APIS {
 				method: "post",
 				path: "/fetch/orders",
 			},
+			fetchById: {
+				headers: {
+					"xt-user-token": null,
+				},
+				method: "post",
+				path: "/fetch/order/by-id",
+			},
 		};
 	}
 }
