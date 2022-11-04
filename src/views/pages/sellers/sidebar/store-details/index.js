@@ -78,7 +78,8 @@ const languageOptions = [
 const MySwal = withReactContent(Swal);
 
 
-const UserInfoCard = ({ selectedUser,data }) => {
+const UserInfoCard = (props) => {
+	const { data, setData } = props;
 	// ** State
 	const [show, setShow] = useState(false);
 	const [avatar, setAvatar] = useState("");
@@ -111,7 +112,6 @@ const UserInfoCard = ({ selectedUser,data }) => {
 
 	// ** render user img
 	const renderUserImg = () => {
-		if (selectedUser == null && !selectedUser?.avatar.length) {
 			return (
         <img
           height="240"
@@ -121,36 +121,6 @@ const UserInfoCard = ({ selectedUser,data }) => {
           className="img-fluid rounded mt-3 mb-2"
         />
       );
-		} else {
-			const stateNum = Math.floor(Math.random() * 6),
-				states = [
-					"light-success",
-					"light-danger",
-					"light-warning",
-					"light-info",
-					"light-primary",
-					"light-secondary",
-				],
-				color = states[stateNum];
-			return (
-				<Avatar
-					initials
-					color={color}
-					className='rounded mt-3 mb-2'
-					content={"Produces"}
-					contentStyles={{
-						borderRadius: 0,
-						fontSize: "calc(48px)",
-						width: "100%",
-						height: "100%",
-					}}
-					style={{
-						height: "110px",
-						width: "110px",
-					}}
-				/>
-			);
-		}
 	};
 
 	const [type, setType] = useState("");
@@ -182,6 +152,7 @@ const UserInfoCard = ({ selectedUser,data }) => {
       setFileData(e.target.files[0]);
     };
 
+	console.log(props,'prprfprp')
     const onSubmit = (datas) => {
       document.body.style.opacity = 0.4;
       const _data = new FormData();
@@ -196,6 +167,7 @@ const UserInfoCard = ({ selectedUser,data }) => {
             params: _data,
           },
           (response) => {
+			let img = response.data.data.file;
             CoreHttpHandler.request(
               "stores",
               "update_admin",
@@ -211,6 +183,20 @@ const UserInfoCard = ({ selectedUser,data }) => {
                 location: datas?.location,
               },
               (response) => {
+					let _params = {
+                    ...data,
+                    store_number: number == "" ? datas?.number : number,
+                    enable: true,
+                    name: datas?.name,
+                    store_image: `https://upload.its.com.pk/v1/fetch/file/${img}`,
+                    store_id: data?.store_id,
+                    store_city: datas?.city,
+                    type: type,
+                    description: bodyContentEnglish,
+                    location: datas?.location,
+                  };
+				  console.log(_params,'paramsdmasd')
+                  setData(_params);
                 document.body.style.opacity = 1;
                 Swal.fire({
                   icon: "success",
@@ -218,6 +204,7 @@ const UserInfoCard = ({ selectedUser,data }) => {
                   text: "Successfully Updated Seller Details",
                   confirmButtonColor: "green",
                 });
+
               },
               (error) => {}
             );
@@ -241,6 +228,19 @@ const UserInfoCard = ({ selectedUser,data }) => {
           },
           (response) => {
             document.body.style.opacity = 1;
+				let _params = {
+				...data,
+				store_number: number == "" ? datas?.number : number,
+				enable: true,
+				name: datas?.name,
+				store_image: datas?.image,
+				store_id: data?.store_id,
+				store_city: datas?.city,
+				type: type,
+				description: bodyContentEnglish,
+				location: datas?.location,
+				};
+				setData(_params);
             Swal.fire({
               icon: "success",
               title: "Success",
@@ -250,6 +250,7 @@ const UserInfoCard = ({ selectedUser,data }) => {
           },
           (error) => {}
         );
+	
       }
     };
 

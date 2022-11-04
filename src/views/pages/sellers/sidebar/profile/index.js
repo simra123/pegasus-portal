@@ -40,8 +40,10 @@ const statusOptions = [
 ];
 
 
-const AccountTabs = ({ data }) => {
+const AccountTabs = (props) => {
 	// ** Hooks
+
+  const {data,setData} = props
 
 	const defaultValues = {
 		lastName: data?.lastname,
@@ -105,7 +107,7 @@ const AccountTabs = ({ data }) => {
               params: _data,
             },
             (response) => {
-              
+              let img = response.data.data.file;
               CoreHttpHandler.request(
               	"sellers",
               	"updateAdmin",
@@ -120,6 +122,18 @@ const AccountTabs = ({ data }) => {
               		seller_id: data?.id
               	},
               	(response) => {
+                  let _params = {
+                    ...data,
+                    lastname: datas?.lastName,
+                    firstname: datas?.firstName,
+                    number: number == "" ? datas?.number : number,
+                    email: datas?.email,
+                    enable: status == "" ? datas?.status : status,
+                    username: datas?.username,
+                    image: `https://upload.its.com.pk/v1/fetch/file/${img}`,
+                    seller_id: data?.id,
+                  };
+                  setData(_params);
 					          document.body.style.opacity = 1;
                     Swal.fire({
                       icon: "success",
@@ -149,6 +163,18 @@ const AccountTabs = ({ data }) => {
 				seller_id: data?.id,
 				},
 				(response) => {
+          let _params ={
+            ...data,
+            lastname: datas?.lastName,
+            firstname: datas?.firstName,
+            number: number == "" ? datas?.number : number,
+            email: datas?.email,
+            enable: status == "" ? datas?.status : status,
+            username: datas?.username,
+            image: datas?.image,
+            seller_id: data?.id,
+          }
+          setData(_params)
 					document.body.style.opacity = 1;
 					Swal.fire({
 						icon: "success",
