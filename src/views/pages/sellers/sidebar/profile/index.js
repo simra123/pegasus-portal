@@ -37,14 +37,8 @@ const statusOptions = [
 	{ value: false, label: "Disable" },
 ];
 
-<<<<<<< HEAD
-
-=======
->>>>>>> 0f2f0ac1f9d5d689061f7a86a801dd0b981ce3ff
 const AccountTabs = (props) => {
 	// ** Hooks
-	const { data } = props;
-
   const {data,setData} = props
 
 	const defaultValues = {
