@@ -41,7 +41,13 @@ const Shop = () => {
 
 	const [id, setId] = useState(location?.state?.id);
 	const [sellerData,setSellerData] = useState(location?.state?.data)
-	console.log(sellerData,'selelel');
+	
+	console.log(sellerData,'datassssaseller')
+	
+	const onChange = (p) =>{
+		setSellerData(p)
+		console.log(location,'lol')
+	}
 	// ** Get products
 	useEffect(() => {
 		dispatch(
@@ -76,11 +82,11 @@ const Shop = () => {
 							deleteWishlistItem={deleteWishlistItem}
 						/>
 					) : activeTab === "profile" ? (
-							<Profile data={sellerData}/>
+							<Profile data={sellerData} setData={onChange}/>
 					) : activeTab === "store" ? (
-						<StoreDetails data={sellerData}/>
+						<StoreDetails data={sellerData} setData={onChange}/>
 					) : activeTab === "order" ? (
-						<Orders data={sellerData}/>
+						<Orders data={sellerData} />
 					) : null}
 				</div>
 			</div>

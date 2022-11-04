@@ -39,7 +39,7 @@ const statusOptions = [
 
 const AccountTabs = (props) => {
 	// ** Hooks
-	const { data } = props;
+  const {data,setData} = props
 
 	const defaultValues = {
 		lastName: data?.lastname,
@@ -97,53 +97,54 @@ const AccountTabs = (props) => {
 		if (fileData != "") {
 			_data.append("file", fileData, `${new Date().getTime()}_${name}`);
 			ContentUploadHandler.request(
-				"content",
-				"upload",
-				{
-					params: _data,
-				},
-				(response) => {
-					CoreHttpHandler.request(
-						"sellers",
-						"updateAdmin",
-						{
-							lastname: datas?.lastName,
-							firstname: datas?.firstName,
-							number: number == "" ? datas?.number : number,
-							email: datas?.email,
-							enable: status == "" ? datas?.status : status,
-							username: datas?.username,
-							image: `https://upload.its.com.pk/v1/fetch/file/${response.data.data.file}`,
-							seller_id: data?.id,
-						},
-						(response) => {
-							document.body.style.opacity = 1;
-							Swal.fire({
-								icon: "success",
-								title: "Success",
-								text: "Successfully Updated Seller Details",
-								confirmButtonColor: "green",
-							});
-							// props.replace({ state: _params });
-							props.replace({
-								data: {
-									lastname: datas?.lastName,
-									firstname: datas?.firstName,
-									number: number == "" ? datas?.number : number,
-									email: datas?.email,
-									enable: status == "" ? datas?.status : status,
-									username: datas?.username,
-									image: datas?.image,
-									seller_id: data?.id,
-								},
-							});
-						},
-						(error) => {}
-					);
-				},
-				(error) => {}
-			);
-		} else {
+            "content",
+            "upload",
+            {
+              params: _data,
+            },
+            (response) => {
+              let img = response.data.data.file;
+              CoreHttpHandler.request(
+              	"sellers",
+              	"updateAdmin",
+              	{
+              		lastname: datas?.lastName,
+              		firstname: datas?.firstName,
+              		number: number == "" ? datas?.number : number,
+              		email: datas?.email,
+              		enable: status == "" ? datas?.status : status,
+              		username: datas?.username,
+              		image: `https://upload.its.com.pk/v1/fetch/file/${response.data.data.file}`,
+              		seller_id: data?.id
+              	},
+              	(response) => {
+                  let _params = {
+                    ...data,
+                    lastname: datas?.lastName,
+                    firstname: datas?.firstName,
+                    number: number == "" ? datas?.number : number,
+                    email: datas?.email,
+                    enable: status == "" ? datas?.status : status,
+                    username: datas?.username,
+                    image: `https://upload.its.com.pk/v1/fetch/file/${img}`,
+                    seller_id: data?.id,
+                  };
+                  setData(_params);
+					          document.body.style.opacity = 1;
+                    Swal.fire({
+                      icon: "success",
+                      title: "Success",
+                      text: "Successfully Updated Seller Details",
+                      confirmButtonColor: "green",
+                    });
+                  },
+                  (error) => {}
+              )
+            },
+            (error) => {}
+          )
+		}else{
+			
 			CoreHttpHandler.request(
 				"sellers",
 				"updateAdmin",
@@ -158,6 +159,18 @@ const AccountTabs = (props) => {
 					seller_id: data?.id,
 				},
 				(response) => {
+          let _params ={
+            ...data,
+            lastname: datas?.lastName,
+            firstname: datas?.firstName,
+            number: number == "" ? datas?.number : number,
+            email: datas?.email,
+            enable: status == "" ? datas?.status : status,
+            username: datas?.username,
+            image: datas?.image,
+            seller_id: data?.id,
+          }
+          setData(_params)
 					document.body.style.opacity = 1;
 					//  props.replace({ state: _params });
 					Swal.fire({
