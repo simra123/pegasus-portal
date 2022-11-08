@@ -10,6 +10,7 @@ const LoadingButton = ({
 	style,
 	disabled,
 	block,
+	className,
 }) => {
 	return (
 		<>
@@ -18,8 +19,9 @@ const LoadingButton = ({
 				name='button'
 				style={style}
 				onClick={onClick}
-				color={color}
-				disabled={disabled}
+				className={className}
+				color={color ? color : "primary"}
+				disabled={loading}
 				block={block}>
 				{loading ? (
 					<Spinner

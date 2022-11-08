@@ -6,7 +6,7 @@ import Sidebar from "./Sidebar";
 import Products from "./products";
 import Profile from "./profile";
 import StoreDetails from "./store-details";
-import Orders from "./orders"
+import Orders from "./orders";
 import Header from "./products/ProductsHeader";
 import { getAllData, getData } from "@src/views/apps/user/store";
 import { useHistory, useLocation } from "react-router-dom";
@@ -40,25 +40,18 @@ const Shop = () => {
 	const location = useLocation();
 
 	const [id, setId] = useState(location?.state?.id);
-	const [sellerData,setSellerData] = useState(location?.state?.data)
-	
-	console.log(sellerData,'datassssaseller')
-	
-	const onChange = (p) =>{
-		setSellerData(p)
-		console.log(location,'lol')
-	}
-	// ** Get products
+	const [sellerData, setSellerData] = useState(location?.state?.data);
+
+	const history = useHistory();
 	useEffect(() => {
-		dispatch(
-			getProducts({
-				q: "",
-				sortBy: "featured",
-				perPage: 9,
-				page: 1,
-			})
-		);
-	}, [dispatch]);
+		if (!sellerData) {
+			history.push("/apps/sellers");
+		}
+	}, [sellerData]);
+	const onChange = (p) => {
+		setSellerData(p);
+		console.log(location, "lol");
+	};
 
 	return (
 		<Fragment>
@@ -72,7 +65,6 @@ const Shop = () => {
 							dispatch={dispatch}
 							addToCart={addToCart}
 							activeView={activeView}
-							getProducts={getProducts}
 							sidebarOpen={sidebarOpen}
 							getCartItems={getCartItems}
 							setActiveView={setActiveView}
@@ -82,9 +74,15 @@ const Shop = () => {
 							deleteWishlistItem={deleteWishlistItem}
 						/>
 					) : activeTab === "profile" ? (
-							<Profile data={sellerData} setData={onChange}/>
+						<Profile
+							data={sellerData}
+							setData={onChange}
+						/>
 					) : activeTab === "store" ? (
-						<StoreDetails data={sellerData} setData={onChange}/>
+						<StoreDetails
+							data={sellerData}
+							setData={onChange}
+						/>
 					) : activeTab === "order" ? (
 						<Orders data={sellerData} />
 					) : null}

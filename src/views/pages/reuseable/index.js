@@ -12,12 +12,8 @@ import Loader from "./loader";
 import DataNotFound from "./dataNotFound";
 import DatePicker from "./datePicker";
 import SearchFilters from "./searchFilters";
-// import RangePicker from "./rangePicker";
-// import PolarChart from "./polarChart";
-// import RadarChart from "./radarChart";
-// import DataNotFound from "./DataNotFound";
-// import ActiveUsersWidget from "./activeUsersWidget";
-// import ContactModal from "./contactsModal";
+import { Upload } from "./fucntions";
+import TextEditor from "./textEditor";
 export {
 	ToastError,
 	ToastSuccess,
@@ -29,4 +25,6 @@ export {
 	DataNotFound,
 	DatePicker,
 	SearchFilters,
+	Upload,
+	TextEditor,
 };
