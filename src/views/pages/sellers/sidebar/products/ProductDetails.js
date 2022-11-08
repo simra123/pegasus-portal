@@ -13,7 +13,7 @@ import classnames from "classnames";
 import "@styles/base/pages/app-ecommerce-details.scss";
 
 const ProductDetails = ({ data, setShowDetails }) => {
-	const image = data?.attachment.filter((att) => att.type == 0);
+	//	const image = data?.attachment.filter((att) => att.type == 0);
 	return (
 		<Card className='app-ecommerce-details mt-2'>
 			<CardHeader style={{ marginLeft: "auto" }}>
@@ -33,7 +33,7 @@ const ProductDetails = ({ data, setShowDetails }) => {
 						<div className='d-flex align-items-center justify-content-center'>
 							<img
 								className='img-fluid product-img'
-								src={image[0]?.url}
+								src={`https://upload.its.com.pk/v1/fetch/file/${data.featured_image}`}
 								alt={data.name}
 							/>
 						</div>

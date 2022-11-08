@@ -206,9 +206,9 @@ const OrderTable = (props) => {
 									responsive
 									className='border-none'>
 									<thead>
-										<tr style={{ fontSize: "11px" }}>
+										<tr style={{ fontSize: "10px" }}>
 											<th>Order Id</th>
-											<th>Order Number</th>
+											<th>Order</th>
 											<th>City</th>
 											<th>Amount</th>
 											<th>Date</th>
@@ -219,7 +219,9 @@ const OrderTable = (props) => {
 									<tbody>
 										{data?.map((order, index) => {
 											return (
-												<tr key={order.id}>
+												<tr
+													key={order.id}
+													style={{ fontSize: "11px" }}>
 													<td>{order.order_id}</td>
 													<td>{order.order_no}</td>
 

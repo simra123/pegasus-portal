@@ -32,7 +32,7 @@ const ProductDetails = ({ modal, setModal, data }) => {
 						<div className='d-flex align-items-center justify-content-center'>
 							<img
 								className='img-fluid product-img'
-								src={image ? image[0]?.url : null}
+								src={`https://upload.its.com.pk/v1/fetch/file/${data?.featured_image}`}
 								alt={data.name}
 							/>
 						</div>
