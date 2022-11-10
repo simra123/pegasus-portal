@@ -5,7 +5,7 @@ import ProductDetails from "./ProductDetails";
 // ** Third Party Components
 import classnames from "classnames";
 import { Star, ShoppingCart, Heart } from "react-feather";
-import { Loader, DataNotFound } from "../../../reuseable";
+import { Loader, DataNotFound, ProductImage } from "../../../reuseable";
 // ** Reactstrap Imports
 import { Card, CardBody, CardText, Button, Badge } from "reactstrap";
 import "@styles/react/apps/app-ecommerce.scss";
@@ -67,7 +67,11 @@ const ProductCards = (props) => {
 											className=''
 											height={300}
 											width={300}
-											src={`https://upload.its.com.pk/v1/fetch/file/${item.featured_image}`}
+											src={
+												item.featured_image
+													? `https://upload.its.com.pk/v1/fetch/file/${item.featured_image}`
+													: ProductImage
+											}
 											alt={item.name}
 										/>
 									</div>

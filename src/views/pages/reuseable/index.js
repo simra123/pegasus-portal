@@ -14,6 +14,7 @@ import DatePicker from "./datePicker";
 import SearchFilters from "./searchFilters";
 import { Upload } from "./fucntions";
 import TextEditor from "./textEditor";
+import ProductImage from "./productPlaceholder";
 export {
 	ToastError,
 	ToastSuccess,
@@ -27,4 +28,5 @@ export {
 	SearchFilters,
 	Upload,
 	TextEditor,
+	ProductImage,
 };

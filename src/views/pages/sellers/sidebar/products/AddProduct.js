@@ -52,6 +52,7 @@ const CreateProduct = ({ storeId, setShowCreate, getProducts }) => {
 		stock: null,
 		category: "2",
 		type: "featured",
+		size: "",
 	});
 
 	// ** States
@@ -161,6 +162,7 @@ const CreateProduct = ({ storeId, setShowCreate, getProducts }) => {
 			type: productItems.type,
 			attachment: attachments,
 			description: paraToHtml,
+			size: productItems.size,
 		};
 		if (attachments?.length) {
 			CoreHttpHandler.request(
@@ -310,6 +312,25 @@ const CreateProduct = ({ storeId, setShowCreate, getProducts }) => {
 											<option value='pound'>POUND(£)</option>
 											{/* <option value='Draft'>Draft</option> */}
 										</Input>
+									</Col>
+									<Col
+										md='6'
+										className='mb-2'>
+										<Label
+											className='form-label'
+											for='blog-edit-slug'>
+											Product Size
+										</Label>
+										<Input
+											id='blog-edit-slug'
+											value={productItems.size}
+											onChange={(e) =>
+												setProductItems({
+													...productItems,
+													size: e.target.value,
+												})
+											}
+										/>
 									</Col>
 									<Col
 										sm='12'
