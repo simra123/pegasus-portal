@@ -10,6 +10,7 @@ import {
 } from "reactstrap";
 import { Star, ShoppingCart, X, DollarSign } from "react-feather";
 import classnames from "classnames";
+import { ProductImage } from "../../reuseable";
 
 const ProductDetails = ({ modal, setModal, data }) => {
 	const image = data?.attachment?.filter((att) => att.type == 0);
@@ -32,7 +33,11 @@ const ProductDetails = ({ modal, setModal, data }) => {
 						<div className='d-flex align-items-center justify-content-center'>
 							<img
 								className='img-fluid product-img'
-								src={`https://upload.its.com.pk/v1/fetch/file/${data?.featured_image}`}
+								src={
+									data.featured_image
+										? `https://upload.its.com.pk/v1/fetch/file/${data.featured_image}`
+										: ProductImage
+								}
 								alt={data.name}
 							/>
 						</div>
@@ -65,6 +70,8 @@ const ProductDetails = ({ modal, setModal, data }) => {
 							Available -<span className='text-success ms-25'>In stock</span>
 						</CardText>
 						<CardText>{data.description}</CardText>
+						<CardText>{data?.size}</CardText>
+
 						<ul className='product-features list-unstyled'>
 							{data.hasFreeShipping ? (
 								<li>
