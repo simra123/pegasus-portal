@@ -11,6 +11,9 @@ import {
 import { Star, ShoppingCart, X, DollarSign } from "react-feather";
 import classnames from "classnames";
 import "@styles/base/pages/app-ecommerce-details.scss";
+import parse from "html-react-parser";
+
+import draftToHtml from "draftjs-to-html";
 import { ProductImage } from "../../../reuseable";
 const ProductDetails = ({ data, setShowDetails }) => {
 	//	const image = data?.attachment.filter((att) => att.type == 0);
@@ -69,7 +72,7 @@ const ProductDetails = ({ data, setShowDetails }) => {
 						<CardText>
 							Available -<span className='text-success ms-25'>In stock</span>
 						</CardText>
-						<CardText>{data.description}</CardText>
+						<CardText>{parse(data.description)}</CardText>
 						<CardText>{data?.size}</CardText>
 						<ul className='product-features list-unstyled'>
 							{data.hasFreeShipping ? (

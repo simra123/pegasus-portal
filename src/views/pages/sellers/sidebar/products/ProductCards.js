@@ -7,9 +7,10 @@ import classnames from "classnames";
 import { Star, ShoppingCart, Heart } from "react-feather";
 import { Loader, DataNotFound, ProductImage } from "../../../reuseable";
 // ** Reactstrap Imports
+import parse from "html-react-parser";
 import { Card, CardBody, CardText, Button, Badge } from "reactstrap";
 import "@styles/react/apps/app-ecommerce.scss";
-
+import { RiDeleteBin7Line } from "react-icons/ri";
 const ProductCards = (props) => {
 	const [showDetails, setShowDetails] = useState(false);
 	const [singleProduct, setSingleProdcuct] = useState({});
@@ -108,23 +109,36 @@ const ProductCards = (props) => {
 											<CardText
 												tag='span'
 												className='item-company'>
-												By{" "}
+												By
 												<a
 													className='company-name'
 													href='/'
 													onClick={(e) => e.preventDefault()}>
-													{item.brand}
+													{item.store_name}
 												</a>
 											</CardText>
 										</h6>
-										<CardText className='item-description'>
-											{item.description}
+										<CardText
+											className='item-description'
+											style={{ marginBottom: "0px" }}>
+											{item.description
+												? parse(item.description.substring(0, 60))
+												: item.description}
 										</CardText>
+										<CardText
+											tag='span'
+											className='text-primary'
+											style={{ float: "right" }}>
+											<RiDeleteBin7Line size={20} />
+										</CardText>
+										<div className=''>
+											<h6 className=''>By {item.store_name}</h6>
+										</div>
 									</CardBody>
 									<div className='item-options text-center'>
 										<div className='item-wrapper'>
 											<div className='item-cost'>
-												<h4 className='item-price'>${item.price}</h4>
+												<h4 className='item-price'>$ {item.price}</h4>
 												{item.hasFreeShipping ? (
 													<CardText className='shipping'>
 														<Badge color='light-success'>Free Shipping</Badge>

@@ -8,7 +8,7 @@ import CoreHttpHandler from "../../../../../http/services/CoreHttpHandler";
 import CreateProduct from "./AddProduct";
 // ** Third Party Components
 import classnames from "classnames";
-
+import parse from "react";
 // ** Reactstrap Imports
 
 import { Button, PaginationItem, PaginationLink } from "reactstrap";
@@ -50,6 +50,7 @@ const ProductsPage = (props) => {
 		}
 	};
 	const getStoreProducts = () => {
+		setLoading(true);
 		CoreHttpHandler.request(
 			"stores",
 			"fetch_products",
