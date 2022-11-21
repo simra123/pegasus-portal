@@ -29,6 +29,13 @@ class APIS {
 				method: "post",
 				path: "/products",
 			},
+			fetch_id_name: {
+				headers: {
+					"xt-user-token": null,
+				},
+				method: "post",
+				path: "/fetch/id-name",
+			},
 			fetchSeller: {
 				headers: {
 					"xt-user-token": null,

@@ -1,4 +1,5 @@
 import mock from '../mock'
+import CoreHttpHandler from '../../http/services/CoreHttpHandler'
 
 const data = {
   orders_bar_chart: {
@@ -107,3 +108,4 @@ mock.onGet('/card/card-statistics/site-traffic').reply(() => [200, data.siteTraf
 mock.onGet('/card/card-statistics/active-users').reply(() => [200, data.activeUsers])
 
 mock.onGet('/card/card-statistics/newsletter').reply(() => [200, data.newsletter])
+

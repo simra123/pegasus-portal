@@ -1,5 +1,5 @@
 // ** React Imports
-import { useContext } from 'react'
+import { useContext, useEffect, useState } from 'react'
 
 // ** Reactstrap Imports
 
@@ -12,41 +12,138 @@ import { Row, Col } from "reactstrap";
 import StatsHorizontal from "@components/widgets/stats/StatsHorizontal";
 
 // ** Icons Imports
-import { User, UserPlus, UserCheck, UserX } from "react-feather";
+import {
+  UserPlus,
+  UserCheck,
+  UserX,
+  TrendingUp,
+  User,
+  Box,
+  DollarSign,
+} from "react-feather";
 
 // ** Styles
 import "@styles/react/apps/app-users.scss";
 
 // ** Demo Components
 import CompanyTable from './CompanyTable'
-import StatsCard from '@src/views/ui-elements/cards/statistics/StatsCard'
-import OrdersBarChart from '@src/views/ui-elements/cards/statistics/OrdersBarChart'
-import ProfitLineChart from '@src/views/ui-elements/cards/statistics/ProfitLineChart'
+import StatsCard from "./Statisticts/StatsCard";
+import OrdersBarChart from './Statisticts/OrdersBarChart'
+import ProfitLineChart from "./Statisticts/ProfitLineChart";
+
 import "@styles/react/libs/flatpickr/flatpickr.scss";
 import "@styles/react/libs/charts/recharts.scss";
 // ** Styles
 import '@styles/react/libs/charts/apex-charts.scss'
 import '@styles/base/pages/dashboard-ecommerce.scss'
 import LineChart  from '../../charts/recharts/LineChart';
-import PieChart from "../../charts/recharts/PieChart";
+import PieChart from "./Charts/PieChart";
 import BarChart from "../../charts/chart-js/ChartjsBarChart"
+
+import CoreHttpHandler from '../../../http/services/CoreHttpHandler';
 
 
 const EcommerceDashboard = () => {
   // ** Context
   const { colors } = useContext(ThemeColors)
   const permissions = JSON.parse(localStorage.getItem("user_acl"));
-  
-   const donut = {
-     series1: "#ffe700",
-     series2: "#00d4bd",
-     series3: "#826bf8",
-     series4: "#2b9bf4",
-     series5: "#FFA1A1",
-   };
+  const [data,setData] = useState([])
+  const [orderBardata,setOrderBarData] = useState()
+  const [profileLinedata, setprofileLineData] = useState();
+  const [statsData,setStatsData] = useState()
+  const [pieData,setPieData] = useState()
 
+  
+   const donut = [
+     {
+       series: "#ffe700",
+     },
+     {
+       series: "#00d4bd",
+     },
+     {
+       series: "#826bf8",
+     },
+     {
+       series: "#2b9bf4",
+     },
+     {
+       series: "#FFA1A1",
+     },
+   ];
   // ** vars
   const trackBgColor = '#e9ecef'
+   useEffect(() =>{
+      getData()
+   },[])
+
+  const getData = () =>{
+    
+    CoreHttpHandler.request(
+      "dashboard",
+      "sellerDashboard",
+      {
+          startDate: "2022-10-01",
+          endDate: "2022-11-14",
+      },
+      (response) => {
+        
+        setData(response.data.data);
+        let _data = {
+          title: "Order Recieved",
+          statistics: response.data.data.order_recieved,
+          series:[{"name": "2020","data": [45,85, 65,45,65]}]
+        };
+        setOrderBarData(_data);
+        _data = {
+          "title": "Earning",
+          "statistics": `$ ${Math.round(response.data.data.earning)}`,
+          "series": [{"data": [0,20,5,30,15,45]}]
+        }
+        setprofileLineData(_data);
+        _data = [
+          {
+            title: response.data.data.sales,
+            subtitle: "Sales",
+            color: "light-primary",
+            icon: <TrendingUp size={24} />,
+          },
+          {
+            title: response.data.data.customers,
+            subtitle: "Customers",
+            color: "light-info",
+            icon: <User size={24} />,
+          },
+          {
+            title: response.data.data.products,
+            subtitle: "Products",
+            color: "light-danger",
+            icon: <Box size={24} />,
+          },
+          {
+            title: response.data.data.gross_sales,
+            subtitle: "Gross Sales",
+            color: "light-success",
+            icon: <DollarSign size={24} />,
+          },
+        ];
+        setStatsData(_data)
+        _data = []
+        response.data.data.sales_graph.map((s,i)=>{
+          _data.push({name: s.name, value: parseInt(s.percent,10), color: donut[i].series})
+        })
+      //   _data = [
+      //       { name: "R&D", value: 50, color: props.series2 },
+      //       { name: "Operational", value: 85, color: props.series1 },
+      //       { name: "Networking", value: 16, color: props.series5 },
+      //       { name: "Hiring", value: 50, color: props.series3 },
+      //     ];
+      // },
+      setPieData(_data)
+      },
+      (failure)=>{}
+    );
+  }
 
   return (
     <div id="dashboard-ecommerce">
@@ -92,25 +189,26 @@ const EcommerceDashboard = () => {
         <Col lg="4" md="12">
           <Row className="match-height">
             <Col lg="6" md="3" xs="6">
-              <OrdersBarChart warning={colors.warning.main} />
+              <OrdersBarChart warning={colors.warning.main} _data={orderBardata} />
             </Col>
             <Col lg="6" md="3" xs="6">
-              <ProfitLineChart info={colors.info.main} />
+              <ProfitLineChart info={colors.info.main} _data={profileLinedata} />
             </Col>
           </Row>
         </Col>
         <Col lg="8" md="12">
-          <StatsCard cols={{ xl: "3", sm: "6" }} />
+          <StatsCard cols={{ xl: "3", sm: "6" }} _data={statsData} />
         </Col>
       </Row>
       <Row>
         <Col xl="6" lg="12">
+          {pieData != undefined ? 
           <PieChart
-            series1={donut.series1}
-            series2={donut.series2}
-            series3={donut.series3}
-            series5={donut.series5}
+            data={pieData}
+            series={donut}
           />
+          : null}
+          
         </Col>
         <Col xl="6" lg="12">
           <BarChart

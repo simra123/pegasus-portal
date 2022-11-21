@@ -10,8 +10,10 @@ import {
 	Home,
 	Settings,
 	User,
+  
 } from "react-feather";
 import { BiStore } from "react-icons/bi";
+import {FaBoxes} from "react-icons/fa"
 import {GiCardboardBoxClosed} from 'react-icons/gi'
 
 export default [
@@ -80,7 +82,15 @@ export default [
         navLink: "/apps/orders",
         exact: true,
       },
-
+      {
+        id: "deals",
+        title: "Deals",
+        translate: "Deals",
+        type: "item",
+        icon: <FaBoxes size={20} />,
+        navLink: "/apps/deals",
+        exact: true,
+      },
       {
         id: "Request",
         title: "Request",

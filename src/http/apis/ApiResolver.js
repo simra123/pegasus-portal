@@ -7,6 +7,9 @@ import Store from "./stores";
 import Riders from "./riders";
 import Orders from "./orders";
 import Content from "./content"
+import Dashboard from "./dashboard"
+import Deals from "./deals";
+
 class ApiResolver {
 	constructor() {
 		this.apis = {
@@ -18,7 +21,9 @@ class ApiResolver {
 			stores: Store.apis(),
 			riders: Riders.apis(),
 			orders: Orders.apis(),
-			content: Content.apis()
+			content: Content.apis(),
+			dashboard: Dashboard.apis(),
+			deals: Deals.apis()
 		};
 	}
 
