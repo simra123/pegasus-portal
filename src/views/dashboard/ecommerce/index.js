@@ -80,95 +80,190 @@ const EcommerceDashboard = () => {
    },[])
 
   const getData = () =>{
-    
-    CoreHttpHandler.request(
-      "dashboard",
-      "sellerDashboard",
-      {
-          startDate: "2022-10-01",
-          endDate: "2022-11-14",
-      },
-      (response) => {
-        
-        setData(response.data.data);
-        let _data = {
-          title: "Order Recieved",
-          statistics: response.data.data.order_recieved,
-          series:[{"name": "2020","data": [45,85, 65,45,65]}]
-        };
-        setOrderBarData(_data);
-        _data = {
-          "title": "Earning",
-          "statistics": `$ ${Math.round(response.data.data.earning)}`,
-          "series": [{"data": [0,20,5,30,15,45]}]
-        }
-        setprofileLineData(_data);
-        _data = [
+    console.log(permissions["FRONT:/seller-dashboard"], "ppspsps");
+    permissions["FRONT:/seller-dashboard"] != undefined
+      ? CoreHttpHandler.request(
+          "dashboard",
+          "sellerDashboard",
           {
-            title: response.data.data.sales,
-            subtitle: "Sales",
-            color: "light-primary",
-            icon: <TrendingUp size={24} />,
+            startDate: "2022-10-01",
+            endDate: "2022-11-14",
           },
+          (response) => {
+            setData(response.data.data);
+            let _data = {
+              title: "Order Recieved",
+              statistics: response.data.data.order_recieved,
+              series: [{ name: "2020", data: [45, 85, 65, 45, 65] }],
+            };
+            setOrderBarData(_data);
+            _data = {
+              title: "Earning",
+              statistics: `$ ${Math.round(response.data.data.earning)}`,
+              series: [{ data: [0, 20, 5, 30, 15, 45] }],
+            };
+            setprofileLineData(_data);
+            _data = [
+              {
+                title: response.data.data.sales,
+                subtitle: "Sales",
+                color: "light-primary",
+                icon: <TrendingUp size={24} />,
+              },
+              {
+                title: response.data.data.customers,
+                subtitle: "Customers",
+                color: "light-info",
+                icon: <User size={24} />,
+              },
+              {
+                title: response.data.data.products,
+                subtitle: "Products",
+                color: "light-danger",
+                icon: <Box size={24} />,
+              },
+              {
+                title: response.data.data.gross_sales,
+                subtitle: "Gross Sales",
+                color: "light-success",
+                icon: <DollarSign size={24} />,
+              },
+            ];
+            setStatsData(_data);
+            _data = [];
+            response.data.data.sales_graph.map((s, i) => {
+              _data.push({
+                name: s.name,
+                value: parseInt(s.percent, 10),
+                color: donut[i].series,
+              });
+            });
+            setPieData(_data);
+            let labels = [];
+            let total = [];
+            let highbar = 0;
+            response.data.data.product_delieverd.map((s, i) => {
+              if (highbar == 0) {
+                highbar = s.total;
+              } else if (highbar < parseInt(s.total)) {
+                highbar = s.total;
+              }
+              labels.push(s.date);
+              total.push(s.total);
+            });
+            _data = {
+              labels: labels,
+              highbar,
+              datasets: [
+                {
+                  maxBarThickness: 35,
+                  backgroundColor: "#ffe800",
+                  borderColor: "transparent",
+                  borderRadius: { topRight: 0, topLeft: 0 },
+                  data: total,
+                },
+              ],
+            };
+            setBarData(_data);
+            _data = response.data.data.earning_weekly;
+            _data["sum"] = {
+              total: response.data.data.total_earning_weekly,
+            };
+            setLineData(_data);
+          },
+          (failure) => {}
+        )
+      : CoreHttpHandler.request(
+          "dashboard",
+          "adminDashboard",
           {
-            title: response.data.data.customers,
-            subtitle: "Customers",
-            color: "light-info",
-            icon: <User size={24} />,
+            startDate: "2022-10-01",
+            endDate: "2022-11-14",
           },
-          {
-            title: response.data.data.products,
-            subtitle: "Products",
-            color: "light-danger",
-            icon: <Box size={24} />,
+          (response) => {
+            setData(response.data.data);
+            let _data = {
+              title: "Order Recieved",
+              statistics: response.data.data.order_recieved,
+              series: [{ name: "2020", data: [45, 85, 65, 45, 65] }],
+            };
+            setOrderBarData(_data);
+            _data = {
+              title: "Earning",
+              statistics: `$ ${Math.round(response.data.data.earning)}`,
+              series: [{ data: [0, 20, 5, 30, 15, 45] }],
+            };
+            setprofileLineData(_data);
+            _data = [
+              {
+                title: response.data.data.sales,
+                subtitle: "Sales",
+                color: "light-primary",
+                icon: <TrendingUp size={24} />,
+              },
+              {
+                title: response.data.data.customers,
+                subtitle: "Customers",
+                color: "light-info",
+                icon: <User size={24} />,
+              },
+              {
+                title: response.data.data.products,
+                subtitle: "Products",
+                color: "light-danger",
+                icon: <Box size={24} />,
+              },
+              {
+                title: response.data.data.gross_sales,
+                subtitle: "Gross Sales",
+                color: "light-success",
+                icon: <DollarSign size={24} />,
+              },
+            ];
+            setStatsData(_data);
+            _data = [];
+            response.data.data.sales_graph.map((s, i) => {
+              _data.push({
+                name: s.name,
+                value: parseInt(s.percent, 10),
+                color: donut[i].series,
+              });
+            });
+            setPieData(_data);
+            let labels = [];
+            let total = [];
+            let highbar = 0;
+            response.data.data.product_delieverd.map((s, i) => {
+              if (highbar == 0) {
+                highbar = s.total;
+              } else if (highbar < parseInt(s.total)) {
+                highbar = s.total;
+              }
+              labels.push(s.date);
+              total.push(s.total);
+            });
+            _data = {
+              labels: labels,
+              highbar,
+              datasets: [
+                {
+                  maxBarThickness: 35,
+                  backgroundColor: "#ffe800",
+                  borderColor: "transparent",
+                  borderRadius: { topRight: 0, topLeft: 0 },
+                  data: total,
+                },
+              ],
+            };
+            setBarData(_data);
+            _data = response.data.data.earning_weekly;
+            _data["sum"] = {
+              total: response.data.data.total_earning_weekly,
+            };
+            setLineData(_data);
           },
-          {
-            title: response.data.data.gross_sales,
-            subtitle: "Gross Sales",
-            color: "light-success",
-            icon: <DollarSign size={24} />,
-          },
-        ];
-        setStatsData(_data)
-        _data = []
-        response.data.data.sales_graph.map((s,i)=>{
-          _data.push({name: s.name, value: parseInt(s.percent,10), color: donut[i].series})
-        })
-        setPieData(_data)
-        let labels = []
-        let total = []
-        let highbar = 0
-        response.data.data.product_delieverd.map((s,i)=>{
-          if (highbar == 0) {
-            highbar = s.total
-          }else if (highbar < parseInt(s.total)){
-            highbar = s.total
-          }
-          labels.push( s.date);
-          total.push(s.total)
-        })
-        _data = {
-          labels: labels,
-          highbar,
-          datasets: [
-            {
-              maxBarThickness: 35,
-              backgroundColor: "#ffe800",
-              borderColor: "transparent",
-              borderRadius: { topRight: 0, topLeft: 0 },
-              data: total,
-            },
-          ],
-        };
-        setBarData(_data);
-          _data = response.data.data.earning_weekly
-          _data["sum"] = {
-            total: response.data.data.total_earning_weekly,
-          };
-          setLineData(_data)
-      },
-      (failure)=>{}
-    );
+          (failure) => {}
+        ); 
   }
 
   return (
@@ -253,13 +348,13 @@ const EcommerceDashboard = () => {
           
         </Col>
       </Row>
-      {permissions["FRONT:/seller-dashboard"] ? 
+      {/* {permissions["FRONT:/seller-dashboard"] ? 
       null :       
       <Row className="match-height">
         <Col lg="12" xs="12">
           <CompanyTable />
         </Col>
-      </Row>}
+      </Row>} */}
     </div>
   );
 }

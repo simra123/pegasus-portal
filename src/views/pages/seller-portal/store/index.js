@@ -15,8 +15,14 @@ const Store = () => {
 
 	useEffect(() => {
 		getStores();
-		getProducts();
+		
 	}, []);
+	
+	useEffect(() => {
+		if (storesData) {
+      		getProducts();
+    	}
+	}, [storesData]);
 
 	const getStores = () => {
 		CoreHttpHandler.request(
@@ -33,10 +39,14 @@ const Store = () => {
 	const getProducts = () => {
 		CoreHttpHandler.request(
 			"products",
-			"fetchSeller",
-			{},
+			"fetch",
+			{
+				limit: 100,
+				page: 0,
+				storeId: storesData?.data?.data?.id,
+			},
 			(response) => {
-				setProductsData(response.data.data);
+				setProductsData(response.data.data.data.product);
 			},
 			(failure) => {}
 		);
@@ -71,7 +81,7 @@ const Store = () => {
 					xs='12'
 					md={{ order: 1, size: 3 }}>
 					<ProductCards
-						productsData={productsData?.data}
+						productsData={productsData}
 						activeView={"grid"}
 					/>
 				</Col>

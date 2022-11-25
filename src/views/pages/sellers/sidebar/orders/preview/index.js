@@ -196,9 +196,9 @@ const InvoicePreview = ({ data, setShowDetails }) => {
                     </tr>
                   </thead>
                   <tbody>
-                    {orderDetails.hotDeals.map((val) => {
+                    {orderDetails?.hotDeals?.map((val) => {
                       return (
-                        <tr key={val.hot_deal_id}>
+                        <tr key={val?.hot_deal_id}>
                           <td className="py-1">
                             <p className="card-text fw-bold mb-25">
                               {val.hot_deal_name}
@@ -227,7 +227,7 @@ const InvoicePreview = ({ data, setShowDetails }) => {
                         </tr>
                       );
                     })}
-                    {orderDetails.product.map((val) => {
+                    {orderDetails?.product?.map((val) => {
                       return (
                         <tr key={val.id}>
                           <td className="py-1">

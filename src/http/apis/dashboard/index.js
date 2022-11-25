@@ -8,6 +8,13 @@ class APIS {
         method: "post",
         path: "/seller/dashboard",
       },
+      adminDashboard: {
+        headers: {
+          "xt-user-token": null,
+        },
+        method: "post",
+        path: "/admin/dashboard",
+      },
     };
   }
 }

@@ -121,6 +121,8 @@ const Table = () => {
 	const [rowsPerPage, setRowsPerPage] = useState(10);
 	const [sortColumn, setSortColumn] = useState("id");
 	const [data, setData] = useState([]);
+	const [storesData, setStoresData] = useState([]);
+    const [productsData, setProductsData] = useState([]);
 
 	const renderClient = (row) => {
 		const stateNum = Math.floor(Math.random() * 6),
@@ -296,18 +298,41 @@ const Table = () => {
 		);
 	}, [dispatch, store.data.length]);
 
+	
 	useEffect(() => {
-		getUsersData();
-	}, [getUsersData]);
+    getStores();
+  }, []);
+
+
+  const getStores = () => {
+    CoreHttpHandler.request(
+      "stores",
+      "fetch",
+      {},
+      (response) => {
+        setStoresData(response.data.data);
+      },
+      (failure) => {}
+    );
+  };
+
+	useEffect(() => {
+      if (storesData) {
+        getUsersData();
+      }
+    }, [storesData]);
 
 	const getUsersData = () => {
 		CoreHttpHandler.request(
 			"products",
-			"fetchSeller",
-			{},
+			"fetch",
+			{
+				limit: 100,
+				page: 0,
+				storeId: storesData?.data?.data?.id,
+			},
 			(response) => {
-				const res = response.data.data;
-				setData(res);
+				setData(response.data.data.data);
 			},
 			(failure) => {}
 		);
@@ -406,7 +431,7 @@ const Table = () => {
 	};
 	// ** Table data to render
 	const dataToRender = () => {
-		return data.data;
+		return data.product;
 		// const filters = {
 		// 	q: searchTerm,
 		// };

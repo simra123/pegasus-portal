@@ -24,16 +24,12 @@ const ProductCards = (props) => {
 						key={item.name}>
 						<div className='item-img text-center mx-auto'>
 							{/* <Link to={`/apps/ecommerce/product-detail/${item.slug}`}> */}
-							{/* <img
+							<img
 								width='300'
 								height='300'
 								className='img-fluid'
-								src={
-									item?.attachment?.val[
-										item?.attachment["type"]?.findIndex((t) => t == "0")
-									]
-								}
-							/> */}
+								src={item.featured_image}
+							/>
 							{/* </Link> */}
 						</div>
 						<CardBody>
