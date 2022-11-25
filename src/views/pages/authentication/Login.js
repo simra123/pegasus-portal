@@ -76,6 +76,7 @@ const Login = () => {
 	const illustration = skin === "dark" ? "login-v2-dark.svg" : "login-v2.svg",
 		source = require(`@src/assets/images/pages/whiskey-glass.png`).default;
 	const userToken = localStorage.getItem("user_token");
+	console.log(userToken,'tokekek')
 	const authSuccess = (response) => {
 		const token = response.data.data.token;
 		localStorage.setItem("client_token", token);
@@ -101,7 +102,10 @@ const Login = () => {
 		}
 	};
 	useEffect(() => {
-		checkUser();
+		if (userToken == null) {
+      		clientAuthentication();
+    	}
+		// checkUser();
 	}, []);
 	//	console.log("hehehe");
 	const loginSuccess = (data) => {

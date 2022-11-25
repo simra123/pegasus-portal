@@ -63,7 +63,7 @@ const Store = () => {
 					lg='5'
 					xs='12'
 					md={{ order: 0, size: 4 }}>
-					<UserInfoCard storeData={storesData?.data} />
+					<UserInfoCard storeData={storesData?.data?.data} orders={storesData?.data?.orders} />
 				</Col>
 				<Col
 					xl='8'

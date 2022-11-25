@@ -36,9 +36,9 @@ import "@styles/react/libs/charts/recharts.scss";
 // ** Styles
 import '@styles/react/libs/charts/apex-charts.scss'
 import '@styles/base/pages/dashboard-ecommerce.scss'
-import LineChart  from '../../charts/recharts/LineChart';
+import LineChart  from './Charts/LineChart';
 import PieChart from "./Charts/PieChart";
-import BarChart from "../../charts/chart-js/ChartjsBarChart"
+import BarChart from "./Charts/ChartjsBarChart"
 
 import CoreHttpHandler from '../../../http/services/CoreHttpHandler';
 
@@ -52,8 +52,10 @@ const EcommerceDashboard = () => {
   const [profileLinedata, setprofileLineData] = useState();
   const [statsData,setStatsData] = useState()
   const [pieData,setPieData] = useState()
+  const [barData, setBarData] = useState()
+  const [lineData, setLineData] = useState();
 
-  
+
    const donut = [
      {
        series: "#ffe700",
@@ -132,14 +134,38 @@ const EcommerceDashboard = () => {
         response.data.data.sales_graph.map((s,i)=>{
           _data.push({name: s.name, value: parseInt(s.percent,10), color: donut[i].series})
         })
-      //   _data = [
-      //       { name: "R&D", value: 50, color: props.series2 },
-      //       { name: "Operational", value: 85, color: props.series1 },
-      //       { name: "Networking", value: 16, color: props.series5 },
-      //       { name: "Hiring", value: 50, color: props.series3 },
-      //     ];
-      // },
-      setPieData(_data)
+        setPieData(_data)
+        let labels = []
+        let total = []
+        let highbar = 0
+        response.data.data.product_delieverd.map((s,i)=>{
+          if (highbar == 0) {
+            highbar = s.total
+          }else if (highbar < parseInt(s.total)){
+            highbar = s.total
+          }
+          labels.push( s.date);
+          total.push(s.total)
+        })
+        _data = {
+          labels: labels,
+          highbar,
+          datasets: [
+            {
+              maxBarThickness: 35,
+              backgroundColor: "#ffe800",
+              borderColor: "transparent",
+              borderRadius: { topRight: 0, topLeft: 0 },
+              data: total,
+            },
+          ],
+        };
+        setBarData(_data);
+          _data = response.data.data.earning_weekly
+          _data["sum"] = {
+            total: response.data.data.total_earning_weekly,
+          };
+          setLineData(_data)
       },
       (failure)=>{}
     );
@@ -211,16 +237,20 @@ const EcommerceDashboard = () => {
           
         </Col>
         <Col xl="6" lg="12">
+          {barData != undefined ? 
           <BarChart
+            barData={barData}
             success={"#ffe800"}
             labelColor={"#b4b7bd"}
             gridLineColor={"rgba(200, 200, 200, 0.2)"}
           />
+            : null}
         </Col>
       </Row>
       <Row className="match-height">
         <Col sm="12">
-          <LineChart warning={colors.warning.main} />
+          {lineData != undefined ? <LineChart warning={colors.warning.main} lineData={lineData}/> : null}
+          
         </Col>
       </Row>
       {permissions["FRONT:/seller-dashboard"] ? 

@@ -4,7 +4,7 @@ import { useParams, Link } from "react-router-dom";
 
 // ** Third Party Components
 
-import CoreHttpHandler from "../../../../../../http/services/CoreHttpHandler";
+import CoreHttpHandler from "../../../../http/services/CoreHttpHandler";
 
 // ** Reactstrap Imports
 import { Card, div, CardText, Row, Col, Table, CardHeader } from "reactstrap";
@@ -12,7 +12,7 @@ import { X } from "react-feather";
 // ** Styles
 import "@styles/base/pages/app-invoice.scss";
 import logo from "@src/assets/images/logo/logo.png";
-import { Loader } from "../../../../reuseable";
+import { Loader } from "../../reuseable";
 import moment from "moment";
 const InvoicePreview = ({ data, setShowDetails }) => {
 	// ** HooksVars
@@ -196,9 +196,9 @@ const InvoicePreview = ({ data, setShowDetails }) => {
                     </tr>
                   </thead>
                   <tbody>
-                    {orderDetails.hotDeals.map((val) => {
+                    {orderDetails?.hotDeals?.map((val) => {
                       return (
-                        <tr key={val.hot_deal_id}>
+                        <tr>
                           <td className="py-1">
                             <p className="card-text fw-bold mb-25">
                               {val.hot_deal_name}
@@ -227,9 +227,9 @@ const InvoicePreview = ({ data, setShowDetails }) => {
                         </tr>
                       );
                     })}
-                    {orderDetails.product.map((val) => {
+                    {orderDetails?.product?.map((val) => {
                       return (
-                        <tr key={val.id}>
+                        <tr>
                           <td className="py-1">
                             <p className="card-text fw-bold mb-25">
                               {val.name}

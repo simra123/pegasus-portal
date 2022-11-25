@@ -58,37 +58,36 @@ const languageOptions = [
 
 const MySwal = withReactContent(Swal)
 
-const UserInfoCard = ({ storeData }) => {
+const UserInfoCard = ({ storeData, orders }) => {
   // ** State
-  const [show, setShow] = useState(false)
+  const [show, setShow] = useState(false);
 
-   const {
-     reset,
-     control,
-     setError,
-     handleSubmit,
-     formState: { errors },
-   } = useForm({
-     defaultValues: {
-       name: storeData?.name,
-     },
-   });
-
+  const {
+    reset,
+    control,
+    setError,
+    handleSubmit,
+    formState: { errors },
+  } = useForm({
+    defaultValues: {
+      name: storeData?.name,
+    },
+  });
 
   // ** render user img
   const renderUserImg = () => {
     // if (selectedUser !== null && selectedUser.avatar.length) {
-      return (
-        <img
-          height='100'
-          width='160'
-          alt='user-avatar'
-          src={storeData?.image}
-          className='img-fluid rounded mt-3 mb-2'
-        />
-      )
-  }
-  console.log(storeData,'glglg')
+    return (
+      <img
+        height="100"
+        width="160"
+        alt="user-avatar"
+        src={storeData?.image}
+        className="img-fluid rounded mt-3 mb-2"
+      />
+    );
+  };
+  console.log(orders, "gtttt");
   return (
     <Fragment>
       <div>
@@ -99,7 +98,7 @@ const UserInfoCard = ({ storeData }) => {
                 {renderUserImg()}
                 <div className="d-flex flex-column align-items-center text-center">
                   <div className="user-info">
-                    <h4>The Vape Company </h4>
+                    <h4>{storeData?.name}</h4>
                     {/* {storeData !== null ? (
                     <Badge color="green" className='text-capitalize'>
                       {selectedUser.role}
@@ -124,8 +123,8 @@ const UserInfoCard = ({ storeData }) => {
                   <Briefcase className="font-medium-2" />
                 </Badge>
                 <div className="ms-75">
-                  <h4 className="mb-0">568</h4>
-                  <small>Orders Completed</small>
+                  <h4 className="mb-0">{orders?.count}</h4>
+                  <small>Total Orders</small>
                 </div>
               </div>
             </div>
@@ -153,13 +152,11 @@ const UserInfoCard = ({ storeData }) => {
                   </li>
                   <li className="mb-75">
                     <span className="fw-bolder me-25">Description:</span>
-                    <span>
-                      {"  "}Lorem Ipsum is simply dummy text of the printing and
-                      typesetting industry. Lorem Ipsum has been the industry's
-                      standard dummy text ever since the 1500s, when an unknown
-                      printer took a galley of type and scrambled it to make a
-                      type specimen book.
-                    </span>
+                    <div
+                      dangerouslySetInnerHTML={{
+                        __html: storeData?.description,
+                      }}
+                    ></div>
                   </li>
                 </ul>
               ) : null}
@@ -168,7 +165,7 @@ const UserInfoCard = ({ storeData }) => {
               <Button
                 color="primary"
                 onClick={() => {
-                  setShow(true)
+                  setShow(true);
                 }}
               >
                 Edit
@@ -178,117 +175,124 @@ const UserInfoCard = ({ storeData }) => {
         </Card>
       </div>
 
-      <Modal isOpen={show} toggle={() => setShow(!show)} className='modal-dialog-centered modal-lg'>
-        <ModalHeader className='bg-transparent' toggle={() => setShow(!show)}></ModalHeader>
-        <ModalBody className='px-sm-5 pt-50 pb-5'>
-          <div className='text-center mb-2'>
-            <h1 className='mb-1'>Edit Store Information</h1>
+      <Modal
+        isOpen={show}
+        toggle={() => setShow(!show)}
+        className="modal-dialog-centered modal-lg"
+      >
+        <ModalHeader
+          className="bg-transparent"
+          toggle={() => setShow(!show)}
+        ></ModalHeader>
+        <ModalBody className="px-sm-5 pt-50 pb-5">
+          <div className="text-center mb-2">
+            <h1 className="mb-1">Edit Store Information</h1>
             <p>Updating store details will receive a privacy audit.</p>
           </div>
           <Form>
-            <Row className='gy-1 pt-75'>
+            <Row className="gy-1 pt-75">
               <Col md={6} xs={12}>
-                <Label className='form-label' for='firstName'>
+                <Label className="form-label" for="firstName">
                   Store Name
                 </Label>
                 <Input
-                  defaultValue=''
+                  defaultValue=""
                   control={control}
-                  id='firstName'
-                  name='firstName'
+                  id="firstName"
+                  name="firstName"
                   // render={({ field }) => (
                   //   <Input {...field} id='firstName' placeholder='John' invalid={errors.firstName && true} />
                   // )}
                 />
               </Col>
               <Col md={6} xs={12}>
-                <Label className='form-label' for='lastName'>
+                <Label className="form-label" for="lastName">
                   Status
                 </Label>
                 <Input
-                  defaultValue=''
+                  defaultValue=""
                   control={control}
-                  id='lastName'
-                  name='lastName'
+                  id="lastName"
+                  name="lastName"
                   // render={({ field }) => (
                   //   <Input {...field} id='lastName' placeholder='Doe' invalid={errors.lastName && true} />
                   // )}
                 />
               </Col>
               <Col xs={12}>
-                <Label className='form-label' for='username'>
+                <Label className="form-label" for="username">
                   Description
                 </Label>
                 <Input
-                  defaultValue=''
+                  defaultValue=""
                   control={control}
-                  id='username'
-                  name='username'
+                  id="username"
+                  name="username"
                   // render={({ field }) => (
                   //   <Input {...field} id='username' placeholder='john.doe.007' invalid={errors.username && true} />
                   // )}
                 />
               </Col>
               <Col md={6} xs={12}>
-                <Label className='form-label' for='billing-email'>
+                <Label className="form-label" for="billing-email">
                   Type
                 </Label>
                 <Input
-                  type='email'
-                  id='billing-email'
+                  type="email"
+                  id="billing-email"
                   // defaultValue={selectedUser.email}
                   // placeholder='example@domain.com'
                 />
               </Col>
               <Col md={6} xs={12}>
-                <Label className='form-label' for='status'>
+                <Label className="form-label" for="status">
                   Contact
                 </Label>
                 <Select
-                  id='status'
+                  id="status"
                   isClearable={false}
-                  className='react-select'
-                  classNamePrefix='select'
+                  className="react-select"
+                  classNamePrefix="select"
                   // options={statusOptions}
                   // theme={selectThemeColors}
                   // defaultValue={statusOptions[statusOptions.findIndex(i => i.value === selectedUser.status)]}
                 />
               </Col>
               <Col md={6} xs={12}>
-                <Label className='form-label' for='language'>
+                <Label className="form-label" for="language">
                   City
                 </Label>
                 <Select
-                  id='language'
+                  id="language"
                   isClearable={false}
-                  className='react-select'
-                  classNamePrefix='select'
+                  className="react-select"
+                  classNamePrefix="select"
                   // options={languageOptions}
                   // theme={selectThemeColors}
                   // defaultValue={languageOptions[0]}
                 />
               </Col>
               <Col md={6} xs={12}>
-                <Label className='form-label' for='country'>
+                <Label className="form-label" for="country">
                   Country
                 </Label>
                 <Select
-                  id='country'
+                  id="country"
                   isClearable={false}
-                  className='react-select'
-                  classNamePrefix='select'
+                  className="react-select"
+                  classNamePrefix="select"
                   // options={countryOptions}
                   // theme={selectThemeColors}
                   // defaultValue={countryOptions[0]}
                 />
               </Col>
-              <Col xs={12} className='text-center mt-2 pt-50'>
-                <Button type='submit' className='me-1' color='primary'>
+              <Col xs={12} className="text-center mt-2 pt-50">
+                <Button type="submit" className="me-1" color="primary">
                   Submit
                 </Button>
                 <Button
-                  type='reset'
-                  color='secondary'
+                  type="reset"
+                  color="secondary"
                   outline
                   // onClick={() => {
                   //   handleReset()
@@ -304,6 +308,6 @@ const UserInfoCard = ({ storeData }) => {
       </Modal>
     </Fragment>
   );
-}
+};
 
 export default UserInfoCard
