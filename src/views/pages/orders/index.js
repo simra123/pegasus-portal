@@ -13,7 +13,7 @@ const Roles = () => {
         can have access to what he needs.
       </p>
       <RoleCards /> */}
-			<h3 className='mt-50'>Total Orders</h3>
+			
 			{/* <p className='mb-2'>
 				Find all of your company’s administrator accounts and their associate
 				roles.

@@ -38,13 +38,13 @@ const Store = () => {
 			(failure) => {}
 		);
 	};
-
+	console.log(storesData?.data?.data)
 	const getProducts = () => {
       CoreHttpHandler.request(
         "products",
         "fetch_id_name",
         {
-			store_id: storesData?.data?.data[0].id
+			store_id: storesData?.data?.data?.id
 		},
         (response) => {
 			let p =[]
@@ -64,7 +64,7 @@ const Store = () => {
 				roles.
 			</p> */}
       <div className="app-user-list">
-        <Table storeData={storesData?.data?.data[0]} productsData={productsData}/>
+        <Table storeData={storesData?.data?.data} productsData={productsData}/>
       </div>
     </Fragment>
   );

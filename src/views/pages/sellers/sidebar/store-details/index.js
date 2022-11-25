@@ -152,11 +152,10 @@ const UserInfoCard = (props) => {
       setFileData(e.target.files[0]);
     };
 
-	console.log(props,'prprfprp')
     const onSubmit = (datas) => {
       document.body.style.opacity = 0.4;
       const _data = new FormData();
-		console.log(datas,'lfofoof')
+
       if (fileData != "") {
         console.log("ehrhehe");
         _data.append("file", fileData, `${new Date().getTime()}_${name}`);

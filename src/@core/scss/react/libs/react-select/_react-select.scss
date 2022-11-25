@@ -43,7 +43,9 @@
     color: $body-color;
   }
 }
-
+.react-select {
+  z-index: 1000 !important ;
+}
 // Select Menu
 .select__menu,
 .react-select__menu {
@@ -52,7 +54,6 @@
     .select__option,
     .react-select__option {
       cursor: pointer;
-
       &.select__option--is-focused {
         background-color: rgba($color: $primary, $alpha: 0.12);
         color: $primary;

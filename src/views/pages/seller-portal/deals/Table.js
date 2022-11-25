@@ -5,11 +5,13 @@ import moment from "moment";
 import logo from "@src/assets/images/logo/image.png";
 
 import {
-	Loader,
-	Pagination,
-	DatePicker,
-	ToastAlertError,
-	SearchFilters,
+  Loader,
+  Pagination,
+  DatePicker,
+  ToastAlertError,
+  SearchFilters,
+  LoadingButton,
+  TextEditor,
 } from "../../reuseable";
 import {
 	Card,
@@ -40,7 +42,15 @@ import { useForm } from "react-hook-form";
 import { selectThemeColors } from "@utils";
 import Swal from "sweetalert2";
 import Flatpickr from "react-flatpickr";
+import ContentUploadHandler from "../../../../http/services/ContentUploadHandler";
+import "@styles/react/libs/editor/editor.scss";
+import "@styles/base/plugins/forms/form-quill-editor.scss";
+import { EditorState, ContentState } from "draft-js";
+import { stateToHTML } from "draft-js-export-html";
 
+
+import "@styles/react/libs/editor/editor.scss";
+import "@styles/base/plugins/forms/form-quill-editor.scss";
 
 // ** Bootstrap Checkbox Component
 const BootstrapCheckbox = forwardRef((props, ref) => (
@@ -78,6 +88,14 @@ const SellersTable = (props) => {
 	const [dealPrice, setDealPrice] = useState("");
 	const [date, setDate] = useState("");
 	const [image, setImage] = useState("");
+	const [stock, setStock] = useState("");
+	const [description, setDescription] = useState(EditorState.createEmpty());
+	const [fileData, setFileData] = useState("");
+	const paraToHtml = stateToHTML(description.getCurrentContent());
+
+
+
+  let filename = ""
 
 
 	const [currentParams, setCurrentParams] = useState({
@@ -129,6 +147,7 @@ const SellersTable = (props) => {
 		 product_ids: []
        },
      });
+    console.log(storeData, "frrr");
 
 	useEffect(() => {
 		if(storeData){
@@ -144,12 +163,16 @@ const SellersTable = (props) => {
   ];
 
   	const onChange = (e) => {
+       filename = e.target.files[0].name;
+
       const reader = new FileReader(),
         files = e.target.files;
       reader.onload = function () {
         setAvatar(reader.result);
       };
       reader.readAsDataURL(files[0]);
+      setFileData(e.target.files[0]);
+
     };
 
 	const handleImgReset = () => {
@@ -157,11 +180,93 @@ const SellersTable = (props) => {
     };
 
 	const onSubmit = (data) =>{
+    if(picker[0] == undefined || picker[1] == undefined){
+			ToastAlertError(`Please select start date and end date`);
+    }
+    if(product_ids.length == 0){
+			ToastAlertError(`Please select products`);
+    }
+    if (dealPrice == "") {
+      ToastAlertError(`Please select deal price`);
+    }
+    if (regularPrice == "") {
+      ToastAlertError(`Please select regular price`);
+    }
+    if (stock == "") {
+      ToastAlertError(`Please select stock`);
+    }
+    if (description == "") {
+      ToastAlertError(`Please select description`);
+    }
+    if (name == "") {
+      ToastAlertError(`Please select name`);
+    }
+
+    const _data = new FormData();
+
+    _data.append("file", fileData, `${new Date().getTime()}_${filename}`);
+   
 		let ids = product_ids.map(p => p.value)
 		let startDate = moment(picker[0]).format("YYYY-MM-DD");
 		let endDate = moment(picker[1]).format("YYYY-MM-DD");
+    setLoading(true)
+    ContentUploadHandler.request(
+      "content",
+      "upload",
+      {
+        params: _data,
+      },
+      (response) => {
+        let img = response.data.data.file;
+        CoreHttpHandler.request(
+          "deals",
+          "create_deals",
+          {
+              name: name,
+              featured_image: img,
+              store_id: storeData?.id,
+              description: paraToHtml,
+              stock: stock,
+              deal_price: dealPrice,
+              regular_price: regularPrice,
+              product_ids: ids,
+              startDate: startDate,
+              endDate: endDate,
+          },
+          (response) => {
+            setLoading(false);
+            document.body.style.opacity = 1;
+            Swal.fire({
+              icon: "success",
+              title: "Success",
+              text: "Successfully Created Hot Deals",
+              showCancelButton: false,
+              customClass: {
+                confirmButton: "btn btn-primary",
+                cancelButton: "btn btn-outline-danger ms-1",
+              },
+              background: "#020202",
+            });
+
+            getDealsData();
+            setShowCreate(false)
+          },
+          (error) => {}
+        );
+      },
+      (error) => {}
+    );
 
 	}
+
+  const customStyles = {
+    option: (base, { data, isDisabled, isFocused, isSelected }) => {
+      return {
+        ...base,
+        backgroundColor: isFocused ? "red" : "rgba(52, 52, 52, 1)",
+      };
+    },
+  };
 	
 	const handleFilter = () => {
 		if (filter) {
@@ -179,6 +284,7 @@ const SellersTable = (props) => {
 			getUsersData();
 		}
 	};
+
 	return (
     <>
       {showCreate ? (
@@ -238,6 +344,7 @@ const SellersTable = (props) => {
                       id="regular"
                       name="regular"
                       placeholder="Amount"
+                      type="number"
                       value={regularPrice}
                       onChange={(e) => setRegularPrice(e.target.value)}
                     />
@@ -251,55 +358,83 @@ const SellersTable = (props) => {
                       control={control}
                       id="Deal_price"
                       name="Deal_price"
+                      type="number"
                       placeholder="Amount"
                       value={dealPrice}
                       onChange={(e) => setDealPrice(e.target.value)}
+                    />
+                  </Col>
+                  <Col md={6} xs={12}>
+                    <Label className="form-label" for="firstName">
+                      Stock
+                    </Label>
+                    <Input
+                      defaultValue=""
+                      control={control}
+                      id="regular"
+                      name="regular"
+                      type="number"
+                      placeholder="Add Stock"
+                      value={stock}
+                      onChange={(e) => setStock(e.target.value)}
                     />
                   </Col>
                   <Col xs={12} style={{ marginTop: "20px" }}>
                     <Label className="form-label" for="range-picker">
                       Add Products
                     </Label>
-                    <Select
-                      id="label"
-                      name="label"
-                      isClearable={false}
-                      className="react-select"
-                      classNamePrefix="select"
-                      options={productsData}
-                      theme={selectThemeColors}
-                      isMulti={true}
-                      value={product_ids.length ? [...product_ids] : null}
-                      onChange={(data) => {
-                        if (product_ids.length >= 2 && data.length >= 2) {
-                          Swal.fire({
-                            icon: "error",
-                            title: "Error",
-                            text: "Product limit Exceeded",
-                            confirmButtonColor: "#ff3600",
-                            padding: "50px",
-                            customClass: {
-                              confirmButton: "btn btn-primary",
-                              cancelButton: "btn btn-outline-danger ms-1",
-                            },
-                            background: "#020202",
-                            buttonsStyling: false,
-                          });
-                          return;
-                        }
-                        setProduct_ids([...data]);
-                      }}
-                    />
+                    <div>
+                      <Select
+                        style={{ zIndex: 10000 }}
+                        id="label"
+                        name="label"
+                        isClearable={false}
+                        className="react-select"
+                        classNamePrefix="select"
+                        options={productsData}
+                        theme={selectThemeColors}
+                        isMulti={true}
+                        value={product_ids.length ? [...product_ids] : null}
+                        onChange={(data) => {
+                          if (product_ids.length >= 2 && data.length >= 2) {
+                            Swal.fire({
+                              icon: "error",
+                              title: "Error",
+                              text: "Product limit Exceeded",
+                              confirmButtonColor: "#ff3600",
+                              padding: "50px",
+                              customClass: {
+                                confirmButton: "btn btn-primary",
+                                cancelButton: "btn btn-outline-danger ms-1",
+                              },
+                              background: "#020202",
+                              buttonsStyling: false,
+                            });
+                            return;
+                          }
+                          setProduct_ids([...data]);
+                        }}
+                      />
+                    </div>
                   </Col>
-                  <div className="me-25">
-                    <img
-                      className="rounded me-50"
-                      src={avatar}
-                      alt="Generic placeholder image"
-                      height="150"
-                      width="180"
-                    />
-                  </div>
+                  <Col xs={12}>
+                    <Label className="form-label" for="firstName">
+                      Description
+                    </Label>
+                    <TextEditor content={description} setContent={setDescription} />
+                  </Col>
+                  <Col md={6} xs={12}>
+                    <div className="me-25">
+                      <img
+                        className="rounded me-50"
+                        src={avatar}
+                        alt="Generic placeholder image"
+                        height="100%"
+                        width="100%"
+                      />
+                    </div>
+                  </Col>
+
                   <div style={{ marginTop: "10px" }}>
                     <Button
                       tag={Label}
@@ -329,9 +464,18 @@ const SellersTable = (props) => {
                     </p>
                   </div>
                   <Col xs={12} className="text-center mt-2 pt-50">
-                    <Button type="submit" className="me-1" color="primary">
+                    {/* <Button type="submit" className="me-1" color="primary">
                       Submit
-                    </Button>
+                    </Button> */}
+                    <LoadingButton
+                      type="create"
+                      color="primary"
+                      text="Submit"
+                      // block={true}
+                      loading={loading}
+                      style={{ width: "100px" }}
+                    />
+                    {"    "}
                     <Button
                       type="reset"
                       color="secondary"
@@ -384,6 +528,7 @@ const SellersTable = (props) => {
                   {data?.map((deal, index) => {
                     return (
                       <tr key={deal.id}>
+                        {console.log(deal,'dododo')}
                         <td>{index + 1}</td>
 
                         <td>{deal.name}</td>
