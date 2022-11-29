@@ -138,7 +138,7 @@ const ProductsTable = () => {
 	const [loading, setLoading] = useState(true);
 	const [sort, setSort] = useState("desc");
 	const [searchTerm, setSearchTerm] = useState("");
-	const [currentPage, setCurrentPage] = useState(1);
+	const [currentPage, setCurrentPage] = useState(0);
 	const [rowsPerPage, setRowsPerPage] = useState(10);
 	const [sortColumn, setSortColumn] = useState("id");
 	const [data, setData] = useState([]);
@@ -239,8 +239,11 @@ const ProductsTable = () => {
 //   ];
 
 	useEffect(() => {
-      
-        getUsersData();
+      	if(searchVal == ""){
+        	getUsersData();
+		}else{
+			onClickSearch();
+		}
     }, [currentParams]);
 
 	const getUsersData = () => {
@@ -417,11 +420,18 @@ const ProductsTable = () => {
 	}
 
 	const onClickSearch = (page) =>{
+		
+		if(page == 0){
+			setCurrentPage({
+				limit: 10,
+				page: 0,
+			})
+		}
 		CoreHttpHandler.request(
           "products",
           "search",
           {
-            page : page ? page : currentParams.page,
+            page : page == 0 ? 0 : currentParams.page,
 			limit : currentParams.limit,
 			name: searchVal
           },
