@@ -1,5 +1,5 @@
 // ** React Imports
-import { useState, Fragment } from 'react'
+import { useState, Fragment, useEffect } from 'react'
 
 // ** Reactstrap Imports
 import { Row, Col, Card, Form, CardBody, Button, Badge, Modal, Input, Label, ModalBody, ModalHeader } from 'reactstrap'
@@ -7,7 +7,7 @@ import { Row, Col, Card, Form, CardBody, Button, Badge, Modal, Input, Label, Mod
 // ** Third Party Components
 import Swal from 'sweetalert2'
 import Select from 'react-select'
-import { Check, Briefcase, X } from 'react-feather'
+import { Check, Briefcase, X, Navigation } from 'react-feather'
 import { useForm, Controller } from 'react-hook-form'
 import withReactContent from 'sweetalert2-react-content'
 
@@ -19,6 +19,11 @@ import { selectThemeColors } from '@utils'
 
 // ** Styles
 import '@styles/react/libs/react-select/_react-select.scss'
+import store from '../../invoice/store'
+import CoreHttpHandler from '../../../../http/services/CoreHttpHandler'
+import { LoadingButton } from '../../reuseable'
+import ContentUploadHandler from '../../../../http/services/ContentUploadHandler'
+import { url } from '../../../../image-service-url'
 
 const roleColors = {
   editor: 'light-info',
@@ -48,17 +53,14 @@ const countryOptions = [
   { value: 'canada', label: 'Canada' }
 ]
 
-const languageOptions = [
-  { value: 'english', label: 'English' },
-  { value: 'spanish', label: 'Spanish' },
-  { value: 'french', label: 'French' },
-  { value: 'german', label: 'German' },
-  { value: 'dutch', label: 'Dutch' }
+const categories = [
+  { value: 'vape', label: 'Vape' },
+  { value: 'E-cigs', label: 'E-cigs' }
 ]
 
 const MySwal = withReactContent(Swal)
 
-const UserInfoCard = ({ storeData, orders }) => {
+const UserInfoCard = ({ storeData, orders, getStores }) => {
   // ** State
   const [show, setShow] = useState(false);
 
@@ -73,8 +75,31 @@ const UserInfoCard = ({ storeData, orders }) => {
       name: storeData?.name,
     },
   });
-
   // ** render user img
+  const [category, setCategory] = useState(storeData?.type);
+  const [name, setName] = useState(storeData?.name);
+  const [city, setCity] = useState(storeData?.city);
+  const [number, setNumber] = useState(storeData?.number);
+  const [country, setCountry] = useState(storeData?.country);
+  const [description, setDescription] = useState(storeData?.description);
+  const [loading, setLoading] = useState(false);
+  const [image, setImage] = useState(storeData?.image);
+  const [avatar, setAvatar] = useState(storeData?.image);
+  const [fileName, setFileName] = useState(storeData?.image);
+
+  useEffect(() => {
+    if (storeData) {
+      setName(storeData?.name);
+      setCity(storeData?.city);
+      setNumber(storeData?.number);
+      setCountry(storeData?.country);
+      setDescription(storeData?.description);
+      setCategory({ label: storeData?.type, type: storeData?.type });
+      setImage(storeData?.image);
+      setAvatar(storeData?.image);
+    }
+  }, [storeData]);
+
   const renderUserImg = () => {
     // if (selectedUser !== null && selectedUser.avatar.length) {
     return (
@@ -82,12 +107,124 @@ const UserInfoCard = ({ storeData, orders }) => {
         height="100"
         width="160"
         alt="user-avatar"
-        src={storeData?.image}
+        src={avatar?.includes("data") ? avatar : `${url}${avatar}`}
         className="img-fluid rounded mt-3 mb-2"
       />
     );
   };
-  console.log(orders, "gtttt");
+
+  const onSubmit = () => {
+    setLoading(true);
+    let data = {
+      name,
+      description,
+      type: category.type,
+      country,
+      store_id: storeData.id,
+      city,
+      location: storeData?.location,
+      number,
+    };
+    if (typeof image == "object") {
+      const _data = new FormData();
+
+      _data.append("file", image, `${new Date().getTime()}_${fileName.name}`);
+      ContentUploadHandler.request(
+        "content",
+        "upload",
+        {
+          params: _data,
+        },
+        (response) => {
+          data["image"] = response.data.data.file;
+
+          CoreHttpHandler.request(
+            "stores",
+            "update_seller",
+            data,
+            (response) => {
+              setLoading(false);
+              document.body.style.opacity = 1;
+              Swal.fire({
+                icon: "success",
+                title: "Success",
+                text: "Successfully Updated Store.",
+                showCancelButton: false,
+                customClass: {
+                  confirmButton: "btn btn-primary",
+                  cancelButton: "btn btn-outline-danger ms-1",
+                },
+                background: "#020202",
+              });
+              setShow(false);
+              getStores();
+              //  getDealsData();
+              //  setShowCreate(false);
+            },
+            (error) => {}
+          );
+        },
+        (err) => {
+          console.log(err);
+        }
+      );
+    } else {
+      data["image"] = image;
+      CoreHttpHandler.request(
+        "stores",
+        "update_seller",
+        data,
+        (response) => {
+          setLoading(false);
+          document.body.style.opacity = 1;
+          Swal.fire({
+            icon: "success",
+            title: "Success",
+            text: "Successfully Updated Store.",
+            showCancelButton: false,
+            customClass: {
+              confirmButton: "btn btn-primary",
+              cancelButton: "btn btn-outline-danger ms-1",
+            },
+            background: "#020202",
+          });
+          setShow(false);
+          getStores();
+          //  getDealsData();
+          //  setShowCreate(false);
+        },
+        (error) => {}
+      );
+    }
+  };
+
+  const onChange = (e) => {
+    let _name = e.target.files[0].name;
+
+    if (!_name.includes(".png")) {
+      Swal.fire({
+        icon: "error",
+        title: "Error",
+        text: "PNG images are allowed",
+        confirmButtonColor: "#ff3600",
+      });
+      return;
+    }
+    const reader = new FileReader(),
+      files = e.target.files;
+    reader.onload = function () {
+      setAvatar(reader.result);
+    };
+    reader.readAsDataURL(files[0]);
+    _name = _name.replace(/\s/g, "");
+    setFileName(_name);
+    setImage(e.target.files[0]);
+  };
+
+  const handleImgReset = () => {
+    setImage(image);
+  };
+
   return (
     <Fragment>
       <div>
@@ -187,9 +324,61 @@ const UserInfoCard = ({ storeData, orders }) => {
         <ModalBody className="px-sm-5 pt-50 pb-5">
           <div className="text-center mb-2">
             <h1 className="mb-1">Edit Store Information</h1>
-            <p>Updating store details will receive a privacy audit.</p>
           </div>
-          <Form>
+          <Form
+            onSubmit={(e) => {
+              e.preventDefault();
+              onSubmit();
+            }}
+          >
+            <Row>
+              <Col sm="6" className="mb-1">
+                <div className="d-flex">
+                  <div className="me-25">
+                    <img
+                      className="rounded me-50"
+                      src={
+                        avatar?.includes("data") ? avatar : `${url}${avatar}`
+                      }
+                      alt="Generic placeholder image"
+                      height="100"
+                      width="100"
+                    />
+                  </div>
+                  <div
+                    className="d-flex align-items-end mt-75 ms-1"
+                    style={{ float: "right" }}
+                  >
+                    <div>
+                      <Button
+                        tag={Label}
+                        className="mb-75 me-75"
+                        size="sm"
+                        color="primary"
+                      >
+                        Upload
+                        <Input
+                          type="file"
+                          onChange={onChange}
+                          hidden
+                          accept="image/*"
+                        />
+                      </Button>
+                      <Button
+                        className="mb-75"
+                        color="secondary"
+                        size="sm"
+                        outline
+                        onClick={handleImgReset}
+                      >
+                        Reset
+                      </Button>
+                      <p className="mb-0">Allowed PNG. Max size of 1 MB</p>
+                    </div>
+                  </div>
+                </div>
+              </Col>
+            </Row>
             <Row className="gy-1 pt-75">
               <Col md={6} xs={12}>
                 <Label className="form-label" for="firstName">
@@ -200,6 +389,8 @@ const UserInfoCard = ({ storeData, orders }) => {
                   control={control}
                   id="firstName"
                   name="firstName"
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
                   // render={({ field }) => (
                   //   <Input {...field} id='firstName' placeholder='John' invalid={errors.firstName && true} />
                   // )}
@@ -207,17 +398,17 @@ const UserInfoCard = ({ storeData, orders }) => {
               </Col>
               <Col md={6} xs={12}>
                 <Label className="form-label" for="lastName">
-                  Status
+                  Location
                 </Label>
-                <Input
-                  defaultValue=""
-                  control={control}
-                  id="lastName"
-                  name="lastName"
-                  // render={({ field }) => (
-                  //   <Input {...field} id='lastName' placeholder='Doe' invalid={errors.lastName && true} />
-                  // )}
-                />
+                <br></br>
+
+                <a
+                  style={{ paddingTop: "20x" }}
+                  href={`https://www.google.com/maps/place/${storeData?.location}`}
+                  target="_blank"
+                >
+                  <Navigation size="20" />
+                </a>
               </Col>
               <Col xs={12}>
                 <Label className="form-label" for="username">
@@ -228,6 +419,9 @@ const UserInfoCard = ({ storeData, orders }) => {
                   control={control}
                   id="username"
                   name="username"
+                  type="textarea"
+                  value={description}
+                  onChange={(e) => setDescription(e.target.value)}
                   // render={({ field }) => (
                   //   <Input {...field} id='username' placeholder='john.doe.007' invalid={errors.username && true} />
                   // )}
@@ -237,67 +431,60 @@ const UserInfoCard = ({ storeData, orders }) => {
                 <Label className="form-label" for="billing-email">
                   Type
                 </Label>
-                <Input
-                  type="email"
-                  id="billing-email"
-                  // defaultValue={selectedUser.email}
-                  // placeholder='example@domain.com'
-                />
-              </Col>
-              <Col md={6} xs={12}>
-                <Label className="form-label" for="status">
-                  Contact
-                </Label>
+
                 <Select
                   id="status"
                   isClearable={false}
                   className="react-select"
                   classNamePrefix="select"
-                  // options={statusOptions}
-                  // theme={selectThemeColors}
-                  // defaultValue={statusOptions[statusOptions.findIndex(i => i.value === selectedUser.status)]}
+                  options={categories}
+                  theme={selectThemeColors}
+                  value={category}
+                  onChange={(e) => setCategory(e)}
                 />
               </Col>
               <Col md={6} xs={12}>
+                <Label className="form-label" for="status">
+                  Contact Number
+                </Label>
+                <Input
+                  value={number}
+                  type="text"
+                  onChange={(e) => setNumber(e.target.value)}
+                />
+              </Col>
+              <Col md={6} xs={12} style={{ zIndex: 20 }}>
                 <Label className="form-label" for="language">
                   City
                 </Label>
-                <Select
-                  id="language"
-                  isClearable={false}
-                  className="react-select"
-                  classNamePrefix="select"
-                  // options={languageOptions}
-                  // theme={selectThemeColors}
-                  // defaultValue={languageOptions[0]}
+                <Input
+                  value={city}
+                  type="text"
+                  onChange={(e) => setCity(e.target.value)}
                 />
               </Col>
               <Col md={6} xs={12}>
                 <Label className="form-label" for="country">
                   Country
                 </Label>
-                <Select
-                  id="country"
-                  isClearable={false}
-                  className="react-select"
-                  classNamePrefix="select"
-                  // options={countryOptions}
-                  // theme={selectThemeColors}
-                  // defaultValue={countryOptions[0]}
+                <Input
+                  value={country}
+                  type="text"
+                  onChange={(e) => setCountry(e.target.value)}
                 />
               </Col>
               <Col xs={12} className="text-center mt-2 pt-50">
-                <Button type="submit" className="me-1" color="primary">
-                  Submit
-                </Button>
+                <LoadingButton
+                  text={"Submit"}
+                  className="me-1"
+                  loading={loading}
+                  // onClick={() => handleSubmit()}
+                />
                 <Button
                   type="reset"
                   color="secondary"
+                  onClick={() => setShow(!show)}
                   outline
-                  // onClick={() => {
-                  //   handleReset()
-                  //   setShow(false)
-                  // }}
                 >
                   Discard
                 </Button>

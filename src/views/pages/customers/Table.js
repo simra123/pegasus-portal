@@ -32,12 +32,7 @@ const BootstrapCheckbox = forwardRef((props, ref) => (
 ));
 
 const SellersTable = () => {
-	const handleDetails = (e) => {
-		history.push({
-			pathname: "/apps/sellers/details",
-			state: { id: e.store_id },
-		});
-	};
+
 
 	const [data, setData] = useState([]);
 	const [data2, setData2] = useState([]);
@@ -53,6 +48,8 @@ const SellersTable = () => {
 	const [filter, setFilter] = useState("all");
 	const [searchVal, setSearchVal] = useState("");
 	const history = useHistory();
+
+
 	const getUsersData = (start, end, val) => {
 		setLoading(true);
 
@@ -103,6 +100,13 @@ const SellersTable = () => {
 			getUsersData();
 		}
 	};
+
+	const handleDetails = (e) => {
+      history.push({
+        pathname: "/apps/customer/details",
+        state: { id: e.store_id },
+      });
+    };
 	return (
 		<>
 			<Card>
@@ -133,6 +137,8 @@ const SellersTable = () => {
 									<th>Number</th>
 									<th>Date</th>
 									<th>Status</th>
+									<th>Details</th>
+
 								</tr>
 							</thead>
 							<tbody>
@@ -161,7 +167,7 @@ const SellersTable = () => {
 													</Badge>
 												)}
 											</td>
-											{/* <td>
+											<td>
 												{" "}
 												<Button
 													color='primary'
@@ -170,7 +176,7 @@ const SellersTable = () => {
 													onClick={() => handleDetails(customer)}>
 													view
 												</Button>
-											</td> */}
+											</td>
 										</tr>
 									);
 								})}

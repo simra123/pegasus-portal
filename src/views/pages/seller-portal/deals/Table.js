@@ -51,6 +51,8 @@ import { stateToHTML } from "draft-js-export-html";
 
 import "@styles/react/libs/editor/editor.scss";
 import "@styles/base/plugins/forms/form-quill-editor.scss";
+import { defaultProductImage, url } from "../../../../image-service-url";
+import { Trash } from "react-feather";
 
 // ** Bootstrap Checkbox Component
 const BootstrapCheckbox = forwardRef((props, ref) => (
@@ -65,12 +67,7 @@ const BootstrapCheckbox = forwardRef((props, ref) => (
 
 const SellersTable = (props) => {
 	const {storeData, productsData} = props
-	const handleDetails = (e) => {
-		history.push({
-			pathname: "/apps/sellers/details",
-			state: { id: e.store_id, data: e },
-		});
-	};
+
 
 	const [data, setData] = useState([]);
 	const [tempTotal, setTempTotal] = useState(0);
@@ -91,12 +88,16 @@ const SellersTable = (props) => {
 	const [stock, setStock] = useState("");
 	const [description, setDescription] = useState(EditorState.createEmpty());
 	const [fileData, setFileData] = useState("");
-	const paraToHtml = stateToHTML(description.getCurrentContent());
+  const [dealId,setdealId] = useState("")
+	const paraToHtml = description?.getCurrentContent().getPlainText();
 
+  const [type,setType] = useState('')
 
+  console.log(new Date(),'dateet')
 
   let filename = ""
 
+  console.log(product_ids,'oososos');
 
 	const [currentParams, setCurrentParams] = useState({
 		limit: 10,
@@ -147,7 +148,6 @@ const SellersTable = (props) => {
 		 product_ids: []
        },
      });
-    console.log(storeData, "frrr");
 
 	useEffect(() => {
 		if(storeData){
@@ -184,54 +184,96 @@ const SellersTable = (props) => {
 			ToastAlertError(`Please select start date and end date`);
     }
     if(product_ids.length == 0){
-			ToastAlertError(`Please select products`);
+			return ToastAlertError(`Please select products`);
     }
     if (dealPrice == "") {
-      ToastAlertError(`Please select deal price`);
+      return ToastAlertError(`Please select deal price`);
     }
     if (regularPrice == "") {
-      ToastAlertError(`Please select regular price`);
+      return ToastAlertError(`Please select regular price`);
     }
     if (stock == "") {
-      ToastAlertError(`Please select stock`);
+      return ToastAlertError(`Please select stock`);
     }
     if (description == "") {
-      ToastAlertError(`Please select description`);
+      return ToastAlertError(`Please select description`);
     }
     if (name == "") {
-      ToastAlertError(`Please select name`);
+      return ToastAlertError(`Please select name`);
     }
 
     const _data = new FormData();
-
-    _data.append("file", fileData, `${new Date().getTime()}_${filename}`);
    
 		let ids = product_ids.map(p => p.value)
 		let startDate = moment(picker[0]).format("YYYY-MM-DD");
 		let endDate = moment(picker[1]).format("YYYY-MM-DD");
     setLoading(true)
-    ContentUploadHandler.request(
-      "content",
-      "upload",
-      {
-        params: _data,
-      },
-      (response) => {
-        let img = response.data.data.file;
+    if(fileData != ""){
+       _data.append("file", fileData, `${new Date().getTime()}_${filename}`);
+       ContentUploadHandler.request(
+         "content",
+         "upload",
+         {
+           params: _data,
+         },
+         (response) => {
+           let img = response.data.data.file;
+           CoreHttpHandler.request(
+             "deals",
+             type == "edit" ? "update_deals" : "create_deals",
+             {
+               name: name,
+               featured_image: img,
+               store_id: storeData?.id,
+               description: paraToHtml,
+               stock: stock,
+               deal_price: dealPrice,
+               regular_price: regularPrice,
+               product_ids: product_ids,
+               startDate: startDate,
+               endDate: endDate,
+               hot_deal_id: dealId,
+             },
+             (response) => {
+               setLoading(false);
+               document.body.style.opacity = 1;
+               Swal.fire({
+                 icon: "success",
+                 title: "Success",
+                 text: "Successfully Created Hot Deals",
+                 showCancelButton: false,
+                 customClass: {
+                   confirmButton: "btn btn-primary",
+                   cancelButton: "btn btn-outline-danger ms-1",
+                 },
+                 background: "#020202",
+               });
+
+               getDealsData();
+               setShowCreate(false);
+             },
+             (error) => {}
+           );
+         },
+         (error) => {}
+       );
+    }else{
+        let img = `${url}${defaultProductImage}`;
         CoreHttpHandler.request(
           "deals",
-          "create_deals",
+          type == "edit" ? "update_deals" : "create_deals",
           {
-              name: name,
-              featured_image: img,
-              store_id: storeData?.id,
-              description: paraToHtml,
-              stock: stock,
-              deal_price: dealPrice,
-              regular_price: regularPrice,
-              product_ids: ids,
-              startDate: startDate,
-              endDate: endDate,
+            name: name,
+            featured_image: img,
+            store_id: storeData?.id,
+            description: paraToHtml,
+            stock: stock,
+            deal_price: dealPrice,
+            regular_price: regularPrice,
+            product_ids: product_ids,
+            startDate: startDate,
+            endDate: endDate,
+            hot_deal_id: dealId,
           },
           (response) => {
             setLoading(false);
@@ -249,13 +291,12 @@ const SellersTable = (props) => {
             });
 
             getDealsData();
-            setShowCreate(false)
+            setShowCreate(false);
           },
           (error) => {}
         );
-      },
-      (error) => {}
-    );
+    }
+    
 
 	}
 
@@ -284,6 +325,62 @@ const SellersTable = (props) => {
 			getUsersData();
 		}
 	};
+
+  const handleDetails = async(data) =>{
+      setName(data.name)
+      setRegularPrice(data.regular_price);
+      setDealPrice(data.deal_price);
+      setDescription(
+        data.description == undefined || data.description == null
+          ? EditorState.createEmpty()
+          : EditorState.createWithContent(
+              ContentState.createFromText(data?.description)
+            )
+      );
+      setStock(data.stock);
+      setAvatar(data.featured_image);
+      let arr = []
+      arr.push(new Date(data.start_date));
+      arr.push(new Date(data.end_date));
+      setPicker(arr);
+      let ids = []
+      await data.products.map(d =>{
+        ids.push({label: d.name,value: d.id});
+      })
+      setProduct_ids(ids)
+      setType("edit");
+      setShowCreate(true);
+      console.log(data,'dpepepww')
+      setdealId(data?.id)
+  }
+
+  const handleDelete = (e)=>{
+      
+  		CoreHttpHandler.request(
+        "deals",
+        "delete",
+        {
+          hot_deal_id: e.id,
+          store_id: storeData?.id,
+        },
+        (response) => {
+          Swal.fire({
+            icon: "success",
+            title: "Success",
+            text: "Successfully Deleted Hot Deal.",
+            showCancelButton: false,
+            customClass: {
+              confirmButton: "btn btn-primary",
+              cancelButton: "btn btn-outline-danger ms-1",
+            },
+            background: "#020202",
+          });
+          setLoading(false);
+          getDealsData();
+        },
+        (failure) => {}
+      );
+  }
 
 	return (
     <>
@@ -421,13 +518,20 @@ const SellersTable = (props) => {
                     <Label className="form-label" for="firstName">
                       Description
                     </Label>
-                    <TextEditor content={description} setContent={setDescription} />
+                    <TextEditor
+                      content={description}
+                      setContent={setDescription}
+                    />
                   </Col>
                   <Col md={6} xs={12}>
                     <div className="me-25">
                       <img
                         className="rounded me-50"
-                        src={avatar}
+                        src={
+                          avatar?.includes("https") || avatar?.includes("data")
+                            ? avatar
+                            : `${url}${avatar}`
+                        }
                         alt="Generic placeholder image"
                         height="100%"
                         width="100%"
@@ -522,13 +626,14 @@ const SellersTable = (props) => {
                     <th>Status</th>
                     <th>Created Date</th>
                     <th>Details</th>
+                    <th>Actions</th>
                   </tr>
                 </thead>
                 <tbody>
                   {data?.map((deal, index) => {
                     return (
                       <tr key={deal.id}>
-                        {console.log(deal,'dododo')}
+                        {console.log(deal, "dododo")}
                         <td>{index + 1}</td>
 
                         <td>{deal.name}</td>
@@ -554,8 +659,11 @@ const SellersTable = (props) => {
                             size="sm"
                             onClick={() => handleDetails(deal)}
                           >
-                            view
+                            Edit
                           </Button>
+                        </td>
+                        <td onClick={() => handleDelete(deal)}>
+                          <Trash style={{ marginLeft: "20px", cursor: "pointer" }} size={20} />
                         </td>
                       </tr>
                     );
@@ -568,6 +676,16 @@ const SellersTable = (props) => {
             <div className="text-ceter">No Data Found</div>
           )}
           <Loader loading={loading} />
+          <MdAddCircle
+            color="#f3ac3b"
+            size="35"
+            style={{
+              cursor: "pointer",
+              float: "right",
+              marginRight: "20px",
+            }}
+            onClick={() => setShowCreate(true)}
+          />
         </CardBody>
       </Card>
       <Pagination
@@ -575,17 +693,6 @@ const SellersTable = (props) => {
         handlePagination={(e) =>
           setCurrentParams({ limit: 10, page: e.selected })
         }
-      />
-      <MdAddCircle
-        color="#f3ac3b"
-        size="35"
-        style={{
-          marginTop: "200px",
-          cursor: "pointer",
-          float: "right",
-          marginRight: "30px",
-        }}
-        onClick={() => setShowCreate(true)}
       />
     </>
   );

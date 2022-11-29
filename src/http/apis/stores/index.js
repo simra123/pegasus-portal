@@ -22,6 +22,13 @@ class APIS {
 				method: "post",
 				path: "/store/update/admin",
 			},
+			update_seller: {
+				headers: {
+					"xt-user-token": null,
+				},
+				method: "post",
+				path: "/store/update/seller",
+			},
 		};
 	}
 }

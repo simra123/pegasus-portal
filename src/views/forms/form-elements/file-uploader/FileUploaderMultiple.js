@@ -86,7 +86,7 @@ const FileUploaderMultiple = () => {
               <Button className='me-1' color='danger' outline onClick={handleRemoveAllFiles}>
                 Remove All
               </Button>
-              <Button color='primary'>Upload Files</Button>
+              {/* <Button color='primary'>Upload Files</Button> */}
             </div>
           </Fragment>
         ) : null}

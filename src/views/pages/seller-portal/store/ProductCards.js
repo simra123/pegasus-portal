@@ -7,6 +7,7 @@ import { Star, ShoppingCart, Heart } from "react-feather";
 
 // ** Reactstrap Imports
 import { Card, CardBody, CardText, Button, Badge } from "reactstrap";
+import { url } from "../../../../image-service-url";
 
 const ProductCards = (props) => {
 	// ** Props
@@ -28,7 +29,7 @@ const ProductCards = (props) => {
 								width='300'
 								height='300'
 								className='img-fluid'
-								src={item.featured_image}
+								src={`${url}${item.featured_image}`}
 							/>
 							{/* </Link> */}
 						</div>

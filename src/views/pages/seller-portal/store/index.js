@@ -53,41 +53,34 @@ const Store = () => {
 	};
 
 	return (
-		//   <div className="ecommerce-application">
-		//     <div className="content-detached content-right">
-		//       <div className="content-body">
-		//         <Fragment>
-		//           <ProductCards
-		//             productsData={productsData?.data}
-		//             activeView={"grid"}
-		//           />
-		//         </Fragment>
-		//       </div>
-		//     </div>
-		//   </div>
+    //   <div className="ecommerce-application">
+    //     <div className="content-detached content-right">
+    //       <div className="content-body">
+    //         <Fragment>
+    //           <ProductCards
+    //             productsData={productsData?.data}
+    //             activeView={"grid"}
+    //           />
+    //         </Fragment>
+    //       </div>
+    //     </div>
+    //   </div>
 
-		<div className='app-user-view'>
-			<Row>
-				<Col
-					xl='4'
-					lg='5'
-					xs='12'
-					md={{ order: 0, size: 4 }}>
-					<UserInfoCard storeData={storesData?.data?.data} orders={storesData?.data?.orders} />
-				</Col>
-				<Col
-					xl='8'
-					lg='7'
-					xs='12'
-					md={{ order: 1, size: 3 }}>
-					<ProductCards
-						productsData={productsData}
-						activeView={"grid"}
-					/>
-				</Col>
-			</Row>
-		</div>
-	);
+    <div className="app-user-view">
+      <Row>
+        <Col xl="4" lg="5" xs="12" md={{ order: 0, size: 4 }}>
+          <UserInfoCard
+            storeData={storesData?.data?.data}
+            orders={storesData?.data?.orders}
+            getStores={getStores}
+          />
+        </Col>
+        <Col xl="8" lg="7" xs="12" md={{ order: 1, size: 3 }}>
+          <ProductCards productsData={productsData} activeView={"grid"} />
+        </Col>
+      </Row>
+    </div>
+  );
 };
 
 export default Store;

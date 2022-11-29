@@ -26,7 +26,7 @@ const RepeatingForm = ({imgPath,featuredImg,onChange}) => {
   return (
     <Card>
       <CardHeader>
-        <h4 className="card-title">Repeating Forms</h4>
+        <h4 className="card-title">Add Featured Image</h4>
       </CardHeader>
 
       <CardBody>
@@ -36,26 +36,30 @@ const RepeatingForm = ({imgPath,featuredImg,onChange}) => {
               <Row className="justify-content-between align-items-center">
                 <Col className="mb-2" sm="12">
                   <div className="border rounded p-2">
-                    <h4 className="mb-1">Featured Image</h4>
                     <div className="d-flex flex-column flex-md-row">
-                      {featuredImg[i] ? (
+                      {/* {featuredImg[i] ? ( */}
+                      {featuredImg != undefined && featuredImg != null ? (
                         <img
                           className="rounded me-2 mb-1 mb-md-0"
-                          src={featuredImg[i]}
+                          src={
+                            featuredImg?.includes("data")
+                              ? featuredImg
+                              : `https://upload.its.com.pk/${featuredImg}`
+                          }
                           alt="featured img"
                           width="170"
                           height="110"
                         />
-                      ) : (
-                        <p>Upload Picture</p>
-                      )}
+                      ) : null}
+
+                      {/* ) : ( */}
+                      {/* )} */}
                       <div>
                         <br />
 
-                        <p className="my-50" style={{paddingLeft: "10px"}}>
+                        <p className="my-50" style={{ paddingLeft: "10px" }}>
                           <a href="/" onClick={(e) => e.preventDefault()}>
-                           
-                            {`C:/fakepath/${imgPath}`}
+                            {`${imgPath}`}
                           </a>
                         </p>
                         <div className="d-inline-block">
@@ -77,10 +81,6 @@ const RepeatingForm = ({imgPath,featuredImg,onChange}) => {
             </Form>
           )}
         </Repeater>
-        <Button className="btn-icon" color="primary" onClick={increaseCount}>
-          <Plus size={14} />
-          <span className="align-middle ms-25">Add New</span>
-        </Button>
       </CardBody>
     </Card>
   );

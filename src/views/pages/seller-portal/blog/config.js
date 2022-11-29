@@ -9,6 +9,12 @@ const ProductEditConfig = {
       className: "email-application",
       component: lazy(() => import("./edit/index")),
     },
+    {
+      path: "/apps/product/add",
+      exact: true,
+      className: "email-application",
+      component: lazy(() => import("./edit/index")),
+    },
   ],
 };
 

@@ -14,7 +14,21 @@ class APIS {
         },
         method: "post",
         path: "/create/hot-deal",
-      }
+      },
+      update_deals: {
+        headers: {
+          "xt-user-token": null,
+        },
+        method: "post",
+        path: "/hot-deal/update",
+      },
+      delete: {
+        headers: {
+          "xt-user-token": null,
+        },
+        method: "post",
+        path: "/hot-deal/delete",
+      },
     };
   }
 }

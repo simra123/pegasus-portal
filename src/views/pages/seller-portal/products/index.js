@@ -1,4 +1,5 @@
 import { Fragment } from "react";
+import { Card, CardBody } from "reactstrap";
 
 // ** Roles Components
 import Table from "./Table";
@@ -13,13 +14,17 @@ const Roles = () => {
         can have access to what he needs.
     </p>
     <RoleCards /> */}
-        <h3 className="mt-50">Products</h3>
+
         {/* <p className="mb-2">
         Find all of your company’s administrator accounts and their associate
         roles.
     </p> */}
         <div className="app-user-list">
-          <Table />
+          <Card>
+            <CardBody>
+              <Table />
+            </CardBody>
+          </Card>
         </div>
       </Fragment>
     );
