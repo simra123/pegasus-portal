@@ -50,7 +50,6 @@ const Shop = () => {
 	}, [sellerData]);
 	const onChange = (p) => {
 		setSellerData(p);
-		console.log(location, "lol");
 	};
 
 	return (

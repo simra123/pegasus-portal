@@ -1,18 +1,28 @@
 // ** React Imports
-import { Fragment } from "react";
+import { Fragment, useEffect, useState } from "react";
 
 // ** Product components
 import ProductCards from "./ProductCards";
 import ProductsSearchbar from "./ProductsSearchbar";
-
+import CoreHttpHandler from "../../../../../http/services/CoreHttpHandler";
+import CreateProduct from "./AddProduct";
 // ** Third Party Components
 import classnames from "classnames";
-
+import parse from "react";
 // ** Reactstrap Imports
-import { Pagination, PaginationItem, PaginationLink } from "reactstrap";
 
+import { Button, PaginationItem, PaginationLink } from "reactstrap";
+import { Pagination } from "../../../reuseable";
 const ProductsPage = (props) => {
-	// ** Props
+	const [products, setProducts] = useState([]);
+	const [loading, setLoading] = useState(true);
+	const [showCreate, setShowCreate] = useState(false);
+	const [currentParams, setCurrentParams] = useState({
+		limit: 6,
+		page: 0,
+	});
+	const [totalPages, setTotalPages] = useState(0);
+
 	const {
 		store,
 		dispatch,
@@ -26,6 +36,7 @@ const ProductsPage = (props) => {
 		deleteCartItem,
 		setSidebarOpen,
 		deleteWishlistItem,
+		storeId,
 	} = props;
 
 	// ** Handles pagination
@@ -38,7 +49,31 @@ const ProductsPage = (props) => {
 			dispatch(getProducts({ ...store.params, page: val }));
 		}
 	};
-
+	const getStoreProducts = () => {
+		setLoading(true);
+		CoreHttpHandler.request(
+			"stores",
+			"fetch_products",
+			{
+				storeId: storeId,
+				...currentParams,
+			},
+			(response) => {
+				const res = response.data.data.data;
+				setTotalPages(res.totalPages);
+				setProducts(res.product);
+				setLoading(false);
+				setTotalPages(res.totalPages);
+				console.log(res.totalPages);
+			},
+			(failure) => {
+				setLoading(false);
+			}
+		);
+	};
+	useEffect(() => {
+		getStoreProducts();
+	}, [currentParams]);
 	// ** Render pages
 	const renderPageItems = () => {
 		const arrLength =
@@ -63,14 +98,6 @@ const ProductsPage = (props) => {
 	};
 
 	// ** handle next page click
-	const handleNext = () => {
-		if (
-			store.params.page !==
-			Number(store.totalProducts) / store.products.length
-		) {
-			handlePageChange("next");
-		}
-	};
 
 	return (
 		<>
@@ -79,54 +106,51 @@ const ProductsPage = (props) => {
 					show: sidebarOpen,
 				})}
 				onClick={() => setSidebarOpen(false)}></div>
-			<ProductsSearchbar
-				dispatch={dispatch}
-				getProducts={getProducts}
-				store={store}
-			/>
-			{store.products.length ? (
+			{!showCreate && (
+				<>
+					<ProductsSearchbar
+						getProducts={getProducts}
+						setShowCreate={setShowCreate}
+					/>{" "}
+					{/* <Button
+						color='primary'
+						size='md'
+						style={{ float: "right", margin: "20px 0px" }}
+						onClick={() => setShowCreate(true)}>
+						Add New
+					</Button> */}
+				</>
+			)}
+
+			{!showCreate ? (
 				<Fragment>
 					<ProductCards
 						store={store}
+						loading={loading}
 						dispatch={dispatch}
 						addToCart={addToCart}
 						activeView={activeView}
-						products={store.products}
+						products={products}
 						getProducts={getProducts}
 						getCartItems={getCartItems}
 						addToWishlist={addToWishlist}
 						deleteCartItem={deleteCartItem}
 						deleteWishlistItem={deleteWishlistItem}
 					/>
-					<Pagination className='d-flex justify-content-center ecommerce-shop-pagination mt-2'>
-						<PaginationItem
-							disabled={store.params.page === 1}
-							className='prev-item'
-							onClick={() =>
-								store.params.page !== 1 ? handlePageChange("prev") : null
-							}>
-							<PaginationLink
-								href='/'
-								onClick={(e) => e.preventDefault()}></PaginationLink>
-						</PaginationItem>
-						{renderPageItems()}
-						<PaginationItem
-							className='next-item'
-							onClick={() => handleNext()}
-							disabled={
-								store.params.page ===
-								Number(store.totalProducts) / store.products.length
-							}>
-							<PaginationLink
-								href='/'
-								onClick={(e) => e.preventDefault()}></PaginationLink>
-						</PaginationItem>
-					</Pagination>
+					<Pagination
+						total={totalPages}
+						//currentPage={currentParams.page}
+						handlePagination={(e) =>
+							setCurrentParams({ limit: 6, page: e.selected })
+						}
+					/>
 				</Fragment>
 			) : (
-				<div className='d-flex justify-content-center mt-2'>
-					<p>No Results</p>
-				</div>
+				<CreateProduct
+					storeId={storeId}
+					setShowCreate={setShowCreate}
+					getProducts={getStoreProducts}
+				/>
 			)}
 		</>
 	);

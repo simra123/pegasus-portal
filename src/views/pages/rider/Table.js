@@ -1,6 +1,6 @@
 // ** React Imports
 import { useState, useEffect, forwardRef } from "react";
-import { useHistory, Link } from "react-router-dom";
+import { useHistory } from "react-router-dom";
 import moment from "moment";
 import { Loader, Pagination, DataNotFound, SearchFilters } from "../reuseable";
 
@@ -26,7 +26,7 @@ const SellersTable = () => {
 	const [loading, setLoading] = useState(true);
 	const [totalPages, setTotalPages] = useState(0);
 	const [tempTotal, setTempTotal] = useState(0);
-
+	const history = useHistory();
 	const [currentParams, setCurrentParams] = useState({
 		limit: 10,
 		page: 0,
@@ -85,6 +85,13 @@ const SellersTable = () => {
 			getUsersData();
 		}
 	};
+	const handleDetails = (e) => {
+		history.push({
+			pathname: "/apps/rider/details",
+			state: { id: e.id, data: e },
+		});
+	};
+
 	return (
 		<>
 			<Card>
@@ -154,8 +161,7 @@ const SellersTable = () => {
 													color='primary'
 													size='sm'
 													className='text-primary'
-													//onClick={() => handleDetails(seller)}
-												>
+													onClick={() => handleDetails(riders)}>
 													view
 												</Button>
 											</td>

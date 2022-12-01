@@ -1,3 +1,4 @@
+import { useState } from "react";
 import {
 	Button,
 	Modal,
@@ -8,13 +9,20 @@ import {
 	Col,
 	CardText,
 } from "reactstrap";
+import parse from "html-react-parser";
+
 import { Star, ShoppingCart, X, DollarSign } from "react-feather";
 import classnames from "classnames";
+import { Swiper, SwiperSlide } from "swiper/react/swiper-react";
+import "swiper/swiper.min.css";
+import "swiper/modules/pagination/pagination.min.css";
 import { ProductImage } from "../../reuseable";
-
+import { FreeMode, Navigation, Thumbs } from "swiper";
+import { Pagination } from "swiper";
 const ProductDetails = ({ modal, setModal, data }) => {
-	const image = data?.attachment?.filter((att) => att.type == 0);
-	console.log(image);
+	console.log(data, "data");
+	const [thumbsSwiper, setThumbsSwiper] = useState(null);
+
 	return (
 		<Modal
 			isOpen={modal === true}
@@ -27,19 +35,94 @@ const ProductDetails = ({ modal, setModal, data }) => {
 			<ModalBody>
 				<Row className='my-2 ecommerce-application'>
 					<Col
-						className='d-flex align-items-center justify-content-center mb-2 mb-md-0'
+						className=' align-items-center justify-content-center mb-2 mb-md-0'
 						md='5'
 						xs='12'>
-						<div className='d-flex align-items-center justify-content-center'>
-							<img
-								className='img-fluid product-img'
-								src={
-									data.featured_image
-										? `https://upload.its.com.pk/v1/fetch/file/${data.featured_image}`
-										: ProductImage
-								}
-								alt={data.name}
-							/>
+						<div className=' align-items-center justify-content-center'>
+							<Swiper
+								style={{
+									"--swiper-navigation-color": "#fff",
+									"--swiper-pagination-color": "#fff",
+								}}
+								loop={true}
+								spaceBetween={10}
+								navigation={true}
+								thumbs={{ swiper: thumbsSwiper }}
+								//	pagination={pagination}
+								modules={[FreeMode, Navigation, Thumbs, Pagination]}
+								className='mySwiper2'>
+								{data?.featured_image && (
+									<SwiperSlide>
+										<img
+											style={{ width: "100%", height: "auto" }}
+											alt='featured image'
+											src={
+												data?.featured_image
+													? `https://upload.its.com.pk/v1/fetch/file/${data?.featured_image}`
+													: ProductImage
+											}
+										/>
+									</SwiperSlide>
+								)}
+								{data?.attachment
+									? data?.attachment.map((val, index) => {
+											return (
+												<SwiperSlide key={index}>
+													<img
+														style={{ width: "100%", height: "auto" }}
+														alt='featured image'
+														src={
+															val?.url
+																? `https://upload.its.com.pk/v1/fetch/file/${val?.url}`
+																: ProductImage
+														}
+													/>
+												</SwiperSlide>
+											);
+									  })
+									: null}
+							</Swiper>
+							<Swiper
+								onSwiper={setThumbsSwiper}
+								loop={true}
+								spaceBetween={10}
+								slidesPerView={4}
+								freeMode={true}
+								style={{ marginTop: "10px" }}
+								watchSlidesProgress={true}
+								modules={[FreeMode, Navigation, Thumbs]}
+								className='mySwiper'>
+								{data?.featured_image && (
+									<SwiperSlide>
+										<img
+											style={{ width: "100%", height: "auto" }}
+											alt='featured image'
+											src={
+												data?.featured_image
+													? `https://upload.its.com.pk/v1/fetch/file/${data?.featured_image}`
+													: ProductImage
+											}
+										/>
+									</SwiperSlide>
+								)}
+								{data?.attachment?.length > 0
+									? data?.attachment.map((val) => {
+											return (
+												<SwiperSlide key={val.id}>
+													<img
+														style={{ width: "100%", height: "auto" }}
+														alt='featured image'
+														src={
+															val?.url
+																? `https://upload.its.com.pk/v1/fetch/file/${val?.url}`
+																: ProductImage
+														}
+													/>
+												</SwiperSlide>
+											);
+									  })
+									: null}
+							</Swiper>
 						</div>
 					</Col>
 					<Col
@@ -69,7 +152,9 @@ const ProductDetails = ({ modal, setModal, data }) => {
 						<CardText>
 							Available -<span className='text-success ms-25'>In stock</span>
 						</CardText>
-						<CardText>{data.description}</CardText>
+						<CardText>
+							{data?.description ? parse(data.description) : data?.description}
+						</CardText>
 						<CardText>{data?.size}</CardText>
 
 						<ul className='product-features list-unstyled'>
