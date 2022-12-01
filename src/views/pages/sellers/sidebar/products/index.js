@@ -131,7 +131,7 @@ const ProductsPage = (props) => {
 						addToCart={addToCart}
 						activeView={activeView}
 						products={products}
-						getProducts={getProducts}
+						getProducts={getStoreProducts}
 						getCartItems={getCartItems}
 						addToWishlist={addToWishlist}
 						deleteCartItem={deleteCartItem}

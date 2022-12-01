@@ -47,9 +47,9 @@ const ProductDetails = ({ modal, setModal, data }) => {
 								loop={true}
 								spaceBetween={10}
 								navigation={true}
-								thumbs={{ swiper: thumbsSwiper }}
+								//thumbs={{ swiper: thumbsSwiper }}
 								//	pagination={pagination}
-								modules={[FreeMode, Navigation, Thumbs, Pagination]}
+								modules={[FreeMode, Navigation,  Pagination]}
 								className='mySwiper2'>
 								{data?.featured_image && (
 									<SwiperSlide>
@@ -83,14 +83,14 @@ const ProductDetails = ({ modal, setModal, data }) => {
 									: null}
 							</Swiper>
 							<Swiper
-								onSwiper={setThumbsSwiper}
+								//onSwiper={setThumbsSwiper}
 								loop={true}
 								spaceBetween={10}
 								slidesPerView={4}
 								freeMode={true}
 								style={{ marginTop: "10px" }}
 								watchSlidesProgress={true}
-								modules={[FreeMode, Navigation, Thumbs]}
+								modules={[FreeMode, Navigation]}
 								className='mySwiper'>
 								{data?.featured_image && (
 									<SwiperSlide>
