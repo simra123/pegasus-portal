@@ -8,7 +8,7 @@ import { Card, CardHeader, CardTitle, CardBody } from 'reactstrap'
 
 const ChartjsBarChart = ({ success, gridLineColor, labelColor, barData }) => {
   // ** Chart Options
-  console.log(barData.highbar, "barrrr");
+
   const options = {
     responsive: true,
     maintainAspectRatio: false,
@@ -23,14 +23,14 @@ const ChartjsBarChart = ({ success, gridLineColor, labelColor, barData }) => {
       },
       y: {
         min: 0,
-        max: Math.ceil((parseInt(barData.highbar) + 35) / 10) * 10,
+        max: Math.ceil((parseInt(barData?.highbar) + 35) / 10) * 10,
         grid: {
           color: gridLineColor,
           borderColor: gridLineColor,
         },
         ticks: {
           stepSize: Math.floor(
-            (parseInt(barData.highbar) + 35) / barData.labels.length
+            (parseInt(barData?.highbar) + 35) / barData?.labels.length
           ),
           color: labelColor,
         },
@@ -40,34 +40,6 @@ const ChartjsBarChart = ({ success, gridLineColor, labelColor, barData }) => {
       legend: { display: false },
     },
   };
-
-  // ** Chart data
-  // const data = {
-  //   labels: [
-  //     "7/12",
-  //     "8/12",
-  //     "9/12",
-  //     "10/12",
-  //     "11/12",
-  //     "12/12",
-  //     "13/12",
-  //     "14/12",
-  //     "15/12",
-  //     "16/12",
-  //     "17/12",
-  //     "18/12",
-  //     "19/12",
-  //   ],
-  //   datasets: [
-  //     {
-  //       maxBarThickness: 35,
-  //       backgroundColor: success,
-  //       borderColor: "transparent",
-  //       borderRadius: { topRight: 0, topLeft: 0 },
-  //       data: [275, 90, 190, 205, 125, 85, 55, 87, 127, 150, 230, 280, 190],
-  //     },
-  //   ],
-  // };
 
   return (
     <Card>
@@ -90,7 +62,8 @@ const ChartjsBarChart = ({ success, gridLineColor, labelColor, barData }) => {
       </CardHeader>
       <CardBody>
         <div style={{ height: "400px" }}>
-          <Bar data={barData} options={options} height={400} />
+          {barData ? <Bar data={barData} options={options} height={400} /> : <></> }
+          
         </div>
       </CardBody>
     </Card>

@@ -77,9 +77,9 @@ const OrdersBarChart = ({ warning,_data }) => {
       height={70}
       type='bar'
       options={options}
-      title={data.title}
-      stats={data.statistics}
-      series={data.series}
+      title={data?.title}
+      stats={data?.statistics}
+      series={data?.series}
     />
   ) : null
 }

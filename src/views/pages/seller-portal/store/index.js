@@ -12,6 +12,11 @@ import "@styles/react/apps/app-ecommerce.scss";
 const Store = () => {
 	const [storesData, setStoresData] = useState([]);
 	const [productsData, setProductsData] = useState([]);
+	const [totalPages, setTotalPages] = useState(0);
+	const [currentParams, setCurrentParams] = useState({
+		limit: 9,
+		page: 0,
+	});
 
 	useEffect(() => {
 		getStores();
@@ -22,7 +27,7 @@ const Store = () => {
 		if (storesData) {
       		getProducts();
     	}
-	}, [storesData]);
+	}, [storesData,currentParams]);
 
 	const getStores = () => {
 		CoreHttpHandler.request(
@@ -41,12 +46,12 @@ const Store = () => {
 			"products",
 			"fetch",
 			{
-				limit: 100,
-				page: 0,
+				...currentParams,
 				storeId: storesData?.data?.data?.id,
 			},
 			(response) => {
 				setProductsData(response.data.data.data.product);
+				setTotalPages(response.data.data.data.totalPages)
 			},
 			(failure) => {}
 		);
@@ -76,7 +81,7 @@ const Store = () => {
           />
         </Col>
         <Col xl="8" lg="7" xs="12" md={{ order: 1, size: 3 }}>
-          <ProductCards productsData={productsData} activeView={"grid"} />
+          <ProductCards productsData={productsData} totalPages={totalPages} setCurrentParams={setCurrentParams} activeView={"grid"} />
         </Col>
       </Row>
     </div>

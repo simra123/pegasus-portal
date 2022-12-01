@@ -72,7 +72,7 @@ const SellersTable = (props) => {
 	const [data, setData] = useState([]);
 	const [tempTotal, setTempTotal] = useState(0);
 	const [data2, setData2] = useState([]);
-	const [loading, setLoading] = useState(true);
+	const [loading, setLoading] = useState(false);
 	const [totalPages, setTotalPages] = useState(0);
 	const [picker, setPicker] = useState(new Date());
 	const [filter, setFilter] = useState("all");
@@ -205,6 +205,7 @@ const SellersTable = (props) => {
     const _data = new FormData();
    
 		let ids = product_ids.map(p => p.value)
+    console.log(ids,'ioop')
 		let startDate = moment(picker[0]).format("YYYY-MM-DD");
 		let endDate = moment(picker[1]).format("YYYY-MM-DD");
     setLoading(true)
@@ -229,7 +230,7 @@ const SellersTable = (props) => {
                stock: stock,
                deal_price: dealPrice,
                regular_price: regularPrice,
-               product_ids: product_ids,
+               product_ids: ids,
                startDate: startDate,
                endDate: endDate,
                hot_deal_id: dealId,
@@ -255,7 +256,10 @@ const SellersTable = (props) => {
              (error) => {}
            );
          },
-         (error) => {}
+         (error) => {
+          setLoading(false);
+
+         }
        );
     }else{
         let img = `${url}${defaultProductImage}`;
@@ -270,7 +274,7 @@ const SellersTable = (props) => {
             stock: stock,
             deal_price: dealPrice,
             regular_price: regularPrice,
-            product_ids: product_ids,
+            product_ids: ids,
             startDate: startDate,
             endDate: endDate,
             hot_deal_id: dealId,
@@ -293,7 +297,10 @@ const SellersTable = (props) => {
             getDealsData();
             setShowCreate(false);
           },
-          (error) => {}
+          (error) => {
+          setLoading(false);
+
+          }
         );
     }
     
@@ -378,8 +385,24 @@ const SellersTable = (props) => {
           setLoading(false);
           getDealsData();
         },
-        (failure) => {}
+        (failure) => {
+          setLoading(false);
+
+        }
       );
+  }
+
+  const handleReset = () =>{
+    setName("")
+    setAvatar("")
+    setProduct_ids([])
+    setdealId("")
+    setType("")
+    setStock("")
+    setPicker("")
+    setDescription(EditorState.createEmpty());
+    setRegularPrice("")
+    setDealPrice("")
   }
 
 	return (
@@ -388,12 +411,17 @@ const SellersTable = (props) => {
         <>
           <Modal
             isOpen={showCreate}
-            toggle={() => setShowCreate(!showCreate)}
+            backdrop={false}
+            toggle={() => {
+              handleReset()
+              setShowCreate(!showCreate)}}
             className="modal-dialog-centered modal-lg"
           >
             <ModalHeader
               className="bg-transparent"
-              toggle={() => setShowCreate(!showCreate)}
+              toggle={() => {
+                handleReset()
+                setShowCreate(!showCreate)}}
             ></ModalHeader>
             <ModalBody className="px-sm-5 pt-50 pb-5">
               <div className="text-center mb-2">
@@ -585,7 +613,7 @@ const SellersTable = (props) => {
                       color="secondary"
                       outline
                       onClick={() => {
-                        // handleReset();
+                        handleReset();
                         setShowCreate(false);
                       }}
                     >

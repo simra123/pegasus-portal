@@ -6,7 +6,7 @@ import { useContext, useEffect, useState } from 'react'
 // ** Context
 import { ThemeColors } from '@src/utility/context/ThemeColors'
 
-import { Row, Col } from "reactstrap";
+import { Row, Col, CardBody, Card } from "reactstrap";
 
 // ** Custom Components
 import StatsHorizontal from "@components/widgets/stats/StatsHorizontal";
@@ -54,6 +54,10 @@ const EcommerceDashboard = () => {
   const [pieData,setPieData] = useState()
   const [barData, setBarData] = useState()
   const [lineData, setLineData] = useState();
+  const [sellers,setSellers] = useState("")
+  const [riders, setRiders] = useState("");
+  const [orders, setOrders] = useState("");
+  const [pending, setPending] = useState("");
 
 
    const donut = [
@@ -261,60 +265,81 @@ const EcommerceDashboard = () => {
               total: response.data.data.total_earning_weekly,
             };
             setLineData(_data);
+            setSellers(response.data.data.sellers.sellers)
+            setRiders(response.data.data.riders.riders);
+            setOrders(response.data.data.orders.orders);
+            setPending(response.data.data.pending_seller.sellers);
+
           },
           (failure) => {}
         ); 
   }
+        console.log(data,'dosoos');
 
   return (
     <div id="dashboard-ecommerce">
-      {permissions["FRONT:/seller-dashboard"] ? null
-      : <div className="app-user-list">
-        <Row>
-          <Col lg="3" sm="6">
-            <StatsHorizontal
-              color="primary"
-              statTitle="Total Sellers"
-              icon={<User size={20} />}
-              renderStats={<h3 className="fw-bolder mb-75">21,459</h3>}
-            />
-          </Col>
-          <Col lg="3" sm="6">
-            <StatsHorizontal
-              color="danger"
-              statTitle="Total Orders"
-              icon={<UserPlus size={20} />}
-              renderStats={<h3 className="fw-bolder mb-75">4,567</h3>}
-            />
-          </Col>
-          <Col lg="3" sm="6">
-            <StatsHorizontal
-              color="success"
-              statTitle="Total Riders"
-              icon={<UserCheck size={20} />}
-              renderStats={<h3 className="fw-bolder mb-75">19,860</h3>}
-            />
-          </Col>
-          <Col lg="3" sm="6">
-            <StatsHorizontal
-              color="warning"
-              statTitle="Pending Requests"
-              icon={<UserX size={20} />}
-              renderStats={<h3 className="fw-bolder mb-75">237</h3>}
-            />
-          </Col>
-        </Row>
-      </div> }
-      
+      {permissions["FRONT:/seller-dashboard"] ? null : (
+        <div className="app-user-list">
+          <Row>
+            <Col lg="3" sm="6">
+              <StatsHorizontal
+                color="primary"
+                statTitle="Total Sellers"
+                icon={<User size={20} />}
+                renderStats={<h3 className="fw-bolder mb-75">{sellers}</h3>}
+              />
+            </Col>
+            <Col lg="3" sm="6">
+              <StatsHorizontal
+                color="danger"
+                statTitle="Total Orders"
+                icon={<UserPlus size={20} />}
+                renderStats={<h3 className="fw-bolder mb-75">{riders}</h3>}
+              />
+            </Col>
+            <Col lg="3" sm="6">
+              <StatsHorizontal
+                color="success"
+                statTitle="Total Riders"
+                icon={<UserCheck size={20} />}
+                renderStats={<h3 className="fw-bolder mb-75">{orders}</h3>}
+              />
+            </Col>
+            <Col lg="3" sm="6">
+              <StatsHorizontal
+                color="warning"
+                statTitle="Seller Pending Requests"
+                icon={<UserX size={20} />}
+                renderStats={<h3 className="fw-bolder mb-75">{pending}</h3>}
+              />
+            </Col>
+          </Row>
+        </div>
+      )}
+
       <Row className="match-height">
         <Col lg="4" md="12">
           <Row className="match-height">
-            <Col lg="6" md="3" xs="6">
-              <OrdersBarChart warning={colors.warning.main} _data={orderBardata} />
-            </Col>
-            <Col lg="6" md="3" xs="6">
-              <ProfitLineChart info={colors.info.main} _data={profileLinedata} />
-            </Col>
+            {orderBardata == undefined && profileLinedata == undefined ? (
+              <Card style={{height: "120px"}}>
+                <CardBody> No Data Found</CardBody>
+              </Card>
+            ) : (
+              <>
+                <Col lg="6" md="3" xs="6">
+                  <OrdersBarChart
+                    warning={colors.warning.main}
+                    _data={orderBardata}
+                  />
+                </Col>
+                <Col lg="6" md="3" xs="6">
+                  <ProfitLineChart
+                    info={colors.info.main}
+                    _data={profileLinedata}
+                  />
+                </Col>
+              </>
+            )}
           </Row>
         </Col>
         <Col lg="8" md="12">
@@ -323,29 +348,20 @@ const EcommerceDashboard = () => {
       </Row>
       <Row>
         <Col xl="6" lg="12">
-          {pieData != undefined ? 
-          <PieChart
-            data={pieData}
-            series={donut}
-          />
-          : null}
-          
+          <PieChart data={pieData} series={donut} />
         </Col>
         <Col xl="6" lg="12">
-          {barData != undefined ? 
           <BarChart
             barData={barData}
             success={"#ffe800"}
             labelColor={"#b4b7bd"}
             gridLineColor={"rgba(200, 200, 200, 0.2)"}
           />
-            : null}
         </Col>
       </Row>
       <Row className="match-height">
         <Col sm="12">
-          {lineData != undefined ? <LineChart warning={colors.warning.main} lineData={lineData}/> : null}
-          
+          <LineChart warning={colors.warning.main} lineData={lineData} />
         </Col>
       </Row>
       {/* {permissions["FRONT:/seller-dashboard"] ? 

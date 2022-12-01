@@ -4,15 +4,17 @@ import { Link } from "react-router-dom";
 // ** Third Party Components
 import classnames from "classnames";
 import { Star, ShoppingCart, Heart } from "react-feather";
-
+import {useState} from "react"
 // ** Reactstrap Imports
 import { Card, CardBody, CardText, Button, Badge } from "reactstrap";
 import { url } from "../../../../image-service-url";
+import { Pagination } from "../../reuseable";
 
 const ProductCards = (props) => {
+	
 	// ** Props
-	const { productsData, activeView } = props;
-	console.log(productsData, "product dataz");
+	const { productsData, activeView,setCurrentParams,totalPages } = props;
+
 	// ** Renders products
 	const renderProducts = () => {
 		if (productsData?.length) {
@@ -20,70 +22,65 @@ const ProductCards = (props) => {
 				// const CartBtnTag = item.isInCart ? Link : 'button'
 
 				return (
-					<Card
-						className='ecommerce-card'
-						key={item.name}>
-						<div className='item-img text-center mx-auto'>
-							{/* <Link to={`/apps/ecommerce/product-detail/${item.slug}`}> */}
-							<img
-								width='300'
-								height='300'
-								className='img-fluid'
-								src={`${url}${item.featured_image}`}
-							/>
-							{/* </Link> */}
-						</div>
-						<CardBody>
-							<div className='item-wrapper'>
-								<div className='item-rating'>
-									<ul className='unstyled-list list-inline'>
-										{new Array(5).fill().map((listItem, index) => {
-											return (
-												<li
-													key={index}
-													className='ratings-list-item me-25'>
-													<Star
-														className={classnames({
-															"filled-star": index + 1 <= item.reviews,
-															"unfilled-star": index + 1 > item.reviews,
-														})}
-													/>
-												</li>
-											);
-										})}
-									</ul>
-								</div>
-								<div className='item-cost'>
-									<h6 className='item-price'>${item.price}</h6>
-								</div>
-							</div>
-							<h6 className='item-name'>
-								<p className='text-body'>{item.name}</p>
-								<CardText
-									tag='span'
-									className='item-company'>
-									By{" "}
-									<p className='company-name'>
-										{item.enabled ? "active" : "inactive"}
-									</p>
-								</CardText>
-							</h6>
-							<CardText className='item-description'>
-								{item.description}
-							</CardText>
-						</CardBody>
-						<div className='item-options text-center'>
-							<div className='item-wrapper'>
-								<div className='item-cost'>
-									<h4 className='item-price'>${item.price}</h4>
-									{/* {item.hasFreeShipping ? (
+          <>
+            <Card className="ecommerce-card" key={item.name}>
+              <div className="item-img text-center mx-auto">
+                {/* <Link to={`/apps/ecommerce/product-detail/${item.slug}`}> */}
+                <img
+                  width="300"
+                  height="300"
+                  className="img-fluid"
+                  src={`${url}${item.featured_image}`}
+                />
+                {/* </Link> */}
+              </div>
+              <CardBody>
+                <div className="item-wrapper">
+                  <div className="item-rating">
+                    <ul className="unstyled-list list-inline">
+                      {new Array(5).fill().map((listItem, index) => {
+                        return (
+                          <li key={index} className="ratings-list-item me-25">
+                            <Star
+                              className={classnames({
+                                "filled-star": index + 1 <= item.reviews,
+                                "unfilled-star": index + 1 > item.reviews,
+                              })}
+                            />
+                          </li>
+                        );
+                      })}
+                    </ul>
+                  </div>
+                  <div className="item-cost">
+                    <h6 className="item-price">${item.price}</h6>
+                  </div>
+                </div>
+                <h6 className="item-name">
+                  <p className="text-body">{item.name}</p>
+                  <CardText tag="span" className="item-company">
+                    By{" "}
+                    <p className="company-name">
+                      {item.enabled ? "active" : "inactive"}
+                    </p>
+                  </CardText>
+                </h6>
+                <CardText className="item-description">
+                  {item.description}
+                </CardText>
+              </CardBody>
+              <div className="item-options text-center">
+                <div className="item-wrapper">
+                  <div className="item-cost">
+                    <h4 className="item-price">${item.price}</h4>
+                    {/* {item.hasFreeShipping ? (
                     <CardText className='shipping'>
                       <Badge color='light-success'>Free Shipping</Badge>
                     </CardText>
                   ) : null} */}
-								</div>
-							</div>
-							{/* <Button
+                  </div>
+                </div>
+                {/* <Button
                 className='btn-wishlist'
                 color='light'
                 onClick={() => handleWishlistClick(item.id, item.isInWishlist)}
@@ -112,13 +109,36 @@ const ProductCards = (props) => {
                 <ShoppingCart className='me-50' size={14} />
                 <span>{item.isInCart ? 'View In Cart' : 'Add To Cart'}</span>
               </Button> */}
-						</div>
-					</Card>
-				);
+              </div>
+            </Card>
+            
+          </>
+        );
 			});
 		}
 	};
-	return <div className='grid-view m-0 p-0'>{renderProducts()}</div>;
+	return (
+    <>
+      {productsData != undefined && productsData.length != 0 ? (
+        <>
+          <div className="grid-view m-0 p-0">{renderProducts()}</div>
+          <div style={{display: "flex", alignItmes: "center", marginLeft: "50%"}}>
+            <Pagination
+              total={totalPages}
+              handlePagination={(e) =>
+                setCurrentParams({ limit: 9, page: e.selected })
+              }
+            />
+          </div>
+        </>
+      ) : (
+        <Card>
+          <CardBody>No Data Found</CardBody>
+        </Card>
+      )}
+    </>
+  );
+	
 };
 
 export default ProductCards;

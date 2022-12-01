@@ -29,6 +29,20 @@ class APIS {
         method: "post",
         path: "/hot-deal/delete",
       },
+      fetch_admin: {
+        headers: {
+          "xt-user-token": null,
+        },
+        method: "post",
+        path: "/fetch/hot-deals/admin",
+      },
+      approve: {
+        headers: {
+          "xt-user-token": null,
+        },
+        method: "get",
+        path: "/approve/hot-deals/:id",
+      },
     };
   }
 }

@@ -9,6 +9,7 @@ import ProductEditConfig from "../views/pages/seller-portal/blog/config";
 import StoreConfig from "../views/pages/seller-portal/store/config";
 import DealsConfig from "../views/pages/seller-portal/deals/config";
 import RidersConfig from "../views/pages/rider/config";
+import CustomerSidebarConfig from "../views/pages/customers/sidebar/config"
 
 const allPagesConfig = [
 	SellersConfig,
@@ -21,7 +22,8 @@ const allPagesConfig = [
 	ProfileConfig,
 	CustomerConfig,
 	RidersConfig,
-	DealsConfig
+	DealsConfig,
+	CustomerSidebarConfig
 ];
 
 export default allPagesConfig;

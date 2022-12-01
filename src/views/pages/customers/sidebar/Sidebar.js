@@ -44,7 +44,7 @@ const Sidebar = (props) => {
           </Row> */}
 					<Card className='seller-sidebar'>
 						<CardHeader className='border-bottom'>
-							<CardTitle tag='h4'>Seller Menu</CardTitle>
+							<CardTitle tag='h4'>Customer Menu</CardTitle>
 						</CardHeader>
 						<div style={{ height: "100vh", marginTop: "20px" }}>
 							<ListGroup
@@ -60,7 +60,7 @@ const Sidebar = (props) => {
 										className='me-75'
 										size={18}
 									/>
-									<span className='align-middle'>Products</span>
+									<span className='align-middle'>Cart</span>
 								</ListGroupItem>
 								<ListGroupItem
 									action
@@ -73,18 +73,6 @@ const Sidebar = (props) => {
 										size={18}
 									/>
 									<span className='align-middle'>Profile</span>
-								</ListGroupItem>
-								<ListGroupItem
-									action
-									tag={Link}
-									to={"/apps/sellers/details"}
-									active={activeTab == "store"}
-									onClick={() => setActiveTab("store")}>
-									<BiStoreAlt
-										className='me-75'
-										size={18}
-									/>
-									<span className='align-middle'>Store</span>
 								</ListGroupItem>
 								<ListGroupItem
 									action

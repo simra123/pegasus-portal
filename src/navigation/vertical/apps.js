@@ -81,6 +81,12 @@ export default [
 				icon: <Circle size={12} />,
 				navLink: "/apps/products/verify",
 			},
+			{
+				id: "prod",
+				title: "Verify Deals",
+				icon: <Circle size={12} />,
+				navLink: "/apps/deals/verify",
+			},
 		],
 	},
 ];

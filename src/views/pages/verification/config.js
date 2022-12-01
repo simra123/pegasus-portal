@@ -18,6 +18,11 @@ const verificationConfig = {
 			exact: true,
 			component: lazy(() => import("./riders/index")),
 		},
+		{
+			path: "/apps/deals/verify",
+			exact: true,
+			component: lazy(() => import("./deals/index")),
+		},
 	],
 };
 
