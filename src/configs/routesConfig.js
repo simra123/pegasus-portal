@@ -6,6 +6,7 @@ import pagesConfigs from "./pageConfig";
 import PagesRoutes from "../router/routes/Pages";
 //import OtpConfig from "../views/pages/dm/config";
 import DashboardAdmin from "../router/routes/Dashboards";
+import RidersDetailsConfig from "../views/pages/rider/sidebar/config";
 
 const routeConfigs = [...pagesConfigs];
 
@@ -14,6 +15,7 @@ const routes = [
 	...routeConfigs,
 	...PagesRoutes,
 	...DashboardAdmin,
+	...RidersDetailsConfig.routes,
 	// {
 	// 	path: "/",
 	// 	exact: true,

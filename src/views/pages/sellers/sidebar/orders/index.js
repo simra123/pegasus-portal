@@ -6,7 +6,7 @@ const orders = (props) => {
 	return (
 		<Fragment>
 			<Card>
-				<CardBody className="p-0">
+				<CardBody className='p-0'>
 					{/* <p className='mb-2'>
 				Find all of your company’s administrator accounts and their associate
 				roles.

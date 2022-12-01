@@ -25,100 +25,31 @@ import {
 
 // ** Utils
 import { selectThemeColors } from "@utils";
-
+import moment from "moment";
+import CoreHttpHandler from "../../../../../http/services/CoreHttpHandler";
+import ContentUploadHandler from "../../../../../http/services/ContentUploadHandler";
+import Swal from "sweetalert2";
+import { ToastAlertError } from "../../../reuseable";
+import Flatpickr from "flatpickr";
 // ** Demo Components
 
-const countryOptions = [
-	{ value: "uk", label: "UK" },
-	{ value: "usa", label: "USA" },
-	{ value: "france", label: "France" },
-	{ value: "russia", label: "Russia" },
-	{ value: "canada", label: "Canada" },
+const statusOptions = [
+	{ value: true, label: "Enable" },
+	{ value: false, label: "Disable" },
 ];
 
-const languageOptions = [
-	{ value: "english", label: "English" },
-	{ value: "spanish", label: "Spanish" },
-	{ value: "french", label: "French" },
-	{ value: "german", label: "German" },
-	{ value: "dutch", label: "Dutch" },
-];
-
-const currencyOptions = [
-	{ value: "usd", label: "USD" },
-	{ value: "euro", label: "Euro" },
-	{ value: "pound", label: "Pound" },
-	{ value: "bitcoin", label: "Bitcoin" },
-];
-
-const timeZoneOptions = [
-	{
-		value: "(GMT-12:00) International Date Line West",
-		label: "(GMT-12:00) International Date Line West",
-	},
-	{
-		value: "(GMT-11:00) Midway Island, Samoa",
-		label: "(GMT-11:00) Midway Island, Samoa",
-	},
-	{ value: "(GMT-10:00) Hawaii", label: "(GMT-10:00) Hawaii" },
-	{ value: "(GMT-09:00) Alaska", label: "(GMT-09:00) Alaska" },
-	{
-		value: "(GMT-08:00) Pacific Time (US & Canada)",
-		label: "(GMT-08:00) Pacific Time (US & Canada)",
-	},
-	{
-		value: "(GMT-08:00) Tijuana, Baja California",
-		label: "(GMT-08:00) Tijuana, Baja California",
-	},
-	{ value: "(GMT-07:00) Arizona", label: "(GMT-07:00) Arizona" },
-	{
-		value: "(GMT-07:00) Chihuahua, La Paz, Mazatlan",
-		label: "(GMT-07:00) Chihuahua, La Paz, Mazatlan",
-	},
-	{
-		value: "(GMT-07:00) Mountain Time (US & Canada)",
-		label: "(GMT-07:00) Mountain Time (US & Canada)",
-	},
-	{
-		value: "(GMT-06:00) Central America",
-		label: "(GMT-06:00) Central America",
-	},
-	{
-		value: "(GMT-06:00) Central Time (US & Canada)",
-		label: "(GMT-06:00) Central Time (US & Canada)",
-	},
-	{
-		value: "(GMT-06:00) Guadalajara, Mexico City, Monterrey",
-		label: "(GMT-06:00) Guadalajara, Mexico City, Monterrey",
-	},
-	{ value: "(GMT-06:00) Saskatchewan", label: "(GMT-06:00) Saskatchewan" },
-	{
-		value: "(GMT-05:00) Bogota, Lima, Quito, Rio Branco",
-		label: "(GMT-05:00) Bogota, Lima, Quito, Rio Branco",
-	},
-	{
-		value: "(GMT-05:00) Eastern Time (US & Canada)",
-		label: "(GMT-05:00) Eastern Time (US & Canada)",
-	},
-	{ value: "(GMT-05:00) Indiana (East)", label: "(GMT-05:00) Indiana (East)" },
-	{
-		value: "(GMT-04:00) Atlantic Time (Canada)",
-		label: "(GMT-04:00) Atlantic Time (Canada)",
-	},
-	{
-		value: "(GMT-04:00) Caracas, La Paz",
-		label: "(GMT-04:00) Caracas, La Paz",
-	},
-	{ value: "(GMT-04:00) Manaus", label: "(GMT-04:00) Manaus" },
-	{ value: "(GMT-04:00) Santiago", label: "(GMT-04:00) Santiago" },
-	{ value: "(GMT-03:30) Newfoundland", label: "(GMT-03:30) Newfoundland" },
-];
-
-const AccountTabs = ({ data }) => {
+const AccountTabs = (props) => {
 	// ** Hooks
+	const { data, setData } = props;
+
 	const defaultValues = {
-		lastName: "",
-		firstName: data?.fullName.split(" ")[0],
+		lastname: data?.lastname,
+		firstname: data?.firstname,
+		number: data?.number,
+		email: data?.email,
+		enabled: data?.enabled,
+		username: data?.username,
+		image: data?.image,
 	};
 	const {
 		control,
@@ -127,79 +58,192 @@ const AccountTabs = ({ data }) => {
 		formState: { errors },
 	} = useForm({ defaultValues });
 
+	console.log(data, "state");
 	// ** States
-	const [avatar, setAvatar] = useState(logo);
+	const [avatar, setAvatar] = useState("");
+	const [status, setStatus] = useState("");
+	const [number, setNumber] = useState("");
+	const [fileData, setFileData] = useState("");
+	const [url, setUrl] = useState("");
+	const [name, setName] = useState("");
 
 	const onChange = (e) => {
+		let _name = e.target.files[0].name;
 		const reader = new FileReader(),
 			files = e.target.files;
 		reader.onload = function () {
 			setAvatar(reader.result);
 		};
 		reader.readAsDataURL(files[0]);
+		_name = _name.replace(/\s/g, "");
+		setName(_name);
+		setFileData(e.target.files[0]);
 	};
 
-	const onSubmit = (data) => {
-		if (Object.values(data).every((field) => field.length > 0)) {
-			return null;
+	const onSubmit = (datas) => {
+		document.body.style.opacity = 0.4;
+		const _data = new FormData();
+
+		if (fileData != "") {
+			_data.append("file", fileData, `${new Date().getTime()}_${name}`);
+			ContentUploadHandler.request(
+				"content",
+				"upload",
+				{
+					params: _data,
+				},
+				(response) => {
+					let img = response.data.data.file;
+					CoreHttpHandler.request(
+						"riders",
+						"updateProfile",
+						{
+							lastname: datas?.lastname,
+							firstname: datas?.firstname,
+							number: number == "" ? datas?.number : number,
+							email: datas?.email,
+							enabled: status == "" ? datas?.enabled : status,
+							username: datas?.username,
+							image: img ? img : data?.image,
+							rider_id: data?.id,
+						},
+						(response) => {
+							let _params = {
+								lastname: datas?.lastname,
+								firstname: datas?.firstname,
+								number: number == "" ? datas?.number : number,
+								email: datas?.email,
+								enabled: status == "" ? datas?.enabled : status,
+								username: datas?.username,
+								image: img ? img : data?.image,
+								rider_id: data?.id,
+							};
+							setData(_params);
+							document.body.style.opacity = 1;
+							Swal.fire({
+								icon: "success",
+								title: "Success",
+								text: "Successfully Updated Seller Details",
+								confirmButtonColor: "green",
+							});
+						},
+						(err) => {
+							ToastAlertError(
+								err?.response?.data?.message
+									? err?.response.data.message
+									: "something went wrong"
+							);
+						}
+					);
+				},
+				(err) => console.log(err)
+			);
 		} else {
-			for (const key in data) {
-				if (data[key].length === 0) {
-					setError(key, {
-						type: "manual",
+			CoreHttpHandler.request(
+				"riders",
+				"updateProfile",
+				{
+					lastname: datas?.lastname,
+					firstname: datas?.firstname,
+					number: number == "" ? datas?.number : number,
+					email: datas?.email,
+					enabled: status == "" ? datas?.enabled : status,
+					username: datas?.username,
+					image: data?.image,
+					rider_id: data?.id,
+				},
+				(response) => {
+					let _params = {
+						lastname: datas?.lastname,
+						firstname: datas?.firstname,
+						number: number == "" ? datas?.number : number,
+						email: datas?.email,
+						enabled: status == "" ? datas?.enabled : status,
+						username: datas?.username,
+						image: data?.image,
+						rider_id: data?.id,
+					};
+					setData(_params);
+					document.body.style.opacity = 1;
+					Swal.fire({
+						icon: "success",
+						title: "Success",
+						text: "Successfully Updated Seller Details",
+						confirmButtonColor: "green",
 					});
+				},
+				(err) => {
+					ToastAlertError(
+						err?.response?.data?.message
+							? err?.response.data.message
+							: "something went wrong"
+					);
 				}
-			}
+			);
 		}
 	};
 
 	const handleImgReset = () => {
-		setAvatar(require("@src/assets/images/avatars/avatar-blank.png").default);
+		setAvatar("");
+		setFileData("");
 	};
 
 	return (
 		<Fragment>
 			<Card>
 				<CardBody className='py-2 my-25'>
-					<div className='d-flex'>
-						<div className='me-25'>
-							<img
-								className='rounded me-50'
-								src={avatar}
-								alt='Generic placeholder image'
-								height='100'
-								width='100'
-							/>
-						</div>
-						<div className='d-flex align-items-end mt-75 ms-1'>
-							<div>
-								<Button
-									tag={Label}
-									className='mb-75 me-75'
-									size='sm'
-									color='primary'>
-									Upload
-									<Input
-										type='file'
-										onChange={onChange}
-										hidden
-										accept='image/*'
+					<Row>
+						<Col
+							sm='6'
+							className='mb-1'>
+							<div className='d-flex'>
+								<div className='me-25'>
+									<img
+										className='rounded me-50'
+										src={
+											avatar == ""
+												? `https://upload.its.com.pk/v1/fetch/file/${data?.image}`
+												: avatar
+										}
+										alt='Generic placeholder image'
+										height='100'
+										width='100'
 									/>
-								</Button>
-								<Button
-									className='mb-75'
-									color='secondary'
-									size='sm'
-									outline
-									onClick={handleImgReset}>
-									Reset
-								</Button>
-								<p className='mb-0'>
-									Allowed JPG, GIF or PNG. Max size of 800kB
-								</p>
+								</div>
+								<div
+									className='d-flex align-items-end mt-75 ms-1'
+									style={{ float: "right" }}>
+									<div>
+										<Button
+											tag={Label}
+											className='mb-75 me-75'
+											size='sm'
+											color='primary'>
+											Upload
+											<Input
+												type='file'
+												onChange={onChange}
+												hidden
+												accept='image/*'
+											/>
+										</Button>
+										<Button
+											className='mb-75'
+											color='secondary'
+											size='sm'
+											outline
+											onClick={handleImgReset}>
+											Reset
+										</Button>
+										<p className='mb-0'>Allowed PNG. Max size of 1 MB</p>
+									</div>
+								</div>
 							</div>
-						</div>
-					</div>
+						</Col>
+					</Row>
+
+					<h3 style={{ marginTop: "30px" }}>Rider Details</h3>
+
 					<Form
 						className='mt-2 pt-50'
 						onSubmit={handleSubmit(onSubmit)}>
@@ -209,22 +253,46 @@ const AccountTabs = ({ data }) => {
 								className='mb-1'>
 								<Label
 									className='form-label'
+									for='username'>
+									User Name
+								</Label>
+								<Controller
+									name='username'
+									control={control}
+									render={({ field }) => (
+										<Input
+											id='username'
+											placeholder='John'
+											invalid={errors.username && true}
+											{...field}
+										/>
+									)}
+								/>
+								{errors && errors.username && (
+									<FormFeedback>Please enter username</FormFeedback>
+								)}
+							</Col>
+							<Col
+								sm='6'
+								className='mb-1'>
+								<Label
+									className='form-label'
 									for='firstName'>
 									First Name
 								</Label>
 								<Controller
-									name='firstName'
+									name='firstname'
 									control={control}
 									render={({ field }) => (
 										<Input
 											id='firstName'
 											placeholder='John'
-											invalid={errors.firstName && true}
+											invalid={errors.firstname && true}
 											{...field}
 										/>
 									)}
 								/>
-								{errors && errors.firstName && (
+								{errors && errors.firstname && (
 									<FormFeedback>Please enter a valid First Name</FormFeedback>
 								)}
 							</Col>
@@ -237,7 +305,7 @@ const AccountTabs = ({ data }) => {
 									Last Name
 								</Label>
 								<Controller
-									name='lastName'
+									name='lastname'
 									control={control}
 									render={({ field }) => (
 										<Input
@@ -248,7 +316,7 @@ const AccountTabs = ({ data }) => {
 										/>
 									)}
 								/>
-								{errors.lastName && (
+								{errors.lastname && (
 									<FormFeedback>Please enter a valid Last Name</FormFeedback>
 								)}
 							</Col>
@@ -258,162 +326,64 @@ const AccountTabs = ({ data }) => {
 								<Label
 									className='form-label'
 									for='emailInput'>
-									E-mail
+									Email
 								</Label>
-								<Input
-									id='emailInput'
-									type='email'
+								<Controller
 									name='email'
-									placeholder='Email'
-									defaultValue={data?.email}
+									control={control}
+									render={({ field }) => (
+										<Input
+											id='emailInput'
+											type='email'
+											name='email'
+											placeholder='Email'
+											{...field}
+										/>
+									)}
 								/>
 							</Col>
-							<Col
-								sm='6'
-								className='mb-1'>
-								<Label
-									className='form-label'
-									for='company'>
-									Company
-								</Label>
-								<Input
-									defaultValue={data?.company}
-									id='company'
-									name='company'
-									placeholder='Company Name'
-								/>
-							</Col>
+
 							<Col
 								sm='6'
 								className='mb-1'>
 								<Label
 									className='form-label'
 									for='phNumber'>
-									Phone Number
+									Number
 								</Label>
-								<Cleave
-									id='phNumber'
-									name='phNumber'
-									className='form-control'
-									placeholder='1 234 567 8900'
-									options={{ phone: true, phoneRegionCode: "US" }}
-								/>
-							</Col>
-							<Col
-								sm='6'
-								className='mb-1'>
-								<Label
-									className='form-label'
-									for='address'>
-									Address
-								</Label>
+
 								<Input
-									id='address'
-									name='address'
-									placeholder='12, Business Park'
+									id='phonenumber'
+									name='phonenumber'
+									onChange={(e) => setNumber(e.target.value)}
+									defaultValue={data?.number}
 								/>
 							</Col>
+
 							<Col
 								sm='6'
 								className='mb-1'>
 								<Label
 									className='form-label'
-									for='accountState'>
-									State
-								</Label>
-								<Input
-									id='accountState'
-									name='state'
-									placeholder='California'
-								/>
-							</Col>
-							<Col
-								sm='6'
-								className='mb-1'>
-								<Label
-									className='form-label'
-									for='zipCode'>
-									Zip Code
-								</Label>
-								<Input
-									id='zipCode'
-									name='zipCode'
-									placeholder='123456'
-									maxLength='6'
-								/>
-							</Col>
-							<Col
-								sm='6'
-								className='mb-1'>
-								<Label
-									className='form-label'
-									for='country'>
-									Country
+									for='enable'>
+									Status
 								</Label>
 								<Select
-									id='country'
+									id='status'
 									isClearable={false}
 									className='react-select'
 									classNamePrefix='select'
-									options={countryOptions}
+									options={statusOptions}
 									theme={selectThemeColors}
-									defaultValue={countryOptions[0]}
+									onChange={(e) => setStatus(e.value)}
+									defaultValue={
+										data?.enabled == true ? statusOptions[0] : statusOptions[1]
+									}
 								/>
 							</Col>
-							<Col
-								sm='6'
-								className='mb-1'>
-								<Label
-									className='form-label'
-									for='language'>
-									Language
-								</Label>
-								<Select
-									id='language'
-									isClearable={false}
-									className='react-select'
-									classNamePrefix='select'
-									options={languageOptions}
-									theme={selectThemeColors}
-									defaultValue={languageOptions[0]}
-								/>
-							</Col>
-							<Col
-								sm='6'
-								className='mb-1'>
-								<Label
-									className='form-label'
-									for='timeZone'>
-									Timezone
-								</Label>
-								<Select
-									id='timeZone'
-									isClearable={false}
-									className='react-select'
-									classNamePrefix='select'
-									options={timeZoneOptions}
-									theme={selectThemeColors}
-									defaultValue={timeZoneOptions[0]}
-								/>
-							</Col>
-							<Col
-								sm='6'
-								className='mb-1'>
-								<Label
-									className='form-label'
-									for='currency'>
-									Currency
-								</Label>
-								<Select
-									id='currency'
-									isClearable={false}
-									className='react-select'
-									classNamePrefix='select'
-									options={currencyOptions}
-									theme={selectThemeColors}
-									defaultValue={currencyOptions[0]}
-								/>
-							</Col>
+
+							{/* <h3 style={{ marginTop: "30px" }}>Store Details</h3> */}
+
 							<Col
 								className='mt-2'
 								sm='12'>
@@ -423,11 +393,11 @@ const AccountTabs = ({ data }) => {
 									color='primary'>
 									Save changes
 								</Button>
-								<Button
+								{/* <Button
 									color='secondary'
 									outline>
 									Discard
-								</Button>
+								</Button> */}
 							</Col>
 						</Row>
 					</Form>

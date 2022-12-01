@@ -19,6 +19,7 @@ import {
 import { Link } from "react-router-dom";
 import { MdProductionQuantityLimits } from "react-icons/md";
 import { CgProfile } from "react-icons/cg";
+import { FiBox } from "react-icons/fi";
 import { BiStoreAlt } from "react-icons/bi";
 // ** Styles
 import "@styles/react/libs/noui-slider/noui-slider.scss";
@@ -43,13 +44,13 @@ const Sidebar = (props) => {
           </Row> */}
 					<Card className='seller-sidebar'>
 						<CardHeader className='border-bottom'>
-							<CardTitle tag='h4'>Seller Menu</CardTitle>
+							<CardTitle tag='h4'>Rider Menu</CardTitle>
 						</CardHeader>
 						<div style={{ height: "100vh", marginTop: "20px" }}>
 							<ListGroup
 								tag='div'
 								className='list-group-filters'>
-								<ListGroupItem
+								{/* <ListGroupItem
 									action
 									tag={Link}
 									to={"/apps/sellers/details"}
@@ -60,11 +61,11 @@ const Sidebar = (props) => {
 										size={18}
 									/>
 									<span className='align-middle'>Products</span>
-								</ListGroupItem>
+								</ListGroupItem> */}
 								<ListGroupItem
 									action
 									tag={Link}
-									to={"/apps/sellers/details"}
+									to={"/apps/rider/details"}
 									active={activeTab == "profile"}
 									onClick={() => setActiveTab("profile")}>
 									<CgProfile
@@ -76,14 +77,26 @@ const Sidebar = (props) => {
 								<ListGroupItem
 									action
 									tag={Link}
-									to={"/apps/sellers/details"}
-									active={activeTab == "store"}
-									onClick={() => setActiveTab("store")}>
+									to={"/apps/rider/details"}
+									active={activeTab == "wallet"}
+									onClick={() => setActiveTab("wallet")}>
 									<BiStoreAlt
 										className='me-75'
 										size={18}
 									/>
-									<span className='align-middle'>Store</span>
+									<span className='align-middle'>Wallet</span>
+								</ListGroupItem>
+								<ListGroupItem
+									action
+									tag={Link}
+									to={"/apps/rider/details"}
+									active={activeTab == "order"}
+									onClick={() => setActiveTab("order")}>
+									<FiBox
+										className='me-75'
+										size={18}
+									/>
+									<span className='align-middle'>Orders</span>
 								</ListGroupItem>
 							</ListGroup>
 						</div>
