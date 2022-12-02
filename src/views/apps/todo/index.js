@@ -64,7 +64,6 @@ const TODO = () => {
 		);
 	}, [store.tasks.length, paramsURL.filter, paramsURL.tag, query, sort]);
 
-	console.log(activeTab, "activeTab");
 	return (
 		<Fragment>
 			<Sidebar

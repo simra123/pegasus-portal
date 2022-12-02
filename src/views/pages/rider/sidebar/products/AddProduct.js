@@ -137,7 +137,6 @@ const CreateProduct = ({ storeId, setShowCreate, getProducts }) => {
 		pathArr.push(e.target.files[0].name);
 
 		setImgPath(pathArr);
-		console.log(pathArr, "image naes");
 		reader.onload = function () {
 			let arr = [];
 			arr = [...featuredImg];

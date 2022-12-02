@@ -47,7 +47,6 @@ const ProductCards = (props) => {
 		if (products.length) {
 			return products.map((item) => {
 				const CartBtnTag = item.isInCart ? Link : "button";
-				console.log(item);
 				return (
 					<Card
 						className='ecommerce-card'

@@ -32,8 +32,6 @@ const BootstrapCheckbox = forwardRef((props, ref) => (
 ));
 
 const SellersTable = () => {
-
-
 	const [data, setData] = useState([]);
 	const [data2, setData2] = useState([]);
 	const [loading, setLoading] = useState(true);
@@ -48,7 +46,6 @@ const SellersTable = () => {
 	const [filter, setFilter] = useState("all");
 	const [searchVal, setSearchVal] = useState("");
 	const history = useHistory();
-
 
 	const getUsersData = (start, end, val) => {
 		setLoading(true);
@@ -102,11 +99,11 @@ const SellersTable = () => {
 	};
 
 	const handleDetails = (e) => {
-      history.push({
-        pathname: "/apps/customers/details",
-        state: { id: e.store_id },
-      });
-    };
+		history.push({
+			pathname: "/apps/customers/details",
+			state: { id: e.id, data: e },
+		});
+	};
 	return (
 		<>
 			<Card>
@@ -138,7 +135,6 @@ const SellersTable = () => {
 									<th>Date</th>
 									<th>Status</th>
 									<th>Details</th>
-
 								</tr>
 							</thead>
 							<tbody>

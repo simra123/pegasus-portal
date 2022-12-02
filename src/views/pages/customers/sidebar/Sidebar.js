@@ -20,7 +20,7 @@ import { Link } from "react-router-dom";
 import { MdProductionQuantityLimits } from "react-icons/md";
 import { CgProfile } from "react-icons/cg";
 import { FiBox } from "react-icons/fi";
-import {BiStoreAlt} from "react-icons/bi"
+import { BiStoreAlt } from "react-icons/bi";
 // ** Styles
 import "@styles/react/libs/noui-slider/noui-slider.scss";
 
@@ -44,7 +44,7 @@ const Sidebar = (props) => {
           </Row> */}
 					<Card className='seller-sidebar'>
 						<CardHeader className='border-bottom'>
-							<CardTitle tag='h4'>Customer Menu</CardTitle>
+							<CardTitle tag='h4'>Seller Menu</CardTitle>
 						</CardHeader>
 						<div style={{ height: "100vh", marginTop: "20px" }}>
 							<ListGroup
@@ -53,19 +53,19 @@ const Sidebar = (props) => {
 								<ListGroupItem
 									action
 									tag={Link}
-									to={"/apps/sellers/details"}
-									active={activeTab == "products"}
-									onClick={() => setActiveTab("products")}>
+									to={"/apps/customers/details"}
+									active={activeTab == "cart"}
+									onClick={() => setActiveTab("cart")}>
 									<MdProductionQuantityLimits
 										className='me-75'
 										size={18}
 									/>
-									<span className='align-middle'>Cart</span>
+									<span className='align-middle'>Carts</span>
 								</ListGroupItem>
 								<ListGroupItem
 									action
 									tag={Link}
-									to={"/apps/sellers/details"}
+									to={"/apps/customers/details"}
 									active={activeTab == "profile"}
 									onClick={() => setActiveTab("profile")}>
 									<CgProfile
@@ -77,10 +77,10 @@ const Sidebar = (props) => {
 								<ListGroupItem
 									action
 									tag={Link}
-									to={"/apps/sellers/details"}
-									active={activeTab == "order"}
-									onClick={() => setActiveTab("order")}>
-									<FiBox
+									to={"/apps/customers/details"}
+									active={activeTab == "orders"}
+									onClick={() => setActiveTab("orders")}>
+									<BiStoreAlt
 										className='me-75'
 										size={18}
 									/>

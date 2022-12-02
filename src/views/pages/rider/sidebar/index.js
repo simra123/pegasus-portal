@@ -84,7 +84,6 @@ const Shop = () => {
 	const onChange = (p) => {
 		setRiderData(p);
 	};
-	console.log(riderData, "rider data");
 
 	return (
 		<Fragment>

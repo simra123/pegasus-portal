@@ -80,7 +80,6 @@ const OrderTable = (props) => {
 			},
 			(response) => {
 				setLoading(false);
-				console.log(response.data.data.orders, "dtete");
 				const res = response.data.data.orders;
 				setTotalPages(res.totalPages);
 				if (filter == "all" || filter == "") {

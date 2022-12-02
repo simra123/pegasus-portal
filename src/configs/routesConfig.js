@@ -25,5 +25,4 @@ const routes = [
 	// 	component: () => <Redirect to="/pages/errors/error-404" />,
 	// },
 ];
-console.log(routes, "routesss");
 export default routes;

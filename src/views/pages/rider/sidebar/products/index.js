@@ -64,7 +64,6 @@ const ProductsPage = (props) => {
 				setProducts(res.product);
 				setLoading(false);
 				setTotalPages(res.totalPages);
-				console.log(res.totalPages);
 			},
 			(failure) => {
 				setLoading(false);

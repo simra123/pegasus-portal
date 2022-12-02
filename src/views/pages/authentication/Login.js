@@ -76,11 +76,9 @@ const Login = () => {
 	const illustration = skin === "dark" ? "login-v2-dark.svg" : "login-v2.svg",
 		source = require(`@src/assets/images/pages/whiskey-glass.png`).default;
 	const userToken = localStorage.getItem("user_token");
-	console.log(userToken,'tokekek')
 	const authSuccess = (response) => {
 		const token = response.data.data.token;
 		localStorage.setItem("client_token", token);
-		console.log(response, "res");
 		// CoreHttpHandler.request(
 		//   "core",
 		//   "clientSettings",
@@ -93,7 +91,6 @@ const Login = () => {
 		console.log(error, "error");
 	};
 	const clientAuthentication = () => {
-		console.log("working");
 		CoreHttpHandler.request("client", "auth", {}, authSuccess, authFailure);
 	};
 	const checkUser = () => {
@@ -103,8 +100,8 @@ const Login = () => {
 	};
 	useEffect(() => {
 		if (userToken == null) {
-      		clientAuthentication();
-    	}
+			clientAuthentication();
+		}
 		// checkUser();
 	}, []);
 	//	console.log("hehehe");
@@ -115,7 +112,6 @@ const Login = () => {
 			`You have successfully logged in as to Golive. Now you can
 		start to explore. Enjoy!`
 		);
-		console.log(data.data.data);
 		const { token, user, acl } = data.data.data;
 		localStorage.setItem("user_token", token);
 		user.ability = [{ action: "manage", subject: "all" }];

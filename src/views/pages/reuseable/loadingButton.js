@@ -12,7 +12,6 @@ const LoadingButton = ({
 	block,
 	className,
 }) => {
-	console.log(style,'werddssa')
 	return (
 		<>
 			<Button

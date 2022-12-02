@@ -12,7 +12,6 @@ const VerticalLayout = (props) => {
 	// useEffect(() => {
 	//   axios.get(URL).then(response => setMenuData(response.data))
 	// }, [])
-	console.log(navigation, "navbarrrr");
 	return (
 		<Layout
 			menuData={navigation}

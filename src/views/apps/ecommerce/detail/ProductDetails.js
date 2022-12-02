@@ -84,7 +84,6 @@ const Product = (props) => {
 
 	// ** Condition btn tag
 	const CartBtnTag = data.isInCart ? Link : "button";
-	console.log(data, "products");
 	return (
 		<Row className='my-2'>
 			<Col
