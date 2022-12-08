@@ -12,7 +12,7 @@ const orders = (props) => {
 				roles.
 			</p> */}
 					<div className='app-user-list'>
-						<Table storeId={props?.data?.store_id} />
+						<Table id={props?.data.id} />
 					</div>
 				</CardBody>
 			</Card>

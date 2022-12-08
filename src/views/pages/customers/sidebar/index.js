@@ -82,7 +82,7 @@ const Shop = () => {
 							data={customerData}
 							setData={onChange}
 						/>
-					) : activeTab === "order" ? (
+					) : activeTab === "orders" ? (
 						<Orders data={customerData} />
 					) : null}
 				</div>

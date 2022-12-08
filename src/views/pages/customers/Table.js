@@ -145,7 +145,7 @@ const SellersTable = () => {
 
 											<td>{customer.username}</td>
 											<td>{customer.number}</td>
-											<td>{customer.dt}</td>
+											<td>{moment(customer.dt).format("YYYY-MM-DD")}</td>
 											<td>
 												{customer.enabled ? (
 													<Badge

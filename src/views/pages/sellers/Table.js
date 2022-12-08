@@ -140,6 +140,7 @@ const SellersTable = () => {
 									<th>SN</th>
 									<th>Name</th>
 									<th>Number</th>
+									<th>Store</th>
 									<th>Date</th>
 									<th>Status</th>
 									<th>Details</th>
@@ -153,6 +154,7 @@ const SellersTable = () => {
 
 											<td>{seller.username}</td>
 											<td>{seller.number}</td>
+											<td>{seller.name}</td>
 											<td>{moment(seller.dt).format("YYYY-MM-DD")}</td>
 											<td>
 												{seller.enabled ? (
