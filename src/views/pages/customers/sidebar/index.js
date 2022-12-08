@@ -32,7 +32,7 @@ const Shop = () => {
 	// ** States
 	const [activeView, setActiveView] = useState("grid");
 	const [sidebarOpen, setSidebarOpen] = useState(false);
-	const [activeTab, setActiveTab] = useState("cart");
+	const [activeTab, setActiveTab] = useState("profile");
 
 	// ** Vars
 	const dispatch = useDispatch();

@@ -41,7 +41,7 @@ const statusOptions = [
 const AccountTabs = (props) => {
 	// ** Hooks
 	const { data, setData } = props;
-
+	console.log(data, "customer");
 	const defaultValues = {
 		lastName: data?.lastname,
 		firstName: data?.firstname,
@@ -83,6 +83,7 @@ const AccountTabs = (props) => {
 	const onSubmit = (datas) => {
 		document.body.style.opacity = 0.4;
 		const _data = new FormData();
+		console.log(datas, "onchnage");
 
 		if (fileData != "") {
 			_data.append("file", fileData, `${new Date().getTime()}_${name}`);
@@ -98,8 +99,8 @@ const AccountTabs = (props) => {
 						"customers",
 						"update",
 						{
-							lastname: datas?.lastname,
-							firstname: datas?.firstname,
+							lastname: datas?.lastName,
+							firstname: datas?.firstName,
 							number: number == "" ? datas?.number : number,
 							email: datas?.email,
 							enabled: status == "" ? datas?.enabled : status,
@@ -109,8 +110,8 @@ const AccountTabs = (props) => {
 						},
 						(response) => {
 							let _params = {
-								lastname: datas?.lastname,
-								firstname: datas?.firstname,
+								lastname: datas?.lastName,
+								firstname: datas?.firstName,
 								number: number == "" ? datas?.number : number,
 								email: datas?.email,
 								enabled: status == "" ? datas?.enabled : status,
@@ -128,6 +129,8 @@ const AccountTabs = (props) => {
 							});
 						},
 						(err) => {
+							document.body.style.opacity = 1;
+
 							ToastAlertError(
 								err?.response?.data?.message
 									? err?.response.data.message
@@ -143,8 +146,8 @@ const AccountTabs = (props) => {
 				"customers",
 				"update",
 				{
-					lastname: datas?.lastname,
-					firstname: datas?.firstname,
+					lastname: datas?.lastName,
+					firstname: datas?.firstName,
 					number: number == "" ? datas?.number : number,
 					email: datas?.email,
 					enabled: status == "" ? datas?.enabled : status,
@@ -154,8 +157,8 @@ const AccountTabs = (props) => {
 				},
 				(response) => {
 					let _params = {
-						lastname: datas?.lastname,
-						firstname: datas?.firstname,
+						lastname: datas?.lastName,
+						firstname: datas?.firstName,
 						number: number == "" ? datas?.number : number,
 						email: datas?.email,
 						enabled: status == "" ? datas?.enabled : status,
@@ -202,9 +205,9 @@ const AccountTabs = (props) => {
 									<img
 										className='rounded me-50'
 										src={
-											data?.image
-												? `https://upload.its.com.pk/v1/fetch/file/${data?.image}`
-												: DefaultUser
+											avatar
+												? avatar
+												: `https://upload.its.com.pk/v1/fetch/file/${data?.image}`
 										}
 										alt='Generic placeholder image'
 										height='100'

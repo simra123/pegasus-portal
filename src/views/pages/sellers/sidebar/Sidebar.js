@@ -4,8 +4,7 @@ import { useRTL } from "@hooks/useRTL";
 // ** Third Party Components
 import wNumb from "wnumb";
 import classnames from "classnames";
-import { Star, Mail } from "react-feather";
-import Nouislider from "nouislider-react";
+import { FaBoxes } from "react-icons/fa";
 
 // ** Reactstrap Imports
 import {
@@ -104,7 +103,7 @@ const Sidebar = (props) => {
 									to={"/apps/sellers/details"}
 									active={activeTab == "deals"}
 									onClick={() => setActiveTab("deals")}>
-									<FiBox
+									<FaBoxes
 										className='me-75'
 										size={18}
 									/>

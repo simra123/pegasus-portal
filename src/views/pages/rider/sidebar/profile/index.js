@@ -200,9 +200,9 @@ const AccountTabs = (props) => {
 									<img
 										className='rounded me-50'
 										src={
-											data?.image
-												? `https://upload.its.com.pk/v1/fetch/file/${data?.image}`
-												: DefaultUser
+											avatar
+												? avatar
+												: `https://upload.its.com.pk/v1/fetch/file/${data?.image}`
 										}
 										alt='Generic placeholder image'
 										height='100'

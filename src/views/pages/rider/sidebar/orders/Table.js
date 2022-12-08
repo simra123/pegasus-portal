@@ -149,27 +149,27 @@ const OrderTable = ({
 									className='border-none'>
 									<thead>
 										<tr>
-											<th style={{ fontSize: "10px" }}>Order Id</th>
-											<th style={{ fontSize: "10px" }}>Order</th>
+											<th style={{ fontSize: "10px" }}>Order No</th>
 											<th style={{ fontSize: "10px" }}>City</th>
 											<th style={{ fontSize: "10px" }}>Amount</th>
 											<th style={{ fontSize: "10px" }}>Date</th>
 											<th style={{ fontSize: "10px" }}>Status</th>
 											<th style={{ fontSize: "10px" }}>location</th>
-											<th style={{ fontSize: "10px" }}>D Fee</th>
+											<th style={{ fontSize: "10px" }}>Delivery Fee</th>
 										</tr>
 									</thead>
 									<tbody>
 										{data?.map((order, index) => {
 											return (
 												<tr
-													key={order.order_id}
+													key={order.order_no}
 													style={{ fontSize: "11px" }}>
-													<td>{order.order_id}</td>
 													<td>{order.order_no}</td>
 
 													<td>{order.city}</td>
-													<td>{order.amount}</td>
+													<td>
+														{order.amount ? order.amount?.substring(0, 10) : 0}
+													</td>
 													<td>{moment(order.dt).format("YYYY-MM-DD")}</td>
 													<td>{orderStatus(order.status)}</td>
 													<td>
