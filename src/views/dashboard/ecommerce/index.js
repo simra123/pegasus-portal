@@ -1,5 +1,5 @@
 // ** React Imports
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useState, createContext } from "react";
 
 // ** Reactstrap Imports
 
@@ -39,8 +39,15 @@ import "@styles/base/pages/dashboard-ecommerce.scss";
 import LineChart from "./Charts/LineChart";
 import PieChart from "./Charts/PieChart";
 import BarChart from "./Charts/ChartjsBarChart";
+// import {
+// 	setNotification
+
+// } from "@store/reducer";
+
 
 import CoreHttpHandler from "../../../http/services/CoreHttpHandler";
+import { useDispatch, useSelector } from "react-redux";
+import { setNotificationNumber } from "../../../redux/portalData";
 
 const EcommerceDashboard = () => {
 	// ** Context
@@ -57,6 +64,9 @@ const EcommerceDashboard = () => {
 	const [riders, setRiders] = useState("");
 	const [orders, setOrders] = useState("");
 	const [pending, setPending] = useState("");
+	// const [notification, setNotification] = useContext(Data);
+	const state = useSelector(state => state.portalData);
+	const dispatch = useDispatch();
 
 	const donut = [
 		{
@@ -81,8 +91,13 @@ const EcommerceDashboard = () => {
 		getData();
 	}, []);
 
+	useEffect(() => {
+      if(data.length != 0){
+		dispatch(setNotificationNumber(data.order_notification));
+	  }
+    }, [data]);
+
 	const getData = () => {
-		permissions["FRONT:/seller-dashboard"], "ppspsps";
 		permissions["FRONT:/seller-dashboard"] != undefined
 			? CoreHttpHandler.request(
 					"dashboard",
@@ -98,6 +113,9 @@ const EcommerceDashboard = () => {
 							statistics: response.data.data.order_recieved,
 							series: [{ name: "2020", data: [45, 85, 65, 45, 65] }],
 						};
+						// dispatch(setNotification(val))
+						// state.notification_number = response.data.data.order_recieved;
+						// setNotification(response.data.data.order_notification)
 						setOrderBarData(_data);
 						_data = {
 							title: "Earning",

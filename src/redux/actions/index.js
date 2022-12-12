@@ -1,0 +1,1 @@
+export const notificationNumber = () => "SET_NOTIFICATION"

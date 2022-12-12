@@ -50,6 +50,13 @@ class APIS {
         method: "post",
         path: "/seller/reset/password",
       },
+      reset_notification: {
+        headers: {
+          "xt-user-token": null,
+        },
+        method: "get",
+        path: "/seller/reset/number",
+      },
     };
 	}
 }

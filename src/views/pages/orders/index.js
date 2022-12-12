@@ -1,10 +1,32 @@
 // ** React Imports
+import { useEffect } from "react";
 import { Fragment } from "react";
+import { useDispatch } from "react-redux";
+import CoreHttpHandler from "../../../http/services/CoreHttpHandler";
+import { setNotificationNumber } from "../../../redux/portalData";
 
 // ** Roles Components
 import Table from "./Table";
 
 const Roles = () => {
+	const dispatch = useDispatch()
+
+	useEffect(()=>{
+		reset()
+	},[reset])
+
+	const reset = () =>{
+		CoreHttpHandler.request(
+		"sellers",
+		"reset_notification",
+		{},
+		(response) => {
+			dispatch(setNotificationNumber(0));
+		},
+		(err) => {}
+		);
+	}
+
 	return (
 		<Fragment>
 			{/* <h3>Roles List</h3>
