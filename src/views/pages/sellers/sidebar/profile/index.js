@@ -29,6 +29,7 @@ import moment from "moment";
 import CoreHttpHandler from "../../../../../http/services/CoreHttpHandler";
 import ContentUploadHandler from "../../../../../http/services/ContentUploadHandler";
 import Swal from "sweetalert2";
+import { DefaultUser } from "../../../reuseable";
 
 // ** Demo Components
 
@@ -39,7 +40,7 @@ const statusOptions = [
 
 const AccountTabs = (props) => {
 	// ** Hooks
-  const {data,setData} = props
+	const { data, setData } = props;
 
 	const defaultValues = {
 		lastName: data?.lastname,
@@ -57,8 +58,6 @@ const AccountTabs = (props) => {
 		formState: { errors },
 	} = useForm({ defaultValues });
 
-	console.log(props, "propppssss");
-
 	// ** States
 	const [avatar, setAvatar] = useState("");
 	const [status, setStatus] = useState("");
@@ -70,15 +69,6 @@ const AccountTabs = (props) => {
 	const onChange = (e) => {
 		let _name = e.target.files[0].name;
 
-		if (!_name.includes(".png")) {
-			Swal.fire({
-				icon: "error",
-				title: "Error",
-				text: "PNG images are allowed",
-				confirmButtonColor: "#ff3600",
-			});
-			return;
-		}
 		const reader = new FileReader(),
 			files = e.target.files;
 		reader.onload = function () {
@@ -97,54 +87,53 @@ const AccountTabs = (props) => {
 		if (fileData != "") {
 			_data.append("file", fileData, `${new Date().getTime()}_${name}`);
 			ContentUploadHandler.request(
-            "content",
-            "upload",
-            {
-              params: _data,
-            },
-            (response) => {
-              let img = response.data.data.file;
-              CoreHttpHandler.request(
-              	"sellers",
-              	"updateAdmin",
-              	{
-              		lastname: datas?.lastName,
-              		firstname: datas?.firstName,
-              		number: number == "" ? datas?.number : number,
-              		email: datas?.email,
-              		enable: status == "" ? datas?.status : status,
-              		username: datas?.username,
-              		image: `https://upload.its.com.pk/v1/fetch/file/${response.data.data.file}`,
-              		seller_id: data?.id
-              	},
-              	(response) => {
-                  let _params = {
-                    ...data,
-                    lastname: datas?.lastName,
-                    firstname: datas?.firstName,
-                    number: number == "" ? datas?.number : number,
-                    email: datas?.email,
-                    enable: status == "" ? datas?.status : status,
-                    username: datas?.username,
-                    image: `https://upload.its.com.pk/v1/fetch/file/${img}`,
-                    seller_id: data?.id,
-                  };
-                  setData(_params);
-					          document.body.style.opacity = 1;
-                    Swal.fire({
-                      icon: "success",
-                      title: "Success",
-                      text: "Successfully Updated Seller Details",
-                      confirmButtonColor: "green",
-                    });
-                  },
-                  (error) => {}
-              )
-            },
-            (error) => {}
-          )
-		}else{
-			
+				"content",
+				"upload",
+				{
+					params: _data,
+				},
+				(response) => {
+					let img = response.data.data.file;
+					CoreHttpHandler.request(
+						"sellers",
+						"updateAdmin",
+						{
+							lastname: datas?.lastName,
+							firstname: datas?.firstName,
+							number: number == "" ? datas?.number : number,
+							email: datas?.email,
+							enable: status == "" ? datas?.status : status,
+							username: datas?.username,
+							image: `https://upload.its.com.pk/v1/fetch/file/${response.data.data.file}`,
+							seller_id: data?.id,
+						},
+						(response) => {
+							let _params = {
+								...data,
+								lastname: datas?.lastName,
+								firstname: datas?.firstName,
+								number: number == "" ? datas?.number : number,
+								email: datas?.email,
+								enable: status == "" ? datas?.status : status,
+								username: datas?.username,
+								image: `https://upload.its.com.pk/v1/fetch/file/${img}`,
+								seller_id: data?.id,
+							};
+							setData(_params);
+							document.body.style.opacity = 1;
+							Swal.fire({
+								icon: "success",
+								title: "Success",
+								text: "Successfully Updated Seller Details",
+								confirmButtonColor: "green",
+							});
+						},
+						(error) => {}
+					);
+				},
+				(error) => {}
+			);
+		} else {
 			CoreHttpHandler.request(
 				"sellers",
 				"updateAdmin",
@@ -159,18 +148,18 @@ const AccountTabs = (props) => {
 					seller_id: data?.id,
 				},
 				(response) => {
-          let _params ={
-            ...data,
-            lastname: datas?.lastName,
-            firstname: datas?.firstName,
-            number: number == "" ? datas?.number : number,
-            email: datas?.email,
-            enable: status == "" ? datas?.status : status,
-            username: datas?.username,
-            image: datas?.image,
-            seller_id: data?.id,
-          }
-          setData(_params)
+					let _params = {
+						...data,
+						lastname: datas?.lastName,
+						firstname: datas?.firstName,
+						number: number == "" ? datas?.number : number,
+						email: datas?.email,
+						enable: status == "" ? datas?.status : status,
+						username: datas?.username,
+						image: datas?.image,
+						seller_id: data?.id,
+					};
+					setData(_params);
 					document.body.style.opacity = 1;
 					//  props.replace({ state: _params });
 					Swal.fire({
@@ -214,7 +203,11 @@ const AccountTabs = (props) => {
 								<div className='me-25'>
 									<img
 										className='rounded me-50'
-										src={avatar == "" ? data?.image : avatar}
+										src={
+											avatar
+												? avatar
+												: `https://upload.its.com.pk/v1/fetch/file/${data?.image}`
+										}
 										alt='Generic placeholder image'
 										height='100'
 										width='100'

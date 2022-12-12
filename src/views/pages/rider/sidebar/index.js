@@ -3,7 +3,6 @@ import { Fragment, useState, useEffect } from "react";
 
 // ** Shop Components
 import Sidebar from "./Sidebar";
-import Products from "./products";
 import Profile from "./profile";
 import StoreDetails from "./store-details";
 import Wallet from "./wallet";
@@ -17,14 +16,6 @@ import Breadcrumbs from "@components/breadcrumbs";
 
 // ** Store & Actions
 import { useDispatch, useSelector } from "react-redux";
-import {
-	addToCart,
-	getProducts,
-	getCartItems,
-	addToWishlist,
-	deleteCartItem,
-	deleteWishlistItem,
-} from "./products/store";
 
 // ** Styles
 import "@styles/react/apps/app-ecommerce.scss";
@@ -90,22 +81,7 @@ const Shop = () => {
 			<div className='content-detached content-right'>
 				<div className='content-body'>
 					<Header setSidebarOpen={setSidebarOpen} />
-					{activeTab === "products" ? (
-						<Products
-							storeId={id}
-							store={store}
-							dispatch={dispatch}
-							addToCart={addToCart}
-							activeView={activeView}
-							sidebarOpen={sidebarOpen}
-							getCartItems={getCartItems}
-							setActiveView={setActiveView}
-							addToWishlist={addToWishlist}
-							setSidebarOpen={setSidebarOpen}
-							deleteCartItem={deleteCartItem}
-							deleteWishlistItem={deleteWishlistItem}
-						/>
-					) : activeTab === "profile" ? (
+					{activeTab === "profile" ? (
 						<Profile
 							data={riderData}
 							setData={onChange}

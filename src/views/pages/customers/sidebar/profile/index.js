@@ -2,8 +2,11 @@
 import { Fragment, useState } from "react";
 import logo from "@src/assets/images/logo/logo.png";
 
-// ** Third Party Components
-import Select from "react-select";
+import {
+	DefaultUser,
+	ToastAlertError,
+	ToastAlertSuccess,
+} from "../../../reuseable";
 import Cleave from "cleave.js/react";
 import { useForm, Controller } from "react-hook-form";
 import "cleave.js/dist/addons/cleave-phone.us";
@@ -18,8 +21,6 @@ import {
 	Label,
 	Button,
 	CardBody,
-	CardTitle,
-	CardHeader,
 	FormFeedback,
 } from "reactstrap";
 
@@ -40,7 +41,7 @@ const statusOptions = [
 const AccountTabs = (props) => {
 	// ** Hooks
 	const { data, setData } = props;
-
+	console.log(data, "customer");
 	const defaultValues = {
 		lastName: data?.lastname,
 		firstName: data?.firstname,
@@ -68,15 +69,6 @@ const AccountTabs = (props) => {
 	const onChange = (e) => {
 		let _name = e.target.files[0].name;
 
-		if (!_name.includes(".png")) {
-			Swal.fire({
-				icon: "error",
-				title: "Error",
-				text: "PNG images are allowed",
-				confirmButtonColor: "#ff3600",
-			});
-			return;
-		}
 		const reader = new FileReader(),
 			files = e.target.files;
 		reader.onload = function () {
@@ -91,6 +83,7 @@ const AccountTabs = (props) => {
 	const onSubmit = (datas) => {
 		document.body.style.opacity = 0.4;
 		const _data = new FormData();
+		console.log(datas, "onchnage");
 
 		if (fileData != "") {
 			_data.append("file", fileData, `${new Date().getTime()}_${name}`);
@@ -103,93 +96,93 @@ const AccountTabs = (props) => {
 				(response) => {
 					let img = response.data.data.file;
 					CoreHttpHandler.request(
-						"sellers",
-						"updateAdmin",
+						"customers",
+						"update",
 						{
 							lastname: datas?.lastName,
 							firstname: datas?.firstName,
 							number: number == "" ? datas?.number : number,
 							email: datas?.email,
-							enable: status == "" ? datas?.status : status,
+							enabled: status == "" ? datas?.enabled : status,
 							username: datas?.username,
-							image: `https://upload.its.com.pk/v1/fetch/file/${response.data.data.file}`,
-							seller_id: data?.id,
+							image: img ? img : data?.image,
+							userId: data?.id,
 						},
 						(response) => {
 							let _params = {
-								...data,
 								lastname: datas?.lastName,
 								firstname: datas?.firstName,
 								number: number == "" ? datas?.number : number,
 								email: datas?.email,
-								enable: status == "" ? datas?.status : status,
+								enabled: status == "" ? datas?.enabled : status,
 								username: datas?.username,
-								image: `https://upload.its.com.pk/v1/fetch/file/${img}`,
-								seller_id: data?.id,
+								image: img ? img : data?.image,
+								userId: data?.id,
 							};
 							setData(_params);
 							document.body.style.opacity = 1;
 							Swal.fire({
 								icon: "success",
 								title: "Success",
-								text: "Successfully Updated Seller Details",
+								text: "Successfully Updated Customer Details",
 								confirmButtonColor: "green",
 							});
 						},
-						(error) => {}
+						(err) => {
+							document.body.style.opacity = 1;
+
+							ToastAlertError(
+								err?.response?.data?.message
+									? err?.response.data.message
+									: "something went wrong"
+							);
+						}
 					);
 				},
-				(error) => {}
+				(err) => console.log(err)
 			);
 		} else {
 			CoreHttpHandler.request(
-				"sellers",
-				"updateAdmin",
+				"customers",
+				"update",
 				{
 					lastname: datas?.lastName,
 					firstname: datas?.firstName,
 					number: number == "" ? datas?.number : number,
 					email: datas?.email,
-					enable: status == "" ? datas?.status : status,
+					enabled: status == "" ? datas?.enabled : status,
 					username: datas?.username,
-					image: datas?.image,
-					seller_id: data?.id,
+					image: data?.image,
+					userId: data?.id,
 				},
 				(response) => {
 					let _params = {
-						...data,
 						lastname: datas?.lastName,
 						firstname: datas?.firstName,
 						number: number == "" ? datas?.number : number,
 						email: datas?.email,
-						enable: status == "" ? datas?.status : status,
+						enabled: status == "" ? datas?.enabled : status,
 						username: datas?.username,
-						image: datas?.image,
-						seller_id: data?.id,
+						image: data?.image,
+						userId: data?.id,
 					};
 					setData(_params);
 					document.body.style.opacity = 1;
-					//  props.replace({ state: _params });
 					Swal.fire({
 						icon: "success",
 						title: "Success",
-						text: "Successfully Updated Seller Details",
+						text: "Successfully Updated Customer Details",
 						confirmButtonColor: "green",
 					});
-					props.replace({
-						data: {
-							lastname: datas?.lastName,
-							firstname: datas?.firstName,
-							number: number == "" ? datas?.number : number,
-							email: datas?.email,
-							enable: status == "" ? datas?.status : status,
-							username: datas?.username,
-							image: datas?.image,
-							seller_id: data?.id,
-						},
-					});
 				},
-				(error) => {}
+				(err) => {
+					ToastAlertError(
+						err?.response?.data?.message
+							? err?.response.data.message
+							: "something went wrong"
+					);
+					document.body.style.opacity = 1;
+				}
 			);
 		}
 	};
@@ -211,7 +204,11 @@ const AccountTabs = (props) => {
 								<div className='me-25'>
 									<img
 										className='rounded me-50'
-										src={avatar == "" ? data?.image : avatar}
+										src={
+											avatar
+												? avatar
+												: `https://upload.its.com.pk/v1/fetch/file/${data?.image}`
+										}
 										alt='Generic placeholder image'
 										height='100'
 										width='100'
@@ -249,7 +246,7 @@ const AccountTabs = (props) => {
 						</Col>
 					</Row>
 
-					<h3 style={{ marginTop: "30px" }}>Seller Details</h3>
+					<h3 style={{ marginTop: "30px" }}>Customer Details</h3>
 
 					<Form
 						className='mt-2 pt-50'
@@ -269,7 +266,6 @@ const AccountTabs = (props) => {
 									render={({ field }) => (
 										<Input
 											id='firstName'
-											placeholder='John'
 											invalid={errors.firstName && true}
 											{...field}
 										/>
@@ -293,7 +289,6 @@ const AccountTabs = (props) => {
 									render={({ field }) => (
 										<Input
 											id='lastName'
-											placeholder='Doe'
 											invalid={errors.lastName && true}
 											{...field}
 										/>
@@ -353,7 +348,7 @@ const AccountTabs = (props) => {
 								<Label
 									className='form-label'
 									for='phNumber'>
-									Seller Phone Number
+									Customer Phone Number
 								</Label>
 
 								<Input
@@ -363,7 +358,7 @@ const AccountTabs = (props) => {
 									defaultValue={data?.number}
 								/>
 							</Col>
-							<Col
+							{/* <Col
 								sm='6'
 								className='mb-1'>
 								<Label
@@ -383,7 +378,7 @@ const AccountTabs = (props) => {
 										data?.enabled == true ? statusOptions[0] : statusOptions[1]
 									}
 								/>
-							</Col>
+							</Col> */}
 
 							{/* <h3 style={{ marginTop: "30px" }}>Store Details</h3> */}
 

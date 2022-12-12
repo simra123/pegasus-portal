@@ -17,10 +17,11 @@ import {
 	ListGroupItem,
 } from "reactstrap";
 import { Link } from "react-router-dom";
-import { MdProductionQuantityLimits } from "react-icons/md";
+import { BsWallet2 } from "react-icons/bs";
 import { CgProfile } from "react-icons/cg";
 import { FiBox } from "react-icons/fi";
 import { BiStoreAlt } from "react-icons/bi";
+
 // ** Styles
 import "@styles/react/libs/noui-slider/noui-slider.scss";
 
@@ -80,7 +81,7 @@ const Sidebar = (props) => {
 									to={"/apps/rider/details"}
 									active={activeTab == "wallet"}
 									onClick={() => setActiveTab("wallet")}>
-									<BiStoreAlt
+									<BsWallet2
 										className='me-75'
 										size={18}
 									/>

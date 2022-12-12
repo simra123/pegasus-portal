@@ -15,6 +15,7 @@ import SearchFilters from "./searchFilters";
 import { Upload } from "./fucntions";
 import TextEditor from "./textEditor";
 import ProductImage from "./productPlaceholder";
+import DefaultUser from "./defautUser";
 export {
 	ToastError,
 	ToastSuccess,
@@ -29,4 +30,5 @@ export {
 	Upload,
 	TextEditor,
 	ProductImage,
+	DefaultUser,
 };

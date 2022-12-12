@@ -8,6 +8,7 @@ import Profile from "./profile";
 import StoreDetails from "./store-details";
 import Orders from "./orders";
 import Header from "./products/ProductsHeader";
+import HotDeals from "./hot-deals";
 import { getAllData, getData } from "@src/views/apps/user/store";
 import { useHistory, useLocation } from "react-router-dom";
 
@@ -84,6 +85,8 @@ const Shop = () => {
 						/>
 					) : activeTab === "order" ? (
 						<Orders data={sellerData} />
+					) : activeTab === "deals" ? (
+						<HotDeals data={sellerData} />
 					) : null}
 				</div>
 			</div>

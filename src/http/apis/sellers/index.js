@@ -57,6 +57,13 @@ class APIS {
         method: "get",
         path: "/seller/reset/number",
       },
+      deals: {
+        headers: {
+          "xt-user-token": null,
+        },
+        method: "post",
+        path: "/fetch/hot-deal",
+      },
     };
 	}
 }

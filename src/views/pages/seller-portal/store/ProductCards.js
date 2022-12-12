@@ -1,144 +1,166 @@
 // ** React Imports
 import { Link } from "react-router-dom";
-
-// ** Third Party Components
+import { useState } from "react";
+import ProductDetails from "./ProductDetails";
+// ** Third Party Components\
 import classnames from "classnames";
 import { Star, ShoppingCart, Heart } from "react-feather";
-import {useState} from "react"
+import {
+	Loader,
+	DataNotFound,
+	ProductImage,
+	ToastAlertError,
+	ToastAlertSuccess,
+} from "../../reuseable";
 // ** Reactstrap Imports
-import { Card, CardBody, CardText, Button, Badge } from "reactstrap";
-import { url } from "../../../../image-service-url";
-import { Pagination } from "../../reuseable";
+import parse from "html-react-parser";
+import Swal from "sweetalert2";
+import withReactContent from "sweetalert2-react-content";
 
+import { Card, CardBody, CardText, Button, Badge } from "reactstrap";
+import "@styles/react/apps/app-ecommerce.scss";
+import { RiDeleteBin7Line } from "react-icons/ri";
+import CoreHttpHandler from "../../../../http/services/CoreHttpHandler";
 const ProductCards = (props) => {
-	
+	const [showDetails, setShowDetails] = useState(false);
+	const [singleProduct, setSingleProdcuct] = useState({});
 	// ** Props
-	const { productsData, activeView,setCurrentParams,totalPages } = props;
+
+	const { products, activeView, getProducts, loading } = props;
+	const MySwal = withReactContent(Swal);
 
 	// ** Renders products
 	const renderProducts = () => {
-		if (productsData?.length) {
-			return productsData?.map((item) => {
-				// const CartBtnTag = item.isInCart ? Link : 'button'
+		return (
+			<>
+				{products.map((item) => {
+					const image = item.attachment.filter((att) => att.type == 0);
+					return (
+						<>
+							{!showDetails && (
+								<Card
+									className='ecommerce-card'
+									key={item.id}>
+									<div className='item-img text-center mt-0 '>
+										<img
+											onClick={() => {
+												setShowDetails(true);
+												setSingleProdcuct(item);
+											}}
+											className=''
+											height={300}
+											width={"100%"}
+											src={
+												item.featured_image
+													? `https://upload.its.com.pk/v1/fetch/file/${item.featured_image}`
+													: ProductImage
+											}
+											alt={item.name}
+										/>
+									</div>
+									<CardBody>
+										<div className='item-wrapper'>
+											<div className='item-rating'>
+												<ul className='unstyled-list list-inline'>
+													{new Array(5).fill().map((listItem, index) => {
+														return (
+															<li
+																key={index}
+																className='ratings-list-item me-25'>
+																<Star
+																	className={classnames({
+																		"filled-star": index + 1 <= item.reviews,
+																		"unfilled-star": index + 1 > item.reviews,
+																	})}
+																/>
+															</li>
+														);
+													})}
+												</ul>
+											</div>
+											<div className='item-cost'>
+												<h6 className='item-price'>${item.price}</h6>
+											</div>
+										</div>
+										<h6 className='item-name'>
+											<Link
+												className='text-body'
+												onClick={() => {
+													setShowDetails(true);
+													setSingleProdcuct(item);
+												}}
+												to={`/apps/sellers/details`}>
+												{item.name}
+											</Link>
+											<CardText
+												tag='span'
+												className='item-company'>
+												By
+												<a
+													className='company-name'
+													href='/'
+													onClick={(e) => e.preventDefault()}>
+													{item.store_name}
+												</a>
+											</CardText>
+										</h6>
+										<CardText
+											className='item-description'
+											style={{ marginBottom: "0px" }}>
+											{item.description
+												? parse(item.description.substring(0, 60))
+												: item.description}
+										</CardText>
 
-				return (
-          <>
-            <Card className="ecommerce-card" key={item.name}>
-              <div className="item-img text-center mx-auto">
-                {/* <Link to={`/apps/ecommerce/product-detail/${item.slug}`}> */}
-                <img
-                  width="300"
-                  height="300"
-                  className="img-fluid"
-                  src={`${url}${item.featured_image}`}
-                />
-                {/* </Link> */}
-              </div>
-              <CardBody>
-                <div className="item-wrapper">
-                  <div className="item-rating">
-                    <ul className="unstyled-list list-inline">
-                      {new Array(5).fill().map((listItem, index) => {
-                        return (
-                          <li key={index} className="ratings-list-item me-25">
-                            <Star
-                              className={classnames({
-                                "filled-star": index + 1 <= item.reviews,
-                                "unfilled-star": index + 1 > item.reviews,
-                              })}
-                            />
-                          </li>
-                        );
-                      })}
-                    </ul>
-                  </div>
-                  <div className="item-cost">
-                    <h6 className="item-price">${item.price}</h6>
-                  </div>
-                </div>
-                <h6 className="item-name">
-                  <p className="text-body">{item.name}</p>
-                  <CardText tag="span" className="item-company">
-                    By{" "}
-                    <p className="company-name">
-                      {item.enabled ? "active" : "inactive"}
-                    </p>
-                  </CardText>
-                </h6>
-                <CardText className="item-description">
-                  {item.description}
-                </CardText>
-              </CardBody>
-              <div className="item-options text-center">
-                <div className="item-wrapper">
-                  <div className="item-cost">
-                    <h4 className="item-price">${item.price}</h4>
-                    {/* {item.hasFreeShipping ? (
-                    <CardText className='shipping'>
-                      <Badge color='light-success'>Free Shipping</Badge>
-                    </CardText>
-                  ) : null} */}
-                  </div>
-                </div>
-                {/* <Button
-                className='btn-wishlist'
-                color='light'
-                onClick={() => handleWishlistClick(item.id, item.isInWishlist)}
-              >
-                <Heart
-                  className={classnames('me-50', {
-                    'text-danger': item.isInWishlist
-                  })}
-                  size={14}
-                />
-                <span>Wishlist</span>
-              </Button>
-              <Button
-                color='primary'
-                tag={CartBtnTag}
-                className='btn-cart move-cart'
-                onClick={() => handleCartBtn(item.id, item.isInCart)}
-
-                {...(item.isInCart
-                  ? {
-                      to: '/apps/ecommerce/checkout'
-                    }
-                  : {})}
-               
-              >
-                <ShoppingCart className='me-50' size={14} />
-                <span>{item.isInCart ? 'View In Cart' : 'Add To Cart'}</span>
-              </Button> */}
-              </div>
-            </Card>
-            
-          </>
-        );
-			});
-		}
+										<div className=''>
+											<h6 className=''>By {item.store_name}</h6>
+										</div>
+									</CardBody>
+									<div className='item-options text-center'>
+										<div className='item-wrapper'>
+											<div className='item-cost'>
+												<h4 className='item-price'>$ {item.price}</h4>
+												{item.hasFreeShipping ? (
+													<CardText className='shipping'>
+														<Badge color='light-success'>Free Shipping</Badge>
+													</CardText>
+												) : null}
+											</div>
+										</div>
+									</div>
+								</Card>
+							)}
+						</>
+					);
+				})}
+			</>
+		);
 	};
+
 	return (
-    <>
-      {productsData != undefined && productsData.length != 0 ? (
-        <>
-          <div className="grid-view m-0 p-0">{renderProducts()}</div>
-          <div style={{display: "flex", alignItmes: "center", marginLeft: "50%"}}>
-            <Pagination
-              total={totalPages}
-              handlePagination={(e) =>
-                setCurrentParams({ limit: 9, page: e.selected })
-              }
-            />
-          </div>
-        </>
-      ) : (
-        <Card>
-          <CardBody>No Data Found</CardBody>
-        </Card>
-      )}
-    </>
-  );
-	
+		<>
+			{showDetails && (
+				<ProductDetails
+					data={singleProduct}
+					setShowDetails={setShowDetails}
+				/>
+			)}
+			{!loading && products && (
+				<div
+					className={classnames({
+						"grid-view": activeView === "grid",
+						"list-view": activeView === "list",
+					})}>
+					{renderProducts()}
+				</div>
+			)}
+
+			<div className='text-center'>
+				<Loader loading={loading} />
+			</div>
+			{!loading && !products?.length && <DataNotFound />}
+		</>
+	);
 };
 
 export default ProductCards;

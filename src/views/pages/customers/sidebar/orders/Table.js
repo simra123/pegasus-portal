@@ -6,8 +6,7 @@ import InvoicePreview from "./preview";
 import {
 	Loader,
 	Pagination,
-	DatePicker,
-	ToastAlertError,
+	DataNotFound,
 	SearchFilters,
 } from "../../../reuseable";
 import {
@@ -68,19 +67,19 @@ const OrderTable = (props) => {
 	const getOrders = (start, end, val, page) => {
 		setLoading(true);
 		CoreHttpHandler.request(
-			"sellers",
-			"fetchSellerOrders",
+			"customers",
+			"orders",
 			{
 				...currentParams,
 				filter: val == undefined ? filter : val,
 				searchValue: searchVal,
 				startDate: start,
 				endDate: end,
-				store_id: props.storeId,
+				customer_id: props.id,
 			},
 			(response) => {
 				setLoading(false);
-				const res = response.data.data.orders;
+				const res = response.data.data;
 				setTotalPages(res.totalPages);
 				if (filter == "all" || filter == "") {
 					setData2(res.orders);
@@ -90,10 +89,10 @@ const OrderTable = (props) => {
 			},
 			(failure) => {
 				setLoading(false);
+				console.log(failure);
 			}
 		);
 	};
-
 	const orderStatus = (status) => {
 		switch (status) {
 			case "accepted":
@@ -225,7 +224,7 @@ const OrderTable = (props) => {
 													<td>{order.order_no}</td>
 
 													<td>{order.city}</td>
-													<td>{order.amount}</td>
+													<td>{Number(order.amount) + order.delivery_fees}</td>
 													<td>{moment(order.dt).format("YYYY-MM-DD")}</td>
 													<td>{orderStatus(order.status)}</td>
 													<td>
@@ -247,9 +246,7 @@ const OrderTable = (props) => {
 								</Table>
 							</>
 						) : null}
-						{!loading && !data?.length && (
-							<div className='text-ceter'>No Data Found</div>
-						)}
+						{!loading && !data?.length && <DataNotFound />}
 					</CardBody>
 				</Card>
 			)}

@@ -59,7 +59,7 @@ const InvoicePreview = ({ data, setShowDetails }) => {
 					<Row className='invoice-preview'>
 						<Col sm={12}>
 							<div className='invoice-preview-card'>
-								<div style={{ textAlign: "right", marginBottom: "30px" }}>
+								<div style={{ textAlign: "right", margin: "20px 30px" }}>
 									<X
 										size='15'
 										color='white'
@@ -80,14 +80,12 @@ const InvoicePreview = ({ data, setShowDetails }) => {
 												/>
 											</div>
 											<CardText className='mb-25'>
-												Office 149, 450 South Brand Brooklyn
+												4108 HONEYSUCKLE DR, MCKINNEY, TX 75070
 											</CardText>
-											<CardText className='mb-25'>
-												San Diego County, CA 91905, USA
+											<CardText className='mb-25 text-primary'>
+												support@pegasusdeliveryllc.com
 											</CardText>
-											<CardText className='mb-0'>
-												+1 (123) 456 7891, +44 (876) 543 2198
-											</CardText>
+											<CardText className='mb-0'>4696349501</CardText>
 										</div>
 										<div className='mt-md-0 mt-2'>
 											{/* <h4 className='invoice-title'>

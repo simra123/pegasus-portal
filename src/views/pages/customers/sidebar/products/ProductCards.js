@@ -68,6 +68,7 @@ const ProductCards = (props) => {
 	};
 	// ** Renders products
 	const renderProducts = () => {
+		console.log(products, "pros");
 		return (
 			<>
 				{products.map((item) => {
@@ -89,6 +90,8 @@ const ProductCards = (props) => {
 											src={
 												item.featured_image
 													? `https://upload.its.com.pk/v1/fetch/file/${item.featured_image}`
+													: item.hot_deal_featured_image
+													? `https://upload.its.com.pk/v1/fetch/file/${item.hot_deal_featured_image}`
 													: ProductImage
 											}
 											alt={item.name}
@@ -115,17 +118,28 @@ const ProductCards = (props) => {
 												</ul>
 											</div>
 											<div className='item-cost'>
-												{item.sale_price > 0 ? (
+												{item.sale_price ? (
+													item.sale_price > 0 ? (
+														<h6 className='item-price'>
+															<span style={{ textDecoration: "line-through" }}>
+																${item.price}
+															</span>
+															<span style={{ marginLeft: "5px" }}>
+																${item.sale_price}
+															</span>
+														</h6>
+													) : (
+														<h6 className='item-price  me-1'>${item.price}</h6>
+													)
+												) : (
 													<h6 className='item-price'>
 														<span style={{ textDecoration: "line-through" }}>
-															${item.price}
+															${item.regular_price}
 														</span>
 														<span style={{ marginLeft: "5px" }}>
-															${item.sale_price}
+															${item.deal_price}
 														</span>
 													</h6>
-												) : (
-													<h6 className='item-price  me-1'>${item.price}</h6>
 												)}
 											</div>
 										</div>
@@ -137,7 +151,7 @@ const ProductCards = (props) => {
 													setSingleProdcuct(item);
 												}}
 												to={`/apps/sellers/details`}>
-												{item.name}
+												{item.name ? item.name : item.hot_deal_name}
 											</Link>
 											<CardText
 												tag='span'
@@ -147,7 +161,9 @@ const ProductCards = (props) => {
 													className='company-name'
 													href='/'
 													onClick={(e) => e.preventDefault()}>
-													{item.store_name}
+													{item.store_name
+														? item.store_name
+														: item.products[0].store_name}
 												</a>
 											</CardText>
 										</h6>
@@ -170,7 +186,12 @@ const ProductCards = (props) => {
 											{item?.qty}
 										</CardText>
 										<div className=''>
-											<h6 className=''>By {item.store_name}</h6>
+											<h6 className=''>
+												By{" "}
+												{item.store_name
+													? item.store_name
+													: item.products[0].store_name}
+											</h6>
 										</div>
 									</CardBody>
 									<div className='item-options text-center'>

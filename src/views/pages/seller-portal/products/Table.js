@@ -6,31 +6,29 @@ import { useDispatch, useSelector } from "react-redux";
 import { getAllData, getData } from "@src/views/apps/user/store";
 import CoreHttpHandler from "../../../../http/services/CoreHttpHandler";
 // ** Third Party Components
-import ReactPaginate from "react-paginate";
-import { ChevronDown, Search, Trash } from "react-feather";
-import DataTable from "react-data-table-component";
-import {X} from 'react-feather'
+import { Search, Trash } from "react-feather";
+import { X } from "react-feather";
 // ** Reactstrap Imports
 import {
-  Card,
-  Input,
-  Row,
-  Col,
-  Button,
-  Badge,
-  Table,
-  CardBody,
-  Label,
-  InputGroup,
-  InputGroupText,
+	Card,
+	Input,
+	Row,
+	Col,
+	Button,
+	Badge,
+	Table,
+	CardBody,
+	Label,
+	InputGroup,
+	InputGroupText,
 } from "reactstrap";
 import {
-  Loader,
-  Pagination,
-  DatePicker,
-  ToastAlertError,
-  SearchFilters,
-  LoadingButton,
+	Loader,
+	Pagination,
+	DatePicker,
+	ToastAlertError,
+	SearchFilters,
+	LoadingButton,
 } from "../../reuseable";
 
 // ** Styles
@@ -143,14 +141,13 @@ const ProductsTable = () => {
 	const [sortColumn, setSortColumn] = useState("id");
 	const [data, setData] = useState([]);
 	const [storesData, setStoresData] = useState([]);
-    const [productsData, setProductsData] = useState([]);
+	const [productsData, setProductsData] = useState([]);
 	const [totalPages, setTotalPages] = useState(0);
 	const [currentParams, setCurrentParams] = useState({
-      limit: 10,
-      page: 0,
-    });
-	const [searchVal,setSearchVal] = useState("")
-
+		limit: 10,
+		page: 0,
+	});
+	const [searchVal, setSearchVal] = useState("");
 
 	// ** Renders Role Columns
 	const statusObj = {
@@ -159,94 +156,95 @@ const ProductsTable = () => {
 		inactive: "light-secondary",
 	};
 
-// 	const columns = [
-//     {
-//       name: "Name",
-//       sortable: true,
-//       minWidth: "297px",
-//       sortField: "name",
-//       selector: (row) => row.name,
-//       cell: (row) => (
-//         <div className="d-flex justify-content-left align-items-center">
-//           {/* <img
-//             width="60"
-//             height="35"
-//             className="img-fluid"
-//             src={
-//               row?.attachment?.val[
-//                 row?.attachment["type"]?.findIndex((t) => t == "0")
-//               ]
-//             }
-//           /> */}
-//           <div className="d-flex flex-column">
-//             <span className="fw-bold" style={{ marginLeft: "20px" }}>
-//               {row.name}
-//             </span>
-//           </div>
-//         </div>
-//       ),
-//     },
-//     {
-//       name: "Product Category",
-//       sortable: true,
-//       minWidth: "220px",
-//       sortField: "product_category",
-//       selector: (row) => row.product_category,
-//       cell: (row) => (
-//         <span style={{ marginLeft: "30px" }}>{row.product_category}</span>
-//       ),
-//     },
-//     {
-//       name: "Date",
-//       sortable: true,
-//       minWidth: "180px",
-//       sortField: "dt",
-//       selector: (row) => row.dt,
-//       cell: (row) => <span>{moment(row.dt).format("DD-MM-YY, h:mm a")}</span>,
-//     },
-//     {
-//       name: "Status",
-//       sortable: true,
-//       minWidth: "150px",
-//       sortField: "enabled",
-//       selector: (row) => (row.enabled == false ? "pending" : ""),
-//       cell: (row) => (
-//         <Badge
-//           className="text-capitalize"
-//           color={row.enabled == false ? statusObj["pending"] : ""}
-//           pill
-//         >
-//           {row.enabled == false ? "pending" : "Pending"}
-//         </Badge>
-//       ),
-//     },
-//     {
-//       name: "Details",
-//       minWidth: "50px",
-//       cell: (row) => (
-//         <Link
-//           to={{
-//             pathname: `/apps/product/edit/9`,
-//             state: { id: 1, name: "sabaoon", shirt: "green" },
-//           }}
-//         >
-//           <Button color="danger" size="sm" onClick={(e) => {}}>
-//             Edit
-//           </Button>
-//         </Link>
-//       ),
-//     },
-//   ];
+	// 	const columns = [
+	//     {
+	//       name: "Name",
+	//       sortable: true,
+	//       minWidth: "297px",
+	//       sortField: "name",
+	//       selector: (row) => row.name,
+	//       cell: (row) => (
+	//         <div className="d-flex justify-content-left align-items-center">
+	//           {/* <img
+	//             width="60"
+	//             height="35"
+	//             className="img-fluid"
+	//             src={
+	//               row?.attachment?.val[
+	//                 row?.attachment["type"]?.findIndex((t) => t == "0")
+	//               ]
+	//             }
+	//           /> */}
+	//           <div className="d-flex flex-column">
+	//             <span className="fw-bold" style={{ marginLeft: "20px" }}>
+	//               {row.name}
+	//             </span>
+	//           </div>
+	//         </div>
+	//       ),
+	//     },
+	//     {
+	//       name: "Product Category",
+	//       sortable: true,
+	//       minWidth: "220px",
+	//       sortField: "product_category",
+	//       selector: (row) => row.product_category,
+	//       cell: (row) => (
+	//         <span style={{ marginLeft: "30px" }}>{row.product_category}</span>
+	//       ),
+	//     },
+	//     {
+	//       name: "Date",
+	//       sortable: true,
+	//       minWidth: "180px",
+	//       sortField: "dt",
+	//       selector: (row) => row.dt,
+	//       cell: (row) => <span>{moment(row.dt).format("DD-MM-YY, h:mm a")}</span>,
+	//     },
+	//     {
+	//       name: "Status",
+	//       sortable: true,
+	//       minWidth: "150px",
+	//       sortField: "enabled",
+	//       selector: (row) => (row.enabled == false ? "pending" : ""),
+	//       cell: (row) => (
+	//         <Badge
+	//           className="text-capitalize"
+	//           color={row.enabled == false ? statusObj["pending"] : ""}
+	//           pill
+	//         >
+	//           {row.enabled == false ? "pending" : "Pending"}
+	//         </Badge>
+	//       ),
+	//     },
+	//     {
+	//       name: "Details",
+	//       minWidth: "50px",
+	//       cell: (row) => (
+	//         <Link
+	//           to={{
+	//             pathname: `/apps/product/edit/9`,
+	//             state: { id: 1, name: "sabaoon", shirt: "green" },
+	//           }}
+	//         >
+	//           <Button color="danger" size="sm" onClick={(e) => {}}>
+	//             Edit
+	//           </Button>
+	//         </Link>
+	//       ),
+	//     },
+	//   ];
 
 	useEffect(() => {
-      	if(searchVal == ""){
-        	getUsersData();
-		}else{
+		if (searchVal == "") {
+			getUsersData();
+		} else {
 			onClickSearch();
 		}
-    }, [currentParams]);
+	}, [currentParams]);
 
 	const getUsersData = () => {
+		setLoading(true);
 		CoreHttpHandler.request(
 			"products",
 			"fetch",
@@ -254,12 +252,10 @@ const ProductsTable = () => {
 				...currentParams,
 			},
 			(response) => {
-        setLoading(false);
-        console.log("dlldld", response.data.data.data.totalPages);
-        setTotalPages(response.data.data.data.totalPages);
-        console.log(response.data.data.data, "all");
-        setData(response.data.data.data.product);
-      },
+				setLoading(false);
+				setTotalPages(response.data.data.data.totalPages);
+				setData(response.data.data.data.product);
+			},
 			(failure) => {}
 		);
 	};
@@ -331,30 +327,6 @@ const ProductsTable = () => {
 		);
 	};
 
-	// ** Custom Pagination
-	const CustomPagination = () => {
-		const count = Number(Math.ceil(store.total / rowsPerPage));
-
-		return (
-			<ReactPaginate
-				previousLabel={""}
-				nextLabel={""}
-				pageCount={count || 1}
-				activeClassName='active'
-				forcePage={currentPage !== 0 ? currentPage - 1 : 0}
-				onPageChange={(page) => handlePagination(page)}
-				pageClassName={"page-item"}
-				nextLinkClassName={"page-link"}
-				nextClassName={"page-item next"}
-				previousClassName={"page-item prev"}
-				previousLinkClassName={"page-link"}
-				pageLinkClassName={"page-link"}
-				containerClassName={
-					"pagination react-paginate justify-content-end my-2 pe-1"
-				}
-			/>
-		);
-	};
 	// ** Table data to render
 	const dataToRender = () => {
 		return data.product;
@@ -392,13 +364,12 @@ const ProductsTable = () => {
 		);
 	};
 
-	const Remove = (e) =>{
-		
+	const Remove = (e) => {
 		CoreHttpHandler.request(
 			"products",
 			"delete",
 			{
-				product_id: e.id	
+				product_id: e.id,
 			},
 			(response) => {
 				Swal.fire({
@@ -417,175 +388,172 @@ const ProductsTable = () => {
 			},
 			(failure) => {}
 		);
-	}
+	};
 
-	const onClickSearch = (page) =>{
-		
-		if(page == 0){
+	const onClickSearch = (page) => {
+		if (page == 0) {
 			setCurrentPage({
 				limit: 10,
 				page: 0,
-			})
+			});
 		}
+		setLoading(true);
 		CoreHttpHandler.request(
-          "products",
-          "search",
-          {
-            page : page == 0 ? 0 : currentParams.page,
-			limit : currentParams.limit,
-			name: searchVal
-          },
-          (response) => {
-            setLoading(false);
-			const res = response.data.data.data.data;
-		console.log(res,'ssdd')
-		setTotalPages(response.data.data.data.totalPages);
-		 setData(res);
-          },
-          (failure) => {}
-        );
-	}
+			"products",
+			"search",
+			{
+				page: page == 0 ? 0 : currentParams.page,
+				limit: currentParams.limit,
+				name: searchVal,
+			},
+			(response) => {
+				setLoading(false);
+				const res = response.data.data.data.data;
+				setTotalPages(response.data.data.data.totalPages);
+				setData(res);
+			},
+			(failure) => {}
+		);
+	};
 
 	return (
-    <>
-      {/* <SearchFilters
-            filter={filter}
-            setFilter={setFilter}
-            setSearchVal={setSearchVal}
-            searchVal={searchVal}
-            getData={getUsersData}
-            data2={data2}
-            handleFilter={handleFilter}
-            setPicker={setPicker}
-            picker={picker}
-            setData={setData}
-            tempTotal={tempTotal}
-            setTotalPages={setTotalPages}
-          /> */}
-      <Row className="mt-1">
-        <Col sm="12">
-          <h3 className="mt-50">Products</h3>
-        </Col>
-        <Col sm="3" style={{ marginLeft: "auto" }}>
-          <InputGroup className="input-group-merge">
-            <Input
-              className="search-product"
-              placeholder="Search Product"
-              value={searchVal}
-              onChange={(e) => setSearchVal(e.target.value)}
-            />
-            <InputGroupText>
-              <X style={{cursor: "pointer"}} onClick={()=> {
-				getUsersData()
-				setSearchVal("")
-			  }} className="text-muted" size={14} />
-            </InputGroupText>
-          </InputGroup>
-        </Col>
-        <Col sm="1">
-          <LoadingButton
-            type="submit"
-            color="primary"
-            text="Submit"
-            // block={true}
-            loading={loading}
-            style={{ marginRight: "200px" }}
-            onClick={() => onClickSearch(0)}
-          />
+		<>
+			<h3 className='mt-50'>Products</h3>
 
-        </Col>
-      </Row>
-      <br />
-      {!loading && data ? (
-        <Table striped responsive className="border-none">
-          <thead>
-            <tr style={{ fontSize: "11px" }}>
-              <th>SN</th>
-              <th>Name</th>
-              <th>Category</th>
-              <th>Date</th>
-              <th>Status</th>
-              <th>Details</th>
-              <th>Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            {data?.map((p, index) => {
-              return (
-                <tr key={p.id}>
-                  <td>{index + 1}</td>
+			<Row className='mt-1 justify-content-end'>
+				<Col sm='3'>
+					<InputGroup className='input-group-merge'>
+						<Input
+							className='search-product'
+							placeholder='Search Product'
+							value={searchVal}
+							onChange={(e) => setSearchVal(e.target.value)}
+						/>
+						<InputGroupText>
+							{searchVal.length > 0 && (
+								<X
+									style={{ cursor: "pointer" }}
+									onClick={() => {
+										getUsersData();
+										setSearchVal("");
+									}}
+									className='text-muted'
+									size={14}
+								/>
+							)}
+						</InputGroupText>
+					</InputGroup>
+				</Col>
+				<Col sm='1'>
+					<Button
+						className='text-primary cursor-pointer'
+						onClick={() => onClickSearch(0)}
+						size='sm'
+						color='primary'
+						style={{ height: "35px" }}>
+						<Search size={15} />
+					</Button>
+				</Col>
+			</Row>
+			<br />
+			{!loading && data ? (
+				<Table
+					striped
+					responsive
+					className='border-none'>
+					<thead>
+						<tr style={{ fontSize: "11px" }}>
+							<th>SN</th>
+							<th>Name</th>
+							<th>Category</th>
+							<th>Date</th>
+							<th>Status</th>
+							<th>Details</th>
+							<th>Actions</th>
+						</tr>
+					</thead>
+					<tbody>
+						{data?.map((p, index) => {
+							return (
+								<tr key={p.id}>
+									<td>{index + 1}</td>
 
-                  <td>{p.name}</td>
-                  <td>{p.product_category}</td>
-                  <td>{moment(p.dt).format("YYYY-MM-DD")}</td>
-                  <td>
-                    {p.enabled ? (
-                      <Badge pill color="light-primary" className="mr-1">
-                        Active
-                      </Badge>
-                    ) : (
-                      <Badge pill color="light-danger" className="mr-1">
-                        Pending
-                      </Badge>
-                    )}
-                  </td>
-                  <td>
-                    {" "}
-                    <Link
-                      to={{
-                        pathname: `/apps/product/edit/${p.id}`,
-                        state:
-                          p["attachment"][0]?.url != null
-                            ? { ...p, type: "Edit" }
-                            : { ...p, type: "Edit", attachment: [] },
-                      }}
-                    >
-                      <Button color="primary" size="sm">
-                        Edit
-                      </Button>
-                    </Link>
-                  </td>
-                  <td onClick={() => Remove(p)}>
-                    <Trash
-                      size={18}
-                      style={{ marginLeft: "20px", cursor: "pointer" }}
-                    />
-                  </td>
-                </tr>
-              );
-            })}
-          </tbody>
-        </Table>
-      ) : null}
-      {!loading && !data?.length && (
-        <div className="text-ceter">No Data Found</div>
-      )}
-      <Loader loading={loading} />
-      <MdAddCircle
-        color="#f3ac3b"
-        size="35"
-        style={{
-          cursor: "pointer",
-          float: "right",
-          marginRight: "20px",
-        }}
-        // onClick={() => setShowCreate(true)}
-      />
-
-      <Pagination
-        total={totalPages}
-        handlePagination={(e) =>
-          setCurrentParams({ limit: 10, page: e.selected })
-        }
-      />
-      <Link
-        to={{
-          pathname: `/apps/product/add`,
-          state: { type: "Add", attachment: [] },
-        }}
-      ></Link>
-    </>
-  );
+									<td>{p.name}</td>
+									<td>{p.product_category}</td>
+									<td>{moment(p.dt).format("YYYY-MM-DD")}</td>
+									<td>
+										{p.enabled ? (
+											<Badge
+												pill
+												color='light-primary'
+												className='mr-1'>
+												Active
+											</Badge>
+										) : (
+											<Badge
+												pill
+												color='light-danger'
+												className='mr-1'>
+												Pending
+											</Badge>
+										)}
+									</td>
+									<td>
+										{" "}
+										<Link
+											to={{
+												pathname: `/apps/product/edit/${p.id}`,
+												state:
+													p["attachment"][0]?.url != null
+														? { ...p, type: "Edit" }
+														: { ...p, type: "Edit", attachment: [] },
+											}}>
+											<Button
+												color='primary'
+												size='sm'>
+												Edit
+											</Button>
+										</Link>
+									</td>
+									<td onClick={() => Remove(p)}>
+										<Trash
+											size={18}
+											style={{ marginLeft: "20px", cursor: "pointer" }}
+										/>
+									</td>
+								</tr>
+							);
+						})}
+					</tbody>
+				</Table>
+			) : null}
+			{!loading && !data?.length && (
+				<div className='text-ceter'>No Data Found</div>
+			)}
+			<Loader loading={loading} />
+			<MdAddCircle
+				color='#f3ac3b'
+				size='35'
+				style={{
+					cursor: "pointer",
+					float: "right",
+					marginRight: "20px",
+				}}
+				// onClick={() => setShowCreate(true)}
+			/>
+			<Pagination
+				total={totalPages}
+				handlePagination={(e) =>
+					setCurrentParams({ limit: 10, page: e.selected })
+				}
+			/>
+			<Link
+				to={{
+					pathname: `/apps/product/add`,
+					state: { type: "Add", attachment: [] },
+				}}></Link>
+		</>
+	);
 };
 
 export default ProductsTable;

@@ -65,11 +65,6 @@ const CreateProduct = ({ storeId, setShowCreate, getProducts }) => {
 	const [indexs, setIndexs] = useState([]);
 	const paraToHtml = stateToHTML(content.getCurrentContent());
 
-	// useEffect(() => {
-	// 	if (files) {
-	// 		files.map((val, index) => {});
-	// 	}
-	// }, [files]);
 	const onChange = (e, i) => {
 		let arrUpload = [...files];
 
@@ -137,7 +132,6 @@ const CreateProduct = ({ storeId, setShowCreate, getProducts }) => {
 		pathArr.push(e.target.files[0].name);
 
 		setImgPath(pathArr);
-		console.log(pathArr, "image naes");
 		reader.onload = function () {
 			let arr = [];
 			arr = [...featuredImg];

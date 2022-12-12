@@ -29,7 +29,7 @@ import moment from "moment";
 import CoreHttpHandler from "../../../../../http/services/CoreHttpHandler";
 import ContentUploadHandler from "../../../../../http/services/ContentUploadHandler";
 import Swal from "sweetalert2";
-import { ToastAlertError } from "../../../reuseable";
+import { DefaultUser, ToastAlertError } from "../../../reuseable";
 import Flatpickr from "flatpickr";
 // ** Demo Components
 
@@ -58,7 +58,6 @@ const AccountTabs = (props) => {
 		formState: { errors },
 	} = useForm({ defaultValues });
 
-	console.log(data, "state");
 	// ** States
 	const [avatar, setAvatar] = useState("");
 	const [status, setStatus] = useState("");
@@ -201,9 +200,9 @@ const AccountTabs = (props) => {
 									<img
 										className='rounded me-50'
 										src={
-											avatar == ""
-												? `https://upload.its.com.pk/v1/fetch/file/${data?.image}`
-												: avatar
+											avatar
+												? avatar
+												: `https://upload.its.com.pk/v1/fetch/file/${data?.image}`
 										}
 										alt='Generic placeholder image'
 										height='100'
