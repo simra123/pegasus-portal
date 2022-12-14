@@ -5,7 +5,7 @@ import { useEffect } from 'react';
 import WebSocket from "./views/socket/WebSocket";
 import { ToastSuccess } from "./views/pages/reuseable";
 import { useDispatch, useSelector } from 'react-redux';
-import { setNotificationNumber } from './redux/portalData';
+import { setNotificationData, setNotificationNumber } from './redux/portalData';
 import CoreHttpHandler from './http/services/CoreHttpHandler';
 import { createBrowserHistory } from "history";
 
@@ -19,13 +19,15 @@ const App = () => {
 
     useEffect(()=>{
       socket?.on("notification", data =>{
-        ToastSuccess(
-          "Success",
-          "You Have a new Order"
-        );
-        console.log(state.notification_number, "nottii");
-        dispatch(setNotificationNumber(data["notification_number"] + 1))
+        
+        if(state.notification_data.length != 0 &&  state.notification_data[0].order_id == data.order_id){
+        
+        }else{
+          ToastSuccess("Success", "You Have a new Order");
 
+        }
+        dispatch(setNotificationData(data));
+        dispatch(setNotificationNumber(data["notification_number"] + 1))
       })
       
     },[])

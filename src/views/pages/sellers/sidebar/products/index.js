@@ -21,7 +21,10 @@ const ProductsPage = (props) => {
 		limit: 6,
 		page: 0,
 	});
+	console.log(props,'propss')
 	const [totalPages, setTotalPages] = useState(0);
+	const [type,setType] = useState("create")
+	const [productItem,setProductItem] = useState([])
 
 	const {
 		store,
@@ -50,6 +53,7 @@ const ProductsPage = (props) => {
 		}
 	};
 	const getStoreProducts = () => {
+		console.log('hmhmhmhdfwwe')
 		setLoading(true);
 		CoreHttpHandler.request(
 			"stores",
@@ -64,13 +68,14 @@ const ProductsPage = (props) => {
 				setProducts(res.product);
 				setLoading(false);
 				setTotalPages(res.totalPages);
-				console.log(res.totalPages);
+				// console.log(res.totalPages);
 			},
 			(failure) => {
 				setLoading(false);
 			}
 		);
 	};
+
 	useEffect(() => {
 		getStoreProducts();
 	}, [currentParams]);
@@ -136,6 +141,10 @@ const ProductsPage = (props) => {
 						addToWishlist={addToWishlist}
 						deleteCartItem={deleteCartItem}
 						deleteWishlistItem={deleteWishlistItem}
+						setType={setType}
+						setShowCreate={setShowCreate}
+						setProductItem={setProductItem}
+						storeId={storeId}
 					/>
 					<Pagination
 						total={totalPages}
@@ -150,6 +159,11 @@ const ProductsPage = (props) => {
 					storeId={storeId}
 					setShowCreate={setShowCreate}
 					getProducts={getStoreProducts}
+					type={type}
+					sellerData={props.sellerData.id}
+					productItem={productItem}
+					setProductItem={setProductItem}
+					setType={setType}
 				/>
 			)}
 		</>

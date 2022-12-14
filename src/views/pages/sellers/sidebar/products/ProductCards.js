@@ -15,13 +15,15 @@ import { Card, CardBody, CardText, Button, Badge } from "reactstrap";
 import "@styles/react/apps/app-ecommerce.scss";
 import { RiDeleteBin7Line } from "react-icons/ri";
 import CoreHttpHandler from "../../../../../http/services/CoreHttpHandler";
+import { BiPencil } from "react-icons/bi";
 const ProductCards = (props) => {
   const [showDetails, setShowDetails] = useState(false);
   const [singleProduct, setSingleProdcuct] = useState({});
   // ** Props
 
-  const { products, activeView, getProducts, loading } = props;
+  const { products, activeView, getProducts, loading,setType,setShowCreate, setProductItem, storeId } = props;
   const MySwal = withReactContent(Swal);
+
 
   const deleteProduct = (item) => {
     MySwal.fire({
@@ -43,6 +45,7 @@ const ProductCards = (props) => {
             "products",
             "delete",
             {
+              store_id: storeId,
               product_id: item.id,
             },
             (response) => {
@@ -61,6 +64,12 @@ const ProductCards = (props) => {
       (error) => {}
     );
   };
+
+  const editProduct = (item) => {
+    setShowCreate(true)
+    setType("edit")
+    setProductItem(item)
+  }
   // ** Renders products
   const renderProducts = () => {
     return (
@@ -71,7 +80,9 @@ const ProductCards = (props) => {
             <>
               {!showDetails && (
                 <Card className="ecommerce-card" key={item.id}>
-                  <div className="item-img text-center mx-auto">
+                  <div
+                    className="item-img text-center mx-auto"
+                    style={{ cursor: "pointer" }}>
                     <img
                       onClick={() => {
                         setShowDetails(true);
@@ -143,8 +154,13 @@ const ProductCards = (props) => {
                       tag="span"
                       className="text-primary"
                       style={{ float: "right" }}>
-                      <RiDeleteBin7Line
+                      <BiPencil
                         style={{ cursor: "pointer" }}
+                        size={20}
+                        onClick={() => editProduct(item)}
+                      />
+                      <RiDeleteBin7Line
+                        style={{ cursor: "pointer", marginLeft: "15px" }}
                         size={20}
                         onClick={() => deleteProduct(item)}
                       />

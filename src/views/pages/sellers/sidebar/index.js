@@ -72,6 +72,7 @@ const Shop = () => {
 							setSidebarOpen={setSidebarOpen}
 							deleteCartItem={deleteCartItem}
 							deleteWishlistItem={deleteWishlistItem}
+							sellerData={sellerData}
 						/>
 					) : activeTab === "profile" ? (
 						<Profile

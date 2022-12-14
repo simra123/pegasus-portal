@@ -77,7 +77,7 @@ const VerticalNavMenuLink = ({
         {item.id == "orders" ? (
           <>
             <span className="menu-item text-truncate">{t(item.title)}</span>{" "}
-            {store.notification_number != 0 ? (
+            {store.notification_number != 0 && store.notification_number != undefined ? (
               <span
                 style={{
                   marginTop: "4px",

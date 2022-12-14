@@ -77,7 +77,7 @@ const ProductCards = (props) => {
 								<Card
 									className='ecommerce-card'
 									key={item.id}>
-									<div className='item-img text-center mx-auto'>
+									<div className='item-img text-center mx-auto' style={{cursor: "pointer"}}>
 										<img
 											onClick={() => {
 												setShowDetails(true);

@@ -148,6 +148,7 @@ const ProductsTable = () => {
 		page: 0,
 	});
 	const [searchVal, setSearchVal] = useState("");
+	const [showCreate,setShowCreate] = useState(false)
 
 	// ** Renders Role Columns
 	const statusObj = {
@@ -417,143 +418,134 @@ const ProductsTable = () => {
 	};
 
 	return (
-		<>
-			<h3 className='mt-50'>Products</h3>
+    <>
+      <h3 className="mt-50">Products</h3>
 
-			<Row className='mt-1 justify-content-end'>
-				<Col sm='3'>
-					<InputGroup className='input-group-merge'>
-						<Input
-							className='search-product'
-							placeholder='Search Product'
-							value={searchVal}
-							onChange={(e) => setSearchVal(e.target.value)}
-						/>
-						<InputGroupText>
-							{searchVal.length > 0 && (
-								<X
-									style={{ cursor: "pointer" }}
-									onClick={() => {
-										getUsersData();
-										setSearchVal("");
-									}}
-									className='text-muted'
-									size={14}
-								/>
-							)}
-						</InputGroupText>
-					</InputGroup>
-				</Col>
-				<Col sm='1'>
-					<Button
-						className='text-primary cursor-pointer'
-						onClick={() => onClickSearch(0)}
-						size='sm'
-						color='primary'
-						style={{ height: "35px" }}>
-						<Search size={15} />
-					</Button>
-				</Col>
-			</Row>
-			<br />
-			{!loading && data ? (
-				<Table
-					striped
-					responsive
-					className='border-none'>
-					<thead>
-						<tr style={{ fontSize: "11px" }}>
-							<th>SN</th>
-							<th>Name</th>
-							<th>Category</th>
-							<th>Date</th>
-							<th>Status</th>
-							<th>Details</th>
-							<th>Actions</th>
-						</tr>
-					</thead>
-					<tbody>
-						{data?.map((p, index) => {
-							return (
-								<tr key={p.id}>
-									<td>{index + 1}</td>
+      <Row className="mt-1 justify-content-end">
+        <Col sm="3">
+          <InputGroup className="input-group-merge">
+            <Input
+              className="search-product"
+              placeholder="Search Product"
+              value={searchVal}
+              onChange={(e) => setSearchVal(e.target.value)}
+            />
+            <InputGroupText>
+              {searchVal.length > 0 && (
+                <X
+                  style={{ cursor: "pointer" }}
+                  onClick={() => {
+                    getUsersData();
+                    setSearchVal("");
+                  }}
+                  className="text-muted"
+                  size={14}
+                />
+              )}
+            </InputGroupText>
+          </InputGroup>
+        </Col>
+        <Col sm="1">
+          <Button
+            className="text-primary cursor-pointer"
+            onClick={() => onClickSearch(0)}
+            size="sm"
+            color="primary"
+            style={{ height: "35px" }}>
+            <Search size={15} />
+          </Button>
+        </Col>
+      </Row>
+      <br />
+      {!loading && data ? (
+        <Table striped responsive className="border-none">
+          <thead>
+            <tr style={{ fontSize: "11px" }}>
+              <th>SN</th>
+              <th>Name</th>
+              <th>Category</th>
+              <th>Date</th>
+              <th>Status</th>
+              <th>Details</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            {data?.map((p, index) => {
+              return (
+                <tr key={p.id}>
+                  <td>{index + 1}</td>
 
-									<td>{p.name}</td>
-									<td>{p.product_category}</td>
-									<td>{moment(p.dt).format("YYYY-MM-DD")}</td>
-									<td>
-										{p.enabled ? (
-											<Badge
-												pill
-												color='light-primary'
-												className='mr-1'>
-												Active
-											</Badge>
-										) : (
-											<Badge
-												pill
-												color='light-danger'
-												className='mr-1'>
-												Pending
-											</Badge>
-										)}
-									</td>
-									<td>
-										{" "}
-										<Link
-											to={{
-												pathname: `/apps/product/edit/${p.id}`,
-												state:
-													p["attachment"][0]?.url != null
-														? { ...p, type: "Edit" }
-														: { ...p, type: "Edit", attachment: [] },
-											}}>
-											<Button
-												color='primary'
-												size='sm'>
-												Edit
-											</Button>
-										</Link>
-									</td>
-									<td onClick={() => Remove(p)}>
-										<Trash
-											size={18}
-											style={{ marginLeft: "20px", cursor: "pointer" }}
-										/>
-									</td>
-								</tr>
-							);
-						})}
-					</tbody>
-				</Table>
-			) : null}
-			{!loading && !data?.length && (
-				<div className='text-ceter'>No Data Found</div>
-			)}
-			<Loader loading={loading} />
-			<MdAddCircle
-				color='#f3ac3b'
-				size='35'
-				style={{
-					cursor: "pointer",
-					float: "right",
-					marginRight: "20px",
-				}}
-				// onClick={() => setShowCreate(true)}
-			/>
-			<Pagination
-				total={totalPages}
-				handlePagination={(e) =>
-					setCurrentParams({ limit: 10, page: e.selected })
-				}
-			/>
-			<Link
-				to={{
-					pathname: `/apps/product/add`,
-					state: { type: "Add", attachment: [] },
-				}}></Link>
-		</>
-	);
+                  <td>{p.name}</td>
+                  <td>{p.product_category}</td>
+                  <td>{moment(p.dt).format("YYYY-MM-DD")}</td>
+                  <td>
+                    {p.enabled ? (
+                      <Badge pill color="light-primary" className="mr-1">
+                        Active
+                      </Badge>
+                    ) : (
+                      <Badge pill color="light-danger" className="mr-1">
+                        Pending
+                      </Badge>
+                    )}
+                  </td>
+                  <td>
+                    {" "}
+                    <Link
+                      to={{
+                        pathname: `/apps/product/edit/${p.id}`,
+                        state:
+                          p["attachment"][0]?.url != null
+                            ? { ...p, type: "Edit" }
+                            : { ...p, type: "Edit", attachment: [] },
+                      }}>
+                      <Button color="primary" size="sm">
+                        Edit
+                      </Button>
+                    </Link>
+                  </td>
+                  <td onClick={() => Remove(p)}>
+                    <Trash
+                      size={18}
+                      style={{ marginLeft: "20px", cursor: "pointer" }}
+                    />
+                  </td>
+                </tr>
+              );
+            })}
+          </tbody>
+        </Table>
+      ) : null}
+      {!loading && !data?.length && (
+        <div className="text-ceter">No Data Found</div>
+      )}
+      <Loader loading={loading} />
+
+      <Pagination
+        total={totalPages}
+        handlePagination={(e) =>
+          setCurrentParams({ limit: 10, page: e.selected })
+        }
+      />
+      <Link
+        to={{
+          pathname: `/apps/product/add`,
+          state: { type: "Add", attachment: [] },
+        }}>
+        <MdAddCircle
+          color="#f3ac3b"
+          size="35"
+          style={{
+            cursor: "pointer",
+            float: "right",
+            marginRight: "20px",
+          }}
+          onClick={() => setShowCreate(true)}
+        />
+      </Link>
+    </>
+  );
 };
 
 export default ProductsTable;
