@@ -109,7 +109,7 @@ const Login = () => {
 		setLoading(false);
 		ToastSuccess(
 			`Welcome ${data.data.data.user?.username}`,
-			`You have successfully logged in as to Golive. Now you can
+			`You have successfully logged in as to Pegasus. Now you can
 		start to explore. Enjoy!`
 		);
 		const { token, user, acl } = data.data.data;

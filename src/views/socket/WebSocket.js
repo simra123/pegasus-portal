@@ -1,9 +1,9 @@
-import io from 'socket.io-client';
-import React from 'react';
-const URL = 'https://marketplace-be.uatlink.com/';
+import io from "socket.io-client";
+import React from "react";
+const URL = "https://marketplace-be.uatlink.com/";
 
 const getToken = () => {
-	return localStorage.getItem('user_token');
+	return localStorage.getItem("user_token");
 };
 
 class WebSocket {
@@ -13,16 +13,16 @@ class WebSocket {
 		if (getToken()) {
 			if (!WebSocket.socket) {
 				WebSocket.socket = io(URL, {
-					transports: ['websocket', 'polling'],
+					transports: ["websocket", "polling"],
 					query: {
-						token: getToken()
-					}
+						token: getToken(),
+					},
 				});
 			}
 			check = true;
-			WebSocket.socket.on('connect', () => {});
+			WebSocket.socket.on("connect", () => {});
 
-			WebSocket.socket.on('disconnect', () => {
+			WebSocket.socket.on("disconnect", () => {
 				WebSocket.socket = null;
 			});
 		}

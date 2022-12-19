@@ -55,87 +55,81 @@ const ProductDetails = ({ data, setShowDetails }) => {
 								//	pagination={pagination}
 								modules={[FreeMode, Navigation, Thumbs, Pagination]}
 								className='mySwiper2'>
-								{data?.featured_image && (
+								{data?.featured_image ? (
 									<SwiperSlide>
 										<img
-											style={{ width: "100%", height: "auto" }}
+											loading='lazy'
+											style={{ width: "100%", height: "300px" }}
 											alt='featured image'
-											src={
-												data?.featured_image
-													? `https://upload.its.com.pk/v1/fetch/file/${data?.featured_image}`
-													: ProductImage
-											}
+											src={`https://upload.its.com.pk/${data?.featured_image}`}
 										/>
 									</SwiperSlide>
-								)}
-								{data?.attachment
-									? data?.attachment.map((val) => {
+								) : null}
+								{data?.attachment?.length
+									? data?.attachment?.map((val) => {
 											return (
+												<>
+													{val.url && (
+														<SwiperSlide key={val.id}>
+															<img
+																loading='lazy'
+																style={{ width: "100%", height: "300px" }}
+																alt='featured image'
+																src={`https://upload.its.com.pk/${val.url}`}
+															/>
+														</SwiperSlide>
+													)}
+												</>
+											);
+									  })
+									: null}
+							</Swiper>
+							{data.attachment?.length
+								? data.attachment[0].url && (
+										<Swiper
+											onSwiper={setThumbsSwiper}
+											loop={false}
+											spaceBetween={3}
+											slidesPerView={4}
+											freeMode={true}
+											style={{ marginTop: "10px" }}
+											modules={[FreeMode, Navigation, Thumbs]}
+											className='mySwiper'>
+											{data?.featured_image && (
 												<SwiperSlide>
 													<img
-														style={{ width: "100%", height: "auto" }}
+														loading='lazy'
+														style={{ width: "100px", height: "100px" }}
 														alt='featured image'
-														src={
-															val?.url
-																? `https://upload.its.com.pk/v1/fetch/file/${val?.url}`
-																: ProductImage
-														}
+														src={`https://upload.its.com.pk/${data?.featured_image}`}
 													/>
 												</SwiperSlide>
-											);
-									  })
-									: null}
-							</Swiper>
-							<Swiper
-								onSwiper={setThumbsSwiper}
-								loop={true}
-								spaceBetween={10}
-								slidesPerView={4}
-								freeMode={true}
-								style={{ marginTop: "10px" }}
-								watchSlidesProgress={true}
-								modules={[FreeMode, Navigation, Thumbs]}
-								className='mySwiper'>
-								{data?.featured_image && (
-									<SwiperSlide>
-										<img
-											style={{ width: "100%", height: "auto" }}
-											alt='featured image'
-											src={
-												data?.featured_image
-													? `https://upload.its.com.pk/v1/fetch/file/${data?.featured_image}`
-													: ProductImage
-											}
-										/>
-									</SwiperSlide>
-								)}
-								{data?.attachment?.length > 0
-									? data?.attachment.map((val) => {
-											return (
-												<SwiperSlide key={val.id}>
-													<img
-														style={{ width: "100%", height: "auto" }}
-														alt='featured image'
-														src={
-															val?.url
-																? `https://upload.its.com.pk/v1/fetch/file/${val?.url}`
-																: ProductImage
-														}
-													/>
-												</SwiperSlide>
-											);
-									  })
-									: null}
-							</Swiper>
-							{/* <img
-								className='img-fluid product-img'
-								src={
-									data.featured_image
-										? `https://upload.its.com.pk/v1/fetch/file/${data.featured_image}`
-										: ProductImage
-								}
-								alt={data.name}
-							/> */}
+											)}
+											{data?.attachment
+												? data?.attachment.map((val) => {
+														return (
+															<>
+																{val.url && (
+																	<SwiperSlide key={val.id}>
+																		<img
+																			loading='lazy'
+																			style={{
+																				marginLeft: "15px",
+																				width: "100px",
+																				height: "100px",
+																			}}
+																			alt='featured image'
+																			src={`https://upload.its.com.pk/${val.url}`}
+																		/>
+																	</SwiperSlide>
+																)}
+															</>
+														);
+												  })
+												: null}
+										</Swiper>
+								  )
+								: null}
 						</div>
 					</Col>
 					<Col

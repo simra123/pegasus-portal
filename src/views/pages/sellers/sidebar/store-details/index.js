@@ -1,8 +1,6 @@
 // ** React Imports
 import { useState, Fragment } from "react";
-import logo from "@src/assets/images/logo/logo.png";
-import Editor from "../../../../components/Editor";
-
+import { TextEditor } from "../../../reuseable";
 // ** Reactstrap Imports
 import {
 	Row,
@@ -21,6 +19,7 @@ import {
 
 // ** Third Party Components
 import Swal from "sweetalert2";
+import { EditorState, ContentState } from "draft-js";
 import Select from "react-select";
 import { Check, Briefcase, X } from "react-feather";
 import { useForm, Controller } from "react-hook-form";
@@ -77,13 +76,19 @@ const languageOptions = [
 
 const MySwal = withReactContent(Swal);
 
-
 const UserInfoCard = (props) => {
 	const { data, setData } = props;
 	// ** State
 	const [show, setShow] = useState(false);
 	const [avatar, setAvatar] = useState("");
-	const [bodyContentEnglish, setBodyContentEnglish] = useState(data?.description);
+
+	const [content, setContent] = useState(
+		data == undefined || data.description == null
+			? EditorState.createEmpty()
+			: EditorState.createWithContent(
+					ContentState.createFromText(data?.description)
+			  )
+	);
 
 	// ** Hook
 	const {
@@ -100,236 +105,236 @@ const UserInfoCard = (props) => {
 			type: data?.type,
 			number: data?.store_number,
 			description: data?.description,
-			location: data?.location
+			location: data?.location,
 		},
 	});
 
 	const categoryOptions = [
-    { value: "vape", label: "Vape" },
-    { value: "e-cigs", label: "E-cigs" },
-  ];
-
+		{ value: "vape", label: "Vape" },
+		{ value: "e-cigs", label: "E-cigs" },
+	];
 
 	// ** render user img
 	const renderUserImg = () => {
-			return (
-        <img
-          height="240"
-          width="240"
-          alt="user-avatar"
-          src={avatar == "" ? data?.store_image : avatar}
-          className="img-fluid rounded mt-3 mb-2"
-        />
-      );
+		return (
+			<img
+				height='240'
+				width='240'
+				alt='user-avatar'
+				src={avatar == "" ? data?.store_image : avatar}
+				className='img-fluid rounded mt-3 mb-2'
+			/>
+		);
 	};
 
 	const [type, setType] = useState("");
-    const [number, setNumber] = useState("");
-    const [fileData, setFileData] = useState("");
-    const [url, setUrl] = useState("");
-    const [name, setName] = useState("");
+	const [number, setNumber] = useState("");
+	const [fileData, setFileData] = useState("");
+	const [url, setUrl] = useState("");
+	const [name, setName] = useState("");
 
-    const onChange = (e) => {
-      let _name = e.target.files[0].name;
+	const onChange = (e) => {
+		let _name = e.target.files[0].name;
 
-      if (!_name.includes(".png")) {
-        Swal.fire({
-          icon: "error",
-          title: "Error",
-          text: "PNG images are allowed",
-          confirmButtonColor: "#ff3600",
-        });
-        return;
-      }
-      const reader = new FileReader(),
-        files = e.target.files;
-      reader.onload = function () {
-        setAvatar(reader.result);
-      };
-      reader.readAsDataURL(files[0]);
-      _name = _name.replace(/\s/g, "");
-      setName(_name);
-      setFileData(e.target.files[0]);
-    };
+		if (!_name.includes(".png")) {
+			Swal.fire({
+				icon: "error",
+				title: "Error",
+				text: "PNG images are allowed",
+				confirmButtonColor: "#ff3600",
+			});
+			return;
+		}
+		const reader = new FileReader(),
+			files = e.target.files;
+		reader.onload = function () {
+			setAvatar(reader.result);
+		};
+		reader.readAsDataURL(files[0]);
+		_name = _name.replace(/\s/g, "");
+		setName(_name);
+		setFileData(e.target.files[0]);
+	};
+	const paraToHtml = content.getCurrentContent().getPlainText();
 
-    const onSubmit = (datas) => {
-      document.body.style.opacity = 0.4;
-      const _data = new FormData();
+	const onSubmit = (datas) => {
+		document.body.style.opacity = 0.4;
+		const _data = new FormData();
 
-      if (fileData != "") {
-        console.log("ehrhehe");
-        _data.append("file", fileData, `${new Date().getTime()}_${name}`);
-        ContentUploadHandler.request(
-          "content",
-          "upload",
-          {
-            params: _data,
-          },
-          (response) => {
-			let img = response.data.data.file;
-            CoreHttpHandler.request(
-              "stores",
-              "update_admin",
-              {
-                number: number == "" ? datas?.number : number,
-                enable: true,
-                name: datas?.name,
-                image: `https://upload.its.com.pk/v1/fetch/file/${response.data.data.file}`,
-                store_id: data?.store_id,
-                city: datas?.city,
-                type: type,
-                description: bodyContentEnglish,
-                location: datas?.location,
-              },
-              (response) => {
+		if (fileData != "") {
+			console.log("ehrhehe");
+			_data.append("file", fileData, `${new Date().getTime()}_${name}`);
+			ContentUploadHandler.request(
+				"content",
+				"upload",
+				{
+					params: _data,
+				},
+				(response) => {
+					let img = response.data.data.file;
+					CoreHttpHandler.request(
+						"stores",
+						"update_admin",
+						{
+							number: number == "" ? datas?.number : number,
+							enable: true,
+							name: datas?.name,
+							image: `https://upload.its.com.pk/v1/fetch/file/${response.data.data.file}`,
+							store_id: data?.store_id,
+							city: datas?.city,
+							type: type,
+							description: bodyContentEnglish,
+							location: datas?.location,
+						},
+						(response) => {
+							let _params = {
+								...data,
+								store_number: number == "" ? datas?.number : number,
+								enable: true,
+								name: datas?.name,
+								store_image: `https://upload.its.com.pk/v1/fetch/file/${img}`,
+								store_id: data?.store_id,
+								store_city: datas?.city,
+								type: type,
+								description: bodyContentEnglish,
+								location: datas?.location,
+							};
+							console.log(_params, "paramsdmasd");
+							setData(_params);
+							document.body.style.opacity = 1;
+							Swal.fire({
+								icon: "success",
+								title: "Success",
+								text: "Successfully Updated Seller Details",
+								confirmButtonColor: "green",
+							});
+						},
+						(error) => {}
+					);
+				},
+				(error) => {}
+			);
+		} else {
+			CoreHttpHandler.request(
+				"stores",
+				"update_admin",
+				{
+					number: number == "" ? datas?.number : number,
+					enable: true,
+					name: datas?.name,
+					image: datas?.image,
+					store_id: data?.store_id,
+					city: datas?.city,
+					type: type,
+					description: paraToHtml,
+					location: datas?.location,
+				},
+				(response) => {
+					document.body.style.opacity = 1;
 					let _params = {
-                    ...data,
-                    store_number: number == "" ? datas?.number : number,
-                    enable: true,
-                    name: datas?.name,
-                    store_image: `https://upload.its.com.pk/v1/fetch/file/${img}`,
-                    store_id: data?.store_id,
-                    store_city: datas?.city,
-                    type: type,
-                    description: bodyContentEnglish,
-                    location: datas?.location,
-                  };
-				  console.log(_params,'paramsdmasd')
-                  setData(_params);
-                document.body.style.opacity = 1;
-                Swal.fire({
-                  icon: "success",
-                  title: "Success",
-                  text: "Successfully Updated Seller Details",
-                  confirmButtonColor: "green",
-                });
+						...data,
+						store_number: number == "" ? datas?.number : number,
+						enable: true,
+						name: datas?.name,
+						store_image: datas?.image,
+						store_id: data?.store_id,
+						store_city: datas?.city,
+						type: type,
+						description: paraToHtml,
+						location: datas?.location,
+					};
+					setData(_params);
+					Swal.fire({
+						icon: "success",
+						title: "Success",
+						text: "Successfully Updated Seller Details",
+						confirmButtonColor: "green",
+					});
+				},
+				(error) => {}
+			);
+		}
+	};
 
-              },
-              (error) => {}
-            );
-          },
-          (error) => {}
-        );
-      } else {
-        CoreHttpHandler.request(
-          "stores",
-          "update_admin",
-          {
-            number: number == "" ? datas?.number : number,
-            enable: true,
-            name: datas?.name,
-            image: datas?.image,
-            store_id: data?.store_id,
-            city: datas?.city,
-            type: type,
-            description: bodyContentEnglish,
-            location: datas?.location,
-          },
-          (response) => {
-            document.body.style.opacity = 1;
-				let _params = {
-				...data,
-				store_number: number == "" ? datas?.number : number,
-				enable: true,
-				name: datas?.name,
-				store_image: datas?.image,
-				store_id: data?.store_id,
-				store_city: datas?.city,
-				type: type,
-				description: bodyContentEnglish,
-				location: datas?.location,
-				};
-				setData(_params);
-            Swal.fire({
-              icon: "success",
-              title: "Success",
-              text: "Successfully Updated Seller Details",
-              confirmButtonColor: "green",
-            });
-          },
-          (error) => {}
-        );
-	
-      }
-    };
-
-    const handleImgReset = () => {
-      setAvatar("");
-      setFileData("");
-    };
-
+	const handleImgReset = () => {
+		setAvatar("");
+		setFileData("");
+	};
 
 	return (
-    <Fragment>
-      <Card>
-        <CardBody>
-          <div className="user-avatar-section">
-            <div className="d-flex align-items-center flex-column">
-              {renderUserImg()}
-              <div className="align-items-center text-center">
-                <Button
-                  tag={Label}
-                  className="mb-75 me-75"
-                  size="sm"
-                  color="primary"
-                >
-                  Upload
-                  <Input
-                    type="file"
-                    onChange={onChange}
-                    hidden
-                    accept="image/*"
-                  />
-                </Button>
-                <Button
-                  className="mb-75"
-                  color="secondary"
-                  size="sm"
-                  outline
-                  onClick={handleImgReset}
-                >
-                  Reset
-                </Button>
-                <p className="mb-0">Allowed PNG. Max size of 1 MB</p>
-              </div>
-              <div
-                className="d-flex flex-column align-items-center text-center"
-                style={{ marginTop: "50px" }}
-              >
-                <div className="user-info">
-                  <h4>{data?.name}</h4>
-                  <Badge
-                    color={roleColors["subscriber"]}
-                    className="text-capitalize"
-                  >
-                    Store
-                  </Badge>
-                </div>
-              </div>
-            </div>
-          </div>
-          <Form className="mt-2 pt-50" onSubmit={handleSubmit(onSubmit)}>
-            <Row>
-              <Col sm="6" className="mb-1" style={{ marginTop: "20px" }}>
-                <Label className="form-label" for="Store">
-                  Store Name
-                </Label>
-                <Controller
-                  name="name"
-                  control={control}
-                  render={({ field }) => (
-                    <Input
-                      defaultValue={data?.name}
-                      id="name"
-                      name="names"
-                      placeholder="Store Name"
-                      {...field}
-                    />
-                  )}
-                />
-              </Col>
+		<Fragment>
+			<Card>
+				<CardBody>
+					<div className='user-avatar-section'>
+						<div className='d-flex align-items-center flex-column'>
+							{renderUserImg()}
+							<div className='align-items-center text-center'>
+								<Button
+									tag={Label}
+									className='mb-75 me-75'
+									size='sm'
+									color='primary'>
+									Upload
+									<Input
+										type='file'
+										onChange={onChange}
+										hidden
+										accept='image/*'
+									/>
+								</Button>
+								<Button
+									className='mb-75'
+									color='secondary'
+									size='sm'
+									outline
+									onClick={handleImgReset}>
+									Reset
+								</Button>
+								<p className='mb-0'>Allowed PNG. Max size of 1 MB</p>
+							</div>
+							<div
+								className='d-flex flex-column align-items-center text-center'
+								style={{ marginTop: "50px" }}>
+								<div className='user-info'>
+									<h4>{data?.name}</h4>
+									<Badge
+										color={roleColors["subscriber"]}
+										className='text-capitalize'>
+										Store
+									</Badge>
+								</div>
+							</div>
+						</div>
+					</div>
+					<Form
+						className='mt-2 pt-50'
+						onSubmit={handleSubmit(onSubmit)}>
+						<Row>
+							<Col
+								sm='6'
+								className='mb-1'
+								style={{ marginTop: "20px" }}>
+								<Label
+									className='form-label'
+									for='Store'>
+									Store Name
+								</Label>
+								<Controller
+									name='name'
+									control={control}
+									render={({ field }) => (
+										<Input
+											defaultValue={data?.name}
+											id='name'
+											name='names'
+											placeholder='Store Name'
+											{...field}
+										/>
+									)}
+								/>
+							</Col>
 
-              {/* <Col sm="6" className="mb-1">
+							{/* <Col sm="6" className="mb-1">
                 <Label className="form-label" for="address">
                   Address
                 </Label>
@@ -339,96 +344,128 @@ const UserInfoCard = (props) => {
                   defaultValue={data?.store_address}
                 />
               </Col> */}
-              <Col sm="6" className="mb-1" style={{ marginTop: "20px" }}>
-                <Label className="form-label" for="accountState">
-                  Store Type
-                </Label>
-                
-                    <Select
-                      id="type"
-                      name="type"
-                      isClearable={false}
-                      className="react-select"
-                      classNamePrefix="select"
-                      options={categoryOptions}
-                      theme={selectThemeColors}
-                      onChange={(e) => setType(e.value)}
-                      defaultValue={data?.type == "vape"? categoryOptions[0] : categoryOptions[1]}
-					  
-                    />
-              
-              </Col>
-              <Col sm="6" className="mb-1">
-                <Label className="form-label" for="zipCode">
-                  Store City
-                </Label>
-                <Controller
-                  name="city"
-                  control={control}
-                  render={({ field }) => (
-                    <Input
-                      id="StoreCity"
-                      name="StoreCity"
-                      defaultValue={data?.store_city}
-                      {...field}
-                    />
-                  )}
-                />
-              </Col>
-              <Col sm="6" className="mb-1">
-                <Label className="form-label" for="number">
-                  Store Number
-                </Label>
-                <Controller
-                  name="number"
-                  control={control}
-                  render={({ field }) => (
-                    <Input defaultValue={data?.store_number} {...field} />
-                  )}
-                />
-              </Col>
-              <Col sm="6" className="mb-1">
-                <Label className="form-label" for="created">
-                  Created Date
-                </Label>
-                <Input
-                  disabled={true}
-                  id="created"
-                  defaultValue={moment(data?.dt).format("DD-MM-YYYY HH:MM a")}
-                />
-              </Col>
-              <Col sm="6" className="mb-1">
-                <Label className="form-label" for="Location">
-                  Location
-                </Label>
-                <div style={{ marginTop: "10px" }}>
-                  <a
-                    href={`https://www.google.com/maps/place/${data?.location}`}
-                    target="_blank"
-                  >
-                    <MapPin size="20" />
-                  </a>
-                </div>
-              </Col>
-              <div style={{ marginLeft: "5px", marginRight: "5px" }}>
-                <Editor
-                  editorValue={bodyContentEnglish}
-                  handleChange={(valuee) => setBodyContentEnglish(valuee)}
-                />
-              </div>
+							<Col
+								sm='6'
+								className='mb-1'
+								style={{ marginTop: "20px" }}>
+								<Label
+									className='form-label'
+									for='accountState'>
+									Store Type
+								</Label>
 
-              <Col className="mt-2" sm="12">
-                <Button type="submit" className="me-1" color="primary">
-                  Save changes
-                </Button>
-                <Button color="secondary" outline>
-                  Discard
-                </Button>
-              </Col>
-            </Row>
-          </Form>
+								<Select
+									id='type'
+									name='type'
+									isClearable={false}
+									className='react-select'
+									classNamePrefix='select'
+									options={categoryOptions}
+									theme={selectThemeColors}
+									onChange={(e) => setType(e.value)}
+									defaultValue={
+										data?.type == "vape"
+											? categoryOptions[0]
+											: categoryOptions[1]
+									}
+								/>
+							</Col>
+							<Col
+								sm='6'
+								className='mb-1'>
+								<Label
+									className='form-label'
+									for='zipCode'>
+									Store City
+								</Label>
+								<Controller
+									name='city'
+									control={control}
+									render={({ field }) => (
+										<Input
+											id='StoreCity'
+											name='StoreCity'
+											defaultValue={data?.store_city}
+											{...field}
+										/>
+									)}
+								/>
+							</Col>
+							<Col
+								sm='6'
+								className='mb-1'>
+								<Label
+									className='form-label'
+									for='number'>
+									Store Number
+								</Label>
+								<Controller
+									name='number'
+									control={control}
+									render={({ field }) => (
+										<Input
+											defaultValue={data?.store_number}
+											{...field}
+										/>
+									)}
+								/>
+							</Col>
+							<Col
+								sm='6'
+								className='mb-1'>
+								<Label
+									className='form-label'
+									for='created'>
+									Created Date
+								</Label>
+								<Input
+									disabled={true}
+									id='created'
+									defaultValue={moment(data?.dt).format("DD-MM-YYYY HH:MM a")}
+								/>
+							</Col>
+							<Col
+								sm='6'
+								className='mb-1'>
+								<Label
+									className='form-label'
+									for='Location'>
+									Location
+								</Label>
+								<div style={{ marginTop: "10px" }}>
+									<a
+										href={`https://www.google.com/maps/place/${data?.location}`}
+										target='_blank'>
+										<MapPin size='20' />
+									</a>
+								</div>
+							</Col>
+							<div style={{ marginLeft: "5px", marginRight: "5px" }}>
+								<TextEditor
+									content={content}
+									setContent={setContent}
+								/>
+							</div>
 
-          {/* <div className='d-flex justify-content-around my-2 pt-75'>
+							<Col
+								className='mt-2'
+								sm='12'>
+								<Button
+									type='submit'
+									className='me-1'
+									color='primary'>
+									Save changes
+								</Button>
+								<Button
+									color='secondary'
+									outline>
+									Discard
+								</Button>
+							</Col>
+						</Row>
+					</Form>
+
+					{/* <div className='d-flex justify-content-around my-2 pt-75'>
 						<div className='d-flex align-items-start me-2'>
 							<Badge
 								color='light-primary'
@@ -497,7 +534,7 @@ const UserInfoCard = (props) => {
 							</li>
 						</ul>
 					</div> */}
-          {/* <div className='d-flex justify-content-center pt-2'>
+					{/* <div className='d-flex justify-content-center pt-2'>
 						<Button
 							color='primary'
 							onClick={() => setShow(true)}>
@@ -511,9 +548,9 @@ const UserInfoCard = (props) => {
 							Suspended
 						</Button>
 					</div> */}
-        </CardBody>
-      </Card>
-      {/* <Modal
+				</CardBody>
+			</Card>
+			{/* <Modal
 				isOpen={show}
 				toggle={() => setShow(!show)}
 				className='modal-dialog-centered modal-lg'>
@@ -750,8 +787,8 @@ const UserInfoCard = (props) => {
 					</Form>
 				</ModalBody>
 			</Modal> */}
-    </Fragment>
-  );
+		</Fragment>
+	);
 };
 
 export default UserInfoCard;

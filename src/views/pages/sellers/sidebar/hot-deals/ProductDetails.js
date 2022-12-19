@@ -56,137 +56,83 @@ const ProductDetails = ({ data, setShowDetails }) => {
 									"--swiper-navigation-color": "#fff",
 									"--swiper-pagination-color": "#fff",
 								}}
-								loop={true}
+								loop={false}
 								spaceBetween={10}
 								navigation={true}
 								thumbs={{ swiper: thumbsSwiper }}
-								//	pagination={pagination}
 								modules={[FreeMode, Navigation, Thumbs, Pagination]}
 								className='mySwiper2'>
-								{data?.featured_image && (
+								{data?.featured_image ? (
 									<SwiperSlide>
 										<img
-											style={{ width: "100%", height: "auto" }}
+											loading='lazy'
+											style={{ width: "100%", height: "300px" }}
 											alt='featured image'
-											src={
-												data?.featured_image
-													? `https://upload.its.com.pk/v1/fetch/file/${data?.featured_image}`
-													: ProductImage
-											}
+											src={`https://upload.its.com.pk/${data?.featured_image}`}
 										/>
 									</SwiperSlide>
-								)}
-								{data?.attachment?.length
-									? data?.attachment.map((val) => {
-											return (
-												<SwiperSlide>
-													<img
-														style={{ width: "100%", height: "auto" }}
-														alt='featured image'
-														src={
-															val?.url
-																? `https://upload.its.com.pk/v1/fetch/file/${val?.url}`
-																: ProductImage
-														}
-													/>
-												</SwiperSlide>
-											);
-									  })
-									: null}
-								{data?.hot_deal_featured_image && (
-									<SwiperSlide>
-										<img
-											style={{ width: "100%", height: "auto" }}
-											alt='featured image'
-											src={
-												data?.hot_deal_featured_image
-													? `https://upload.its.com.pk/v1/fetch/file/${data?.hot_deal_featured_image}`
-													: ProductImage
-											}
-										/>
-									</SwiperSlide>
-								)}
+								) : null}
 								{attachment?.length
-									? attachment.map((val) => {
+									? attachment?.map((val) => {
 											return (
+												<>
+													{val.url && (
+														<SwiperSlide key={val.id}>
+															<img
+																loading='lazy'
+																style={{ width: "100%", height: "300px" }}
+																alt='featured image'
+																src={`https://upload.its.com.pk/${val.url}`}
+															/>
+														</SwiperSlide>
+													)}
+												</>
+											);
+									  })
+									: null}
+							</Swiper>
+							{attachment?.length
+								? attachment[0].url && (
+										<Swiper
+											onSwiper={setThumbsSwiper}
+											loop={false}
+											spaceBetween={1}
+											slidesPerView={4}
+											freeMode={true}
+											style={{ marginTop: "10px" }}
+											modules={[FreeMode, Navigation, Thumbs]}
+											className='mySwiper'>
+											{deal?.featured_image && (
 												<SwiperSlide>
 													<img
-														style={{ width: "100%", height: "auto" }}
+														loading='lazy'
+														className='prod-pagi'
 														alt='featured image'
-														src={
-															val?.url
-																? `https://upload.its.com.pk/v1/fetch/file/${val?.url}`
-																: ProductImage
-														}
+														src={`https://upload.its.com.pk/${deal?.featured_image}`}
 													/>
 												</SwiperSlide>
-											);
-									  })
-									: null}
-							</Swiper>
-							<Swiper
-								onSwiper={setThumbsSwiper}
-								loop={true}
-								spaceBetween={10}
-								slidesPerView={4}
-								freeMode={true}
-								style={{ marginTop: "10px" }}
-								watchSlidesProgress={true}
-								modules={[FreeMode, Navigation, Thumbs]}
-								className='mySwiper'>
-								{data?.featured_image && (
-									<SwiperSlide>
-										<img
-											style={{ width: "100%", height: "auto" }}
-											alt='featured image'
-											src={
-												data?.featured_image
-													? `https://upload.its.com.pk/v1/fetch/file/${data?.featured_image}`
-													: ProductImage
-											}
-										/>
-									</SwiperSlide>
-								)}
-								{data?.hot_deal_featured_image && (
-									<SwiperSlide>
-										<img
-											style={{ width: "100%", height: "auto" }}
-											alt='featured image'
-											src={
-												data?.hot_deal_featured_image
-													? `https://upload.its.com.pk/v1/fetch/file/${data?.hot_deal_featured_image}`
-													: ProductImage
-											}
-										/>
-									</SwiperSlide>
-								)}
-								{data?.attachment?.length > 0
-									? data?.attachment.map((val) => {
-											return (
-												<SwiperSlide key={val.id}>
-													<img
-														style={{ width: "100%", height: "auto" }}
-														alt='featured image'
-														src={
-															val?.url
-																? `https://upload.its.com.pk/v1/fetch/file/${val?.url}`
-																: ProductImage
-														}
-													/>
-												</SwiperSlide>
-											);
-									  })
-									: null}
-							</Swiper>
-							{/* <img
-								className='img-fluid product-img'
-								src={
-									data.featured_image
-										? `https://upload.its.com.pk/v1/fetch/file/${data.featured_image}`
-										: ProductImage
-								}
-								alt={data.name}
-							/> */}
+											)}
+											{attachment
+												? attachment.map((val) => {
+														return (
+															<>
+																{val.url && (
+																	<SwiperSlide key={val.id}>
+																		<img
+																			loading='lazy'
+																			className='prod-pagi'
+																			alt='featured image'
+																			src={`https://upload.its.com.pk/${val.url}`}
+																		/>
+																	</SwiperSlide>
+																)}
+															</>
+														);
+												  })
+												: null}
+										</Swiper>
+								  )
+								: null}
 						</div>
 					</Col>
 					<Col
@@ -252,7 +198,6 @@ const ProductDetails = ({ data, setShowDetails }) => {
 						{data.product_category && (
 							<CardText> Category : {data?.product_category}</CardText>
 						)}
-						<CardText> Quantity : {data?.qty}</CardText>
 						<ul className='product-features list-unstyled'>
 							{data.hasFreeShipping ? (
 								<li>
@@ -265,16 +210,20 @@ const ProductDetails = ({ data, setShowDetails }) => {
 								<span>EMI options available</span>
 							</li> */}
 						</ul>
+						<h5>Deal Products</h5>
 
 						{data?.products
 							? data?.products.map((p) => {
 									return (
 										<>
-											<h5>Deal Products</h5>
 											<Row style={{ marginTop: "10px" }}>
 												<Col sm={4}>
 													<img
-														style={{ height: "200px", marginRight: "10px" }}
+														style={{
+															width: "100px",
+															height: "auto",
+															marginRight: "10px",
+														}}
 														src={`https://upload.its.com.pk/v1/fetch/file/${p.featured_image}`}
 													/>
 												</Col>

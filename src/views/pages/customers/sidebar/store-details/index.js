@@ -193,7 +193,6 @@ const UserInfoCard = (props) => {
 								description: bodyContentEnglish,
 								location: datas?.location,
 							};
-							console.log(_params, "paramsdmasd");
 							setData(_params);
 							document.body.style.opacity = 1;
 							Swal.fire({

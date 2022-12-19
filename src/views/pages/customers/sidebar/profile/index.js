@@ -41,7 +41,6 @@ const statusOptions = [
 const AccountTabs = (props) => {
 	// ** Hooks
 	const { data, setData } = props;
-	console.log(data, "customer");
 	const defaultValues = {
 		lastName: data?.lastname,
 		firstName: data?.firstname,
@@ -83,7 +82,6 @@ const AccountTabs = (props) => {
 	const onSubmit = (datas) => {
 		document.body.style.opacity = 0.4;
 		const _data = new FormData();
-		console.log(datas, "onchnage");
 
 		if (fileData != "") {
 			_data.append("file", fileData, `${new Date().getTime()}_${name}`);

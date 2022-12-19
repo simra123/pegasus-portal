@@ -222,7 +222,7 @@ const OrderTable = (props) => {
 												<tr
 													key={order.id}
 													style={{ fontSize: "11px" }}>
-													<td>{order.order_id}</td>
+													<td>{order.id}</td>
 													<td>{order.order_no}</td>
 
 													<td>{order.city}</td>

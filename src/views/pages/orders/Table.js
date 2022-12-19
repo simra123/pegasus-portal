@@ -204,8 +204,8 @@ const SellersTable = () => {
 											return (
 												<tr
 													style={{ fontSize: "13px" }}
-													key={order.order_id}>
-													<td>{order.order_id}</td>
+													key={order.id}>
+													<td>{order.id}</td>
 
 													<td>{order.order_no}</td>
 													<td>{order.city}</td>

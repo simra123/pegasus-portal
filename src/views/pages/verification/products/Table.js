@@ -70,6 +70,7 @@ const SellersTable = () => {
 			(response) => {
 				setLoading(false);
 				const res = response.data.data.data;
+
 				setTotalPages(res.totalPages);
 				if (filter == "all" || filter == "") {
 					setData2(res.product);
