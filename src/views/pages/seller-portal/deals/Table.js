@@ -349,7 +349,6 @@ const SellersTable = (props) => {
 		setProduct_ids(ids);
 		setType("edit");
 		setShowCreate(true);
-		console.log(data, "dpepepww");
 		setdealId(data?.id);
 	};
 
@@ -614,9 +613,6 @@ const SellersTable = (props) => {
 									<Col
 										xs={12}
 										className='text-center mt-2 pt-50'>
-										{/* <Button type="submit" className="me-1" color="primary">
-                      Submit
-                    </Button> */}
 										<LoadingButton
 											type='create'
 											color='primary'
@@ -681,7 +677,6 @@ const SellersTable = (props) => {
 									{data?.map((deal, index) => {
 										return (
 											<tr key={deal.id}>
-												{console.log(deal, "dododo")}
 												<td>{index + 1}</td>
 
 												<td>{deal.name}</td>

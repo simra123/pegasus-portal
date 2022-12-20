@@ -7,20 +7,24 @@ import CoreHttpHandler from "../../../../../http/services/CoreHttpHandler";
 // ** Third Party Components
 import classnames from "classnames";
 // ** Reactstrap Imports
+import CreateDeal from "./AddDeal";
+
+import { MdAddCircle } from "react-icons/md";
 
 import { CardHeader, Card } from "reactstrap";
 import { Pagination } from "../../../reuseable";
 const Deals = (props) => {
 	const [deals, setDeals] = useState([]);
 	const [loading, setLoading] = useState(true);
+	const [showCreate, setShowCreate] = useState(false);
 	const [currentParams, setCurrentParams] = useState({
 		limit: 6,
 		page: 0,
 	});
 	const [totalPages, setTotalPages] = useState(0);
+	const [productsData, setProductsData] = useState([]);
 
-	const { data, sidebarOpen, getProducts, getCartItems, setSidebarOpen } =
-		props;
+	const { data, sidebarOpen, getCartItems, setSidebarOpen } = props;
 
 	// ** Handles pagination
 	const handlePageChange = (val) => {
@@ -54,10 +58,28 @@ const Deals = (props) => {
 			}
 		);
 	};
+	const getProducts = () => {
+		CoreHttpHandler.request(
+			"products",
+			"fetch_id_name",
+			{
+				store_id: Number(data?.store_id),
+			},
+			(response) => {
+				let p = [];
+				response.data.data.data.product.map((r) => {
+					p.push({ label: r.name, value: r.id });
+				});
+				setProductsData(p);
+			},
+			(failure) => {}
+		);
+	};
 	useEffect(() => {
 		getDeals();
+		getProducts();
 	}, [currentParams]);
-
+	console.log(Number(data?.store_id), "id");
 	return (
 		<>
 			<div
@@ -68,21 +90,51 @@ const Deals = (props) => {
 
 			<Fragment>
 				<Card>
-					<CardHeader>Deals</CardHeader>
+					<CardHeader>
+						Deals
+						{!showCreate && (
+							<div>
+								<MdAddCircle
+									color='primary'
+									size='30'
+									style={{ marginTop: "0px", cursor: "pointer" }}
+									onClick={() => setShowCreate(true)}
+								/>
+							</div>
+						)}
+					</CardHeader>
 				</Card>
-				<ProductCards
-					loading={loading}
-					products={deals}
-					getProducts={getDeals}
-					getCartItems={getCartItems}
-					activeView={"grid"}
-				/>
-				<Pagination
-					total={totalPages}
-					handlePagination={(e) =>
-						setCurrentParams({ limit: 6, page: e.selected })
-					}
-				/>
+				{!showCreate ? (
+					<>
+						<ProductCards
+							loading={loading}
+							products={deals}
+							getProducts={getDeals}
+							getCartItems={getCartItems}
+							activeView={"grid"}
+						/>
+						<Pagination
+							total={totalPages}
+							handlePagination={(e) =>
+								setCurrentParams({ limit: 6, page: e.selected })
+							}
+						/>
+					</>
+				) : (
+					<CreateDeal
+						//	storeId={storeId}
+						setShowCreate={setShowCreate}
+						showCreate={showCreate}
+						productsData={productsData}
+						//	setShowCreate={setShowCreate}
+						//	getProducts={getStoreProducts}
+						//	type={type}
+						//	sellerData={props.sellerData.id}
+						//	productItem={productItem}
+						//	setProductItem={setProductItem}
+						//	setType={setType}
+					/>
+				)}
 			</Fragment>
 		</>
 	);
