@@ -22,9 +22,10 @@ import {
 	Label,
 	CardHeader,
 	Form,
+	Spinner,
 } from "reactstrap";
 import Select from "react-select";
-
+import moment from "moment";
 import Avatar from "@components/avatar";
 
 // ** Styles
@@ -47,21 +48,16 @@ import { defaultProductImage, url } from "../../../../../image-service-url";
 import { Trash } from "react-feather";
 
 const CreateProduct = (props) => {
-	const { storeData, productsData, showCreate, setShowCreate } = props;
-	const [data, setData] = useState([]);
+	const { storeData, productsData, showCreate, setShowCreate, data } = props;
 	const [tempTotal, setTempTotal] = useState(0);
-	const [data2, setData2] = useState([]);
 	const [loading, setLoading] = useState(false);
-	const [totalPages, setTotalPages] = useState(0);
 	const [picker, setPicker] = useState(new Date());
 	const [filter, setFilter] = useState("all");
-	const [searchVal, setSearchVal] = useState("");
 	const [product_ids, setProduct_ids] = useState([]);
 	const [avatar, setAvatar] = useState();
 	const [name, setName] = useState("");
 	const [regularPrice, setRegularPrice] = useState("");
 	const [dealPrice, setDealPrice] = useState("");
-	const [date, setDate] = useState("");
 	const [image, setImage] = useState("");
 	const [stock, setStock] = useState("");
 	const [description, setDescription] = useState(EditorState.createEmpty());
@@ -91,6 +87,13 @@ const CreateProduct = (props) => {
 		setDealPrice("");
 	};
 
+	useEffect(() => {
+		if (data) {
+			handleDetails(data);
+		} else {
+			handleReset();
+		}
+	}, [data]);
 	const onSubmit = (data) => {
 		if (picker[0] == undefined || picker[1] == undefined) {
 			ToastAlertError(`Please select start date and end date`);
@@ -117,7 +120,6 @@ const CreateProduct = (props) => {
 		const _data = new FormData();
 
 		let ids = product_ids.map((p) => p.value);
-		console.log(ids, "ioop");
 		let startDate = moment(picker[0]).format("YYYY-MM-DD");
 		let endDate = moment(picker[1]).format("YYYY-MM-DD");
 		setLoading(true);

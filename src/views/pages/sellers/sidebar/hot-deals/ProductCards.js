@@ -16,7 +16,8 @@ import {
 import parse from "html-react-parser";
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
-
+import { BiPencil } from "react-icons/bi";
+import { RiDeleteBin7Line } from "react-icons/ri";
 import { Card, CardBody, CardText, Button, Badge } from "reactstrap";
 import "@styles/react/apps/app-ecommerce.scss";
 import CoreHttpHandler from "../../../../../http/services/CoreHttpHandler";
@@ -25,7 +26,8 @@ const ProductCards = (props) => {
 	const [singleProduct, setSingleProdcuct] = useState({});
 	// ** Props
 
-	const { products, activeView, getProducts, loading } = props;
+	const { products, activeView, getProducts, loading, setShowCreate, setData } =
+		props;
 	const MySwal = withReactContent(Swal);
 
 	const deleteProduct = (item) => {
@@ -66,6 +68,7 @@ const ProductCards = (props) => {
 			(error) => {}
 		);
 	};
+
 	// ** Renders products
 	const renderProducts = () => {
 		return (
@@ -77,7 +80,9 @@ const ProductCards = (props) => {
 								<Card
 									className='ecommerce-card'
 									key={item.id}>
-									<div className='item-img text-center mx-auto' style={{cursor: "pointer"}}>
+									<div
+										className='item-img text-center mx-auto'
+										style={{ cursor: "pointer" }}>
 										<img
 											onClick={() => {
 												setShowDetails(true);
@@ -173,17 +178,7 @@ const ProductCards = (props) => {
 												? parse(item.description.substring(0, 60))
 												: item.description}
 										</CardText>
-										<CardText
-											tag='span'
-											className='text-primary'
-											style={{ float: "right" }}>
-											{/* <RiDeleteBin7Line
-												style={{ cursor: "pointer" }}
-												size={20}
-												onClick={() => deleteProduct(item)}
-											/> */}
-											{item?.qty}
-										</CardText>
+
 										<div className=''>
 											<h6 className=''>
 												By{" "}
@@ -192,6 +187,23 @@ const ProductCards = (props) => {
 													: item.products[0].store_name}
 											</h6>
 										</div>
+										<CardText
+											tag='span'
+											className='text-primary'
+											style={{ float: "right" }}>
+											<BiPencil
+												style={{ cursor: "pointer" }}
+												size={20}
+												onClick={() => {
+													setData(item);
+													setShowCreate(true);
+												}}
+											/>
+											<RiDeleteBin7Line
+												style={{ cursor: "pointer", marginLeft: "15px" }}
+												size={20}
+											/>
+										</CardText>
 									</CardBody>
 									<div className='item-options text-center'>
 										<div className='item-wrapper'>

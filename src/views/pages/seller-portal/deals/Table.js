@@ -95,8 +95,6 @@ const SellersTable = (props) => {
 
 	let filename = "";
 
-	console.log(product_ids, "oososos");
-
 	const [currentParams, setCurrentParams] = useState({
 		limit: 10,
 		page: 0,

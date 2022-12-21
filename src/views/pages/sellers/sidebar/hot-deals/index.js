@@ -15,6 +15,8 @@ import { CardHeader, Card } from "reactstrap";
 import { Pagination } from "../../../reuseable";
 const Deals = (props) => {
 	const [deals, setDeals] = useState([]);
+	const [singleDeal, setSingleDeal] = useState(null);
+
 	const [loading, setLoading] = useState(true);
 	const [showCreate, setShowCreate] = useState(false);
 	const [currentParams, setCurrentParams] = useState({
@@ -112,6 +114,8 @@ const Deals = (props) => {
 							getProducts={getDeals}
 							getCartItems={getCartItems}
 							activeView={"grid"}
+							setData={setSingleDeal}
+							setShowCreate={setShowCreate}
 						/>
 						<Pagination
 							total={totalPages}
@@ -126,6 +130,7 @@ const Deals = (props) => {
 						setShowCreate={setShowCreate}
 						showCreate={showCreate}
 						productsData={productsData}
+						data={singleDeal}
 						//	setShowCreate={setShowCreate}
 						//	getProducts={getStoreProducts}
 						//	type={type}
