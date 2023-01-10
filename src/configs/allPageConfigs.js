@@ -10,8 +10,8 @@ import StoreConfig from "../views/pages/seller-portal/store/config";
 import DealsConfig from "../views/pages/seller-portal/deals/config";
 import RidersConfig from "../views/pages/rider/config";
 import RidersDetailsConfig from "../views/pages/rider/sidebar/config";
-import CustomerSidebarConfig from "../views/pages/customers/sidebar/config"
-
+import CustomerSidebarConfig from "../views/pages/customers/sidebar/config";
+import OngoingChat from "../views/pages/chat/config";
 const allPagesConfig = [
 	SellersConfig,
 	StoreConfig,
@@ -26,6 +26,7 @@ const allPagesConfig = [
 	DealsConfig,
 	CustomerSidebarConfig,
 	RidersDetailsConfig,
+	OngoingChat,
 ];
 
 export default allPagesConfig;

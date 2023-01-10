@@ -16,6 +16,7 @@ import { FaBoxes } from "react-icons/fa";
 import { GiCardboardBoxClosed } from "react-icons/gi";
 import { RiEBikeLine } from "react-icons/ri";
 import { FiPackage } from "react-icons/fi";
+import { BsFillChatRightDotsFill } from "react-icons/bs";
 import {
 	MdOutlinePendingActions,
 	MdOutlineStorefront,
@@ -38,6 +39,25 @@ export default [
 				icon: <Grid size={20} />,
 				navLink: "/dashboard",
 				exact: true,
+			},
+			{
+				id: "Chat",
+				title: "Chat",
+				translate: "Chat",
+				type: "collapse",
+				icon: <BsFillChatRightDotsFill size={20} />,
+				// navLink: '/apps/groups/group',
+				children: [
+					{
+						id: "ongoing_chat",
+						title: "Ongoing Chat",
+						type: "item",
+						icon: <Circle size={12} />,
+						translate: "ongoing_chat",
+						navLink: "/apps/chat",
+						exact: true,
+					},
+				],
 			},
 
 			{
