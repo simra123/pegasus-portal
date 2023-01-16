@@ -14,7 +14,7 @@
 		"@fullcalendar/timegrid": "^5.10.1",
 		"@fullcalendar/timeline": "^5.10.1",
 		"@hookform/resolvers": "^2.8.3",
-		"@redux-devtools/extension": "^3.2.3",
+		"@redux-devtools/extension": "^3.2.4",
 		"@reduxjs/toolkit": "^1.2.5",
 		"@tinymce/tinymce-react": "^4.2.0",
 		"animate.css": "^4.1.1",

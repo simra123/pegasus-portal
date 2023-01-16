@@ -91,13 +91,29 @@ const SidebarLeft = (props) => {
 		setFiltered(null);
 	}, [activeTab]);
 	// ** Renders Chat
+	console.log(sellerChats, "seller");
 	const renderChats = () => {
 		return (
 			<>
 				{filtered == null ? (
-					activeTab == "sellers" ? (
-						sellerChats?.map((item) => {
-							return (
+					sellerChats?.map((item) => {
+						return (
+							<ContactList
+								selectedRecipient={selectedRecipient}
+								isShown={isShown}
+								key={item.room_id}
+								id={item.room_id}
+								activeTab={activeTab}
+								contact={item}
+								onContactClick={(e) => props.onContactClick(item)}
+								isActive={isActive}
+							/>
+						);
+					})
+				) : filtered?.length ? (
+					filtered.map((item) => {
+						return (
+							<>
 								<ContactList
 									selectedRecipient={selectedRecipient}
 									isShown={isShown}
@@ -108,51 +124,6 @@ const SidebarLeft = (props) => {
 									onContactClick={(e) => props.onContactClick(item)}
 									isActive={isActive}
 								/>
-							);
-						})
-					) : (
-						riderChats?.map((item) => {
-							return (
-								<ContactList
-									selectedRecipient={selectedRecipient}
-									isShown={isShown}
-									key={item.order_id}
-									activeTab={activeTab}
-									id={item.order_id}
-									contact={item}
-									onContactClick={(e) => props.onContactClick(item)}
-									isActive={isActive}
-								/>
-							);
-						})
-					)
-				) : filtered?.length ? (
-					filtered.map((item) => {
-						return (
-							<>
-								{activeTab == "sellers" ? (
-									<ContactList
-										selectedRecipient={selectedRecipient}
-										isShown={isShown}
-										key={item.room_id}
-										id={item.room_id}
-										activeTab={activeTab}
-										contact={item}
-										onContactClick={(e) => props.onContactClick(item)}
-										isActive={isActive}
-									/>
-								) : (
-									<ContactList
-										selectedRecipient={selectedRecipient}
-										isShown={isShown}
-										key={item.order_id}
-										activeTab={activeTab}
-										id={item.order_id}
-										contact={item}
-										onContactClick={(e) => props.onContactClick(item)}
-										isActive={isActive}
-									/>
-								)}
 							</>
 						);
 					})
@@ -179,7 +150,7 @@ const SidebarLeft = (props) => {
 					</div>
 					<div className='chat-fied-search'>
 						<div
-							className='d-flex align-items-center m-1'
+							className='d-flex align-items-center p-1'
 							style={{ width: "90%" }}>
 							<InputGroup className='input-group-merge ml-1 w-100'>
 								<Input
@@ -203,42 +174,6 @@ const SidebarLeft = (props) => {
 					<PerfectScrollbar
 						className='chat-user-list-wrapper list-group'
 						options={{ wheelPropagation: false }}>
-						<Row className='justify-content-center'>
-							<Col
-								xs='5'
-								className='m-0 p-0'>
-								<Button
-									className='w-100'
-									onClick={() => setActiveTab("sellers")}
-									color={activeTab == "seller" ? "primary" : "light"}
-									style={{
-										borderRadius: "0px",
-										border: "1px solid white",
-										backgroundColor:
-											activeTab == "sellers" ? " #f3ac3b" : "transparent",
-										color: "white",
-									}}>
-									Seller
-								</Button>
-							</Col>
-							<Col
-								xs='5'
-								className='m-0 p-0'>
-								<Button
-									className='w-100'
-									color={"light"}
-									onClick={() => setActiveTab("riders")}
-									style={{
-										borderRadius: "0px",
-										border: "1px solid white",
-										backgroundColor:
-											activeTab == "sellers" ? "transparent" : " #f3ac3b",
-										color: "white",
-									}}>
-									Rider
-								</Button>
-							</Col>
-						</Row>
 						<h4 className='chat-list-title'>Chats</h4>
 						{props.chatsLoading ? (
 							<div style={{ width: "100%", textAlign: "center" }}>
@@ -252,45 +187,25 @@ const SidebarLeft = (props) => {
 								{renderChats()}
 							</ul>
 						)}
-						{activeTab == "sellers" ? (
-							<Button
-								color='primary'
-								size='sm'
-								onClick={() => {
-									setPageNo(pageNo + 1);
-									getNumberSellers(pageNo);
-								}}
-								style={{
-									display:
-										sellerChats.length >= Number(props.totalItemsNum) ||
-										props.chatsLoading
-											? "none"
-											: "block",
-									width: "150px",
-									margin: "10px auto",
-								}}>
-								Load More
-							</Button>
-						) : (
-							<Button
-								color='primary'
-								size='sm'
-								onClick={() => {
-									setPageNo2(pageNo + 1);
-									getNumberRiders(pageNo2);
-								}}
-								style={{
-									display:
-										riderChats.length >= Number(props.totalItemsNum) ||
-										props.chatsLoading
-											? "none"
-											: "block",
-									width: "150px",
-									margin: "10px auto",
-								}}>
-								Load More
-							</Button>
-						)}
+
+						<Button
+							color='primary'
+							size='sm'
+							onClick={() => {
+								setPageNo(pageNo + 1);
+								getNumberSellers(pageNo);
+							}}
+							style={{
+								display:
+									sellerChats.length >= Number(props.totalItemsNum) ||
+									props.chatsLoading
+										? "none"
+										: "block",
+								width: "150px",
+								margin: "10px auto",
+							}}>
+							Load More
+						</Button>
 					</PerfectScrollbar>
 				</div>
 			</div>

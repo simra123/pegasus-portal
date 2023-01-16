@@ -97,10 +97,9 @@ const AppChat = () => {
 
 	const getNumberSellers = (page) => {
 		setChatsLoading(true);
-
 		CoreHttpHandler.request(
 			"conversations",
-			"seller_customer",
+			"seller_numbers",
 			{
 				key: "pageVal",
 				value: page == undefined ? 0 : page,
@@ -115,17 +114,16 @@ const AppChat = () => {
 				if (page) {
 					data = [...numbers];
 				} else {
-					clearData();
 					data = [];
 				}
 
 				setnumbers([...data, ...numberrrrrr]);
-
 				setTotalItemsNum(res.totalItems);
-
 				setChatsLoading(false);
 			},
-			(error) => {}
+			(error) => {
+				console.log(error, "err");
+			}
 		);
 	};
 	const getNumberRiders = (page) => {
@@ -165,13 +163,13 @@ const AppChat = () => {
 
 		CoreHttpHandler.request(
 			"conversations",
-			"seller_customer_chats",
+			"seller_chats",
 			{
 				key: "pageVal",
 				value: page ? page : 0,
 				key2: "limitVal",
 				value2: 30,
-				key3: "chatId",
+				key3: "roomId",
 				value3: e?.room_id,
 			},
 			(response) => {
@@ -322,13 +320,8 @@ const AppChat = () => {
 	// }, [updateCustomerMessages]);
 
 	React.useEffect(() => {
-		clearData();
-		if (activeTab == "sellers") {
-			getNumberSellers();
-		} else {
-			getNumberRiders();
-		}
-	}, [activeTab]);
+		getNumberSellers();
+	}, []);
 
 	const clearData = () => {
 		setselectedRecipient(null);

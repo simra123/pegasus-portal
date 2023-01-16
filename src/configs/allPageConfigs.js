@@ -12,6 +12,7 @@ import RidersConfig from "../views/pages/rider/config";
 import RidersDetailsConfig from "../views/pages/rider/sidebar/config";
 import CustomerSidebarConfig from "../views/pages/customers/sidebar/config";
 import OngoingChat from "../views/pages/chat/config";
+import ChatSeller from "../views/pages/chat-seller/config";
 const allPagesConfig = [
 	SellersConfig,
 	StoreConfig,
@@ -27,6 +28,7 @@ const allPagesConfig = [
 	CustomerSidebarConfig,
 	RidersDetailsConfig,
 	OngoingChat,
+	ChatSeller,
 ];
 
 export default allPagesConfig;

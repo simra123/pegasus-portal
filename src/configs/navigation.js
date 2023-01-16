@@ -57,6 +57,15 @@ export default [
 						navLink: "/apps/chat",
 						exact: true,
 					},
+					{
+						id: "seller chat",
+						title: "Chat",
+						type: "item",
+						icon: <Circle size={12} />,
+						translate: "seller chat",
+						navLink: "/apps/chat/seller",
+						exact: true,
+					},
 				],
 			},
 
