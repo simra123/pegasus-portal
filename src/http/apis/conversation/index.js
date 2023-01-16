@@ -41,7 +41,7 @@ class APIS {
 					"xt-user-token": null,
 				},
 				method: "get",
-				path: " /fetch/chat/room?page=pageVal&limit=limitVal&room_id=roomId",
+				path: "/fetch/chat/room?page=pageVal&limit=limitVal&room_id=roomId",
 			},
 			seller_numbers: {
 				headers: {

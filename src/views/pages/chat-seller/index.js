@@ -43,7 +43,6 @@ const AppChat = () => {
 	};
 
 	// ** Set user function for Right Sidebar
-
 	const [mobileChatsSidebarOpen, setmobileChatsSidebarOpen] = useState(false);
 	const [numbers, setnumbers] = useState([]);
 	const [messages, setmessages] = useState([]);
@@ -76,21 +75,11 @@ const AppChat = () => {
 		if (sidebar) {
 			setSidebar(!sidebar);
 		}
-		setCounts("0");
 
-		if (sound) {
-			setShowSendIcon(true);
-			setFlag(false);
-			setSound("");
-		}
 		if (activeTab == "sellers") {
 			setIsActive(e.room_id);
 			getConversation(e);
-		} else {
-			setIsActive(e.order_id);
-			getRiderConversation(e);
 		}
-
 		setselectedRecipient(e);
 		setmobileChatsSidebarOpen(false);
 	};

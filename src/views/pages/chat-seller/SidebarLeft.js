@@ -151,10 +151,10 @@ const SidebarLeft = (props) => {
 					<div className='chat-fied-search'>
 						<div
 							className='d-flex align-items-center p-1'
-							style={{ width: "90%" }}>
+							style={{ width: "94%", margin: "auto" }}>
 							<InputGroup className='input-group-merge ml-1 w-100'>
 								<Input
-									placeholder='Search by number 92xxxxxxx'
+									placeholder='Search by Seller Name'
 									disableUnderline
 									fullWidth
 									className='round'

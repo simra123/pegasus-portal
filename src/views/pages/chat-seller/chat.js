@@ -18,6 +18,7 @@ import { FiPower } from "react-icons/fi";
 import Avatar from "@components/avatar";
 import CoreHttpHandler from "@src/http/services/CoreHttpHandler";
 import Picker from "emoji-picker-react";
+import WebSocket from "@src/socket/WebSocket";
 
 // ** Store & Actions
 import { useDispatch } from "react-redux";
@@ -67,7 +68,7 @@ const ChatLog = forwardRef((props, ref) => {
 	// ** Refs & Dispatch
 
 	// ** State
-
+	const socket = WebSocket.getSocket();
 	// ** Formats chat data based on sender
 
 	const dispatch = useDispatch();
@@ -236,97 +237,28 @@ const ChatLog = forwardRef((props, ref) => {
 	};
 
 	const sendMessage = async () => {
-		if (sound) {
-			setSoundLoader(true);
-			setSound("");
-			setFlag(false);
+		const messageToSend = String(messageTextNew || " ").trim();
+		if (messageToSend) {
+			setMessageText("");
 
-			const audio = {
-				message: {
-					url: audioFilePath,
-					caption: "",
-					filename: "Audio_1662705153412.mp3",
-					mime_type: "audio/mp3",
-				},
-				to: ["923142797274"],
-			};
+			// setDisabled(true);
 
-			// CoreHttpHandler.request(
-			// 	"conversations",
-			// 	"send",
-			// 	{
-			// 		key: ":type",
-			// 		value: "audio",
-			// 		params: {
-			// 			type: "audio",
-			// 			audio: {
-			// 				message: {
-			// 					url: audioFilePath,
-			// 					caption: "",
-			// 					filename: "Audio_1662705153412.mp3",
-			// 					mime_type: "audio/mp3",
-			// 				},
-			// 				to: ["923142797274"],
-			// 			},
-			// 		},
-			// 	},
-			// 	(response) => {
-			// 		// scrollToBottom();
-			// 		setImgSrc(null);
-			// 		props.conversationUpdate("You shared an audio");
-			// 		setSoundLoader(false);
-			// 		scrollToBottom();
-			// 	},
-			// 	(err) => {
-			// 		console.log(err);
-			// 	}
-			// );
-		} else {
-			const messageToSend = String(messageTextNew || " ").trim();
-			if (messageToSend) {
-				setEmo("");
-
-				setMessageTextNew("");
-
-				setMessageText("");
-				setTextLength(800);
-
-				// setDisabled(true);
-				let params = {
-					type: "text",
-					text: {
-						to: [props.selectedRecipient.number],
-						message: {
-							text: messageToSend,
-						},
+			socket.emit("sendMessage", {
+				attachments: [
+					{
+						type: "0",
+						image: "",
 					},
-				};
-				// CoreHttpHandler.request(
-				// 	"conversations",
-				// 	"send_text",
-				// 	params,
-				// 	(response) => {
-				// 		props.conversationUpdate(messageToSend);
-
-				// 		setEmo("");
-				// 		setDisabled(false);
-				// 	},
-				// 	(error) => {
-				// 		setDisabled(false);
-				// 	}
-				// );
-			} else {
-				setMessageText("");
-				setMessageTextNew("");
-				setTextLength(800);
-				setEmo("");
-			}
+				],
+				conversation_type: "customer_seller",
+				reciever_id: 4,
+				room_id: selectedRecipient.room_id,
+				message_body: messageText,
+			});
 		}
 	};
-	const sendMessageHandler = (event) => {
-		setChosenEmoji(false);
-		sendMessage();
-	};
+
+	console.log(selectedRecipient);
 	const sendDialogInputHandler = (e) => {
 		const data = { ...sendDialogData };
 		if (e.caption != undefined) {
@@ -503,142 +435,10 @@ const ChatLog = forwardRef((props, ref) => {
 		}
 	};
 
-	// const cannedMessagesDialog = () => {
-	// 	let userData = JSON.parse(localStorage.getItem("user_data"));
-	// 	CoreHttpHandler.request(
-	// 		"canned_messages",
-	// 		"listing",
-	// 		{
-	// 			columns: "*",
-	// 			sortby: "ASC",
-	// 			orderby: "id",
-	// 			where: `enabled = $1 and client_id = $2`,
-	// 			values: [true, userData?.client_id],
-	// 			// values: true,
-	// 			page: 0,
-	// 			limit: 0,
-	// 		},
-	// 		(response) => {
-	// 			const data = response.data.data.list.data;
-	// 			setdialogOpenCanned(true);
-	// 			var cannedData = [];
-	// 			var documents = data.filter((item) => item.message_type == "document");
-	// 			var audios = data.filter((item) => item.message_type == "audio");
-	// 			var videos = data.filter((item) => item.message_type == "video");
-	// 			var texts = data.filter((item) => item.message_type == "text");
-	// 			var images = data.filter((item) => item.message_type == "image");
-	// 			cannedData.push({ dataType: "document", list: documents });
-	// 			cannedData.push({ dataType: "audio", list: audios });
-	// 			cannedData.push({ dataType: "video", list: videos });
-	// 			cannedData.push({ dataType: "text", list: texts });
-	// 			cannedData.push({ dataType: "image", list: images });
-	// 			setcannedMessagesList(cannedData);
-	// 		},
-	// 		(error) => {}
-	// 	);
-	// };
-
-	const blockCustomerInputHandler = (props) => {
-		const { key, value, event, dataKey } = props;
-		setblockReason(value);
-	};
-
-	const blockNumber = () => {
-		setLoadingForModals(true);
-		CoreHttpHandler.request(
-			"conversations",
-			"block",
-			{
-				key: ":number",
-				value: selectedRecipient.number,
-				params: {
-					reason: blockReason,
-				},
-			},
-			(response) => {
-				setdialogOpenConfirmBlock(false);
-				setblockReason("");
-				setAnchorEl(false);
-				setLoadingForModals(false);
-				ToastAlertSuccess("User blocked Successfully");
-			},
-			(error) => {
-				setAnchorEl(false);
-				setdialogOpenConfirmBlock(false);
-				ToastAlertError("Somethings Wrong Please try again later!");
-			}
-		);
-	};
-	const customerProfileInputHandler = (props) => {
-		const { key, value, event, dataKey } = props;
-		const data = { ...customerProfileData };
-		data[key] = value.attrs;
-		data["assign_name"] = value.assigned_name;
-		setcustomerProfileData(data);
-	};
-
-	const profileUpdate = () => {
-		setLoadingForModals(true);
-		const data = { ...customerProfileData };
-		data["number"] = selectedRecipient.number;
-		CoreHttpHandler.request(
-			"contact_book",
-			"update",
-			{
-				key: ":id",
-				value: customerProfileData.id,
-				params: data,
-			},
-			(response) => {
-				setdialogOpenCmp(false);
-				ToastAlertSuccess("updated Successfully");
-				setLoadingForModals(false);
-			},
-			(error) => {
-				ToastAlertError("Somethings Wrong Please try again later!");
-			}
-		);
-	};
-
-	const profileDialog = () => {
-		CoreHttpHandler.request(
-			"contact_book",
-			"fetch",
-			{
-				key: ":number",
-				value: selectedRecipient.number,
-			},
-			(response) => {
-				const customer = response.data.data.customer;
-
-				setcustomerProfileData({
-					id: customer.id,
-					number: selectedRecipient.number,
-					attributes: customer.attributes,
-					assign_name:
-						selectedRecipient.name == selectedRecipient.number
-							? ""
-							: selectedRecipient.name,
-				});
-
-				setAnchorEl(false);
-				setdialogOpenCmp(true);
-				// });
-			},
-			(error) => {
-				setAnchorEl(false);
-				setdialogOpenCmp(false);
-			}
-		);
-	};
-
 	const handleKeyPress = (event) => {
-		if (event.key === "#") {
-			conversationContextMenuCallback("canned_messages");
-		}
 		if (event.key === "Enter") {
 			event.preventDefault();
-			sendMessageHandler();
+			sendMessage();
 		}
 	};
 	const prevCountRef = useRef();
@@ -650,8 +450,6 @@ const ChatLog = forwardRef((props, ref) => {
 			if (ev.target.value.length < 801) {
 				setMessageText(ev.target.value);
 				setMessageTextNew(ev.target.value);
-
-				setTextLength(800 - ev.target.value.length);
 			}
 		}
 	}
@@ -678,48 +476,6 @@ const ChatLog = forwardRef((props, ref) => {
 		}
 	}, [emo, messageText, chatRef]);
 
-	function messageStatus(messages) {
-		switch (messages) {
-			case "3":
-				return (
-					<BiCheck
-						size={21}
-						color='gray'
-					/>
-				);
-			case "4":
-				return (
-					<BiCheckDouble
-						size={21}
-						color='gray'
-					/>
-				);
-			case "5":
-				return (
-					<BiCheckDouble
-						size={21}
-						color='gray'
-					/>
-				);
-			case "6":
-				return (
-					<BiCheckDouble
-						size={21}
-						color='#53bdeb'
-					/>
-				);
-
-			default:
-				return (
-					<BiCheck
-						size={21}
-						color='gray'
-					/>
-				);
-		}
-	}
-	// ** Renders user chat
-	//console.log(selectedRecipient, "messages");
 	const renderChats = () => {
 		return (
 			<>
@@ -738,10 +494,7 @@ const ChatLog = forwardRef((props, ref) => {
 								key={index}
 								ref={items[index]}
 								className={classnames("chat", {
-									"chat-left":
-										activeTab == "sellers"
-											? item.type === "seller"
-											: item.type === "rider",
+									"chat-left": item.type === "inbound",
 								})}>
 								<div className='chat-body m-0'>
 									<div
@@ -753,35 +506,14 @@ const ChatLog = forwardRef((props, ref) => {
 											marginBottom: "6px",
 											borderRadius: "5px 5px 0 0",
 											marginLeft: "20px",
-											float: item.type === "customer" ? "right" : "none",
+											float: item.type === "outbound" ? "right" : "none",
 										}}>
-										{activeTab == "sellers"
-											? item.type == "seller"
-												? selectedRecipient.customer_username
-												: selectedRecipient.seller_username
-											: item.type == "rider"
-											? selectedRecipient.rider_username
-											: selectedRecipient.customer_username}
+										{item.type == "inbound" ? selectedRecipient.username : null}
 									</div>
 									<div
 										className='chat-content'
 										style={{ letterSpacing: "0.1px", fontSize: "13px" }}>
-										{item.message_body ? (
-											<p>
-												{item.message_body}
-												{/* <ReadMoreReact
-													text={item.message_body}
-													onClick={(e) => {
-														maxLength = item.message_body.length;
-													}}
-													style={{ margin: "5px " }}
-													min={200}
-													ideal={400}
-													max={1000}
-													readMoreText='Click Here to Read More'
-												/> */}
-											</p>
-										) : null}
+										{item.message_body ? <p>{item.message_body}</p> : null}
 
 										{item.attachment.map((val, i) => {
 											return (
@@ -802,7 +534,10 @@ const ChatLog = forwardRef((props, ref) => {
 
 										{item?.type == "outbound" && (
 											<span className=' ml-50 float-right text-nowrap chat-time '>
-												{messageStatus(item.status)}
+												<BiCheck
+													size={21}
+													color='gray'
+												/>
 											</span>
 										)}
 
@@ -909,88 +644,11 @@ const ChatLog = forwardRef((props, ref) => {
 									imgWidth='40'
 									img={DefaultUser}
 									status={"busy"}
-									className='avatar-border user-profile-toggle m-0 mr-1'
+									className='avatar-border user-profile-toggle m-0 mx-1'
 									onClick={() => handleAvatarClick(selectedRecipient.contact)}
 								/>
-								<h6 className='m-1'>{selectedRecipient.customer_username}</h6>
+								<h6 className='my-1'>{selectedRecipient.username}</h6>
 							</div>
-							{/* <div className='d-flex align-items-center'>
-								<UncontrolledTooltip
-									placement='top'
-									target='end'>
-									End Conversation
-								</UncontrolledTooltip>
-								<FiPower
-									size={18}
-									id='end'
-									className='cursor-pointer d-block '
-									onClick={() => endConversation()}
-								/>
-
-								<UncontrolledDropdown>
-									<DropdownToggle
-										className='btn-icon'
-										color='transparent'
-										size='sm'>
-										<MoreVertical size='18' />
-									</DropdownToggle>
-
-									<DropdownMenu right>
-										<DropdownItem
-											href='/'
-											onClick={(e) => {
-												e.preventDefault();
-												conversationActionsCallback("export");
-											}}>
-											Export Chat
-										</DropdownItem>
-										<DropdownItem
-											href='/'
-											onClick={(e) => {
-												e.preventDefault();
-												conversationActionsCallback("shift");
-											}}>
-											Shift
-										</DropdownItem>
-										<DropdownItem
-											href='/'
-											onClick={(e) => {
-												e.preventDefault();
-												conversationContextMenuCallback("block");
-												setdialogOpenConfirmBlock(true);
-											}}>
-											Block
-										</DropdownItem>
-										<DropdownItem
-											href='/'
-											onClick={(e) => {
-												e.preventDefault();
-												profileDialog();
-											}}>
-											Customer Profile
-										</DropdownItem>
-										{selectedRecipient?.last_closed && (
-											<DropdownItem
-												href='/'
-												onClick={(e) => {
-													e.preventDefault();
-													conversationContextMenuCallback("generate_history");
-												}}>
-												Generate History
-											</DropdownItem>
-										)}
-
-										<DropdownItem
-											href='/'
-											onClick={(e) => {
-												e.preventDefault();
-												conversationContextMenuCallback("copy");
-											}}>
-											Copy Number
-										</DropdownItem>
-									</DropdownMenu>
-								</UncontrolledDropdown>
-							</div> */}
 						</header>
 					</div>
 
@@ -1071,7 +729,7 @@ const ChatLog = forwardRef((props, ref) => {
 							</div>
 						)}
 
-						{!flag && !soundLoader && (
+						{!soundLoader && (
 							<React.Fragment>
 								<InputGroup className='input-group-merge  form-send-message'>
 									<Input
@@ -1113,19 +771,19 @@ const ChatLog = forwardRef((props, ref) => {
 							/>
 						) : null}
 
-						{!soundLoader && !showCanvas ? (
+						{!soundLoader && (
 							<>
-								<span className=' primary ml-auto d-block d-md-none'>
+								<span className='p-1 text-primary ml-auto d-block'>
 									<AiOutlineSend
 										disabled={isDisabled}
-										className=' ml-auto d-none d-md-block'
-										onClick={sendMessageHandler}
-										color='white'
+										className='ml-auto d-none d-md-block'
+										onClick={sendMessage}
+										color='primary'
 										size={18}
 									/>
 								</span>
 							</>
-						) : null}
+						)}
 					</Form>
 				</div>
 			) : (

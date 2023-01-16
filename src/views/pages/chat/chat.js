@@ -678,46 +678,6 @@ const ChatLog = forwardRef((props, ref) => {
 		}
 	}, [emo, messageText, chatRef]);
 
-	function messageStatus(messages) {
-		switch (messages) {
-			case "3":
-				return (
-					<BiCheck
-						size={21}
-						color='gray'
-					/>
-				);
-			case "4":
-				return (
-					<BiCheckDouble
-						size={21}
-						color='gray'
-					/>
-				);
-			case "5":
-				return (
-					<BiCheckDouble
-						size={21}
-						color='gray'
-					/>
-				);
-			case "6":
-				return (
-					<BiCheckDouble
-						size={21}
-						color='#53bdeb'
-					/>
-				);
-
-			default:
-				return (
-					<BiCheck
-						size={21}
-						color='gray'
-					/>
-				);
-		}
-	}
 	// ** Renders user chat
 	//console.log(selectedRecipient, "messages");
 	const renderChats = () => {
@@ -802,7 +762,10 @@ const ChatLog = forwardRef((props, ref) => {
 
 										{item?.type == "outbound" && (
 											<span className=' ml-50 float-right text-nowrap chat-time '>
-												{messageStatus(item.status)}
+												<BiCheck
+													size={21}
+													color='gray'
+												/>
 											</span>
 										)}
 
